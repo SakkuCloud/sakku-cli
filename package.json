@@ -21,6 +21,7 @@
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",
+    "@types/opn": "^5.1.0",
     "globby": "^8",
     "ts-node": "^7",
     "tslint": "^5",

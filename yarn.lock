@@ -140,10 +140,17 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.5.tgz#8a4accfc403c124a0bafe8a9fc61a05ec1032073"
   integrity sha512-lAVp+Kj54ui/vLUFxsJTMtWvZraZxum3w3Nwkble2dNuV5VnPA+Mi2oGX9XYJAaIvZi3tn3cbjS/qcJXRb6Bww==
 
-"@types/node@^10":
+"@types/node@*", "@types/node@^10":
   version "10.12.11"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.11.tgz#715c476c99a5f6898a1ae61caf9825e43c03912e"
   integrity sha512-3iIOhNiPGTdcUNVCv9e5G7GotfvJJe2pc9w2UgDXlUwnxSZ3RgcUocIU+xYm+rTU54jIKih998QE4dMOyMN1NQ==
+
+"@types/opn@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@types/opn/-/opn-5.1.0.tgz#bff7bc371677f4bdbb37884400e03fd81f743927"
+  integrity sha512-TNPrB7Y1xl06zDI0aGyqkgxjhIev3oJ+cdqlZ52MTAHauWpEL/gIUdHebIfRHFZk9IqSBpE2ci1DT48iZH81yg==
+  dependencies:
+    "@types/node" "*"
 
 ansi-escapes@^3.1.0:
   version "3.1.0"
