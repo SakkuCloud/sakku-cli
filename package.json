@@ -8,17 +8,23 @@
   },
   "bugs": "https://github.com/arvinrokni/sakku_cli_ts/issues",
   "dependencies": {
+    "@oclif/color": "^0.0.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
-    "tslib": "^1",
-    "@oclif/color": "^0.0.0",
-    "opn": "^5.4.0"
+    "cli-ux": "^4.9.3",
+    "fs-extra": "^7.0.1",
+    "inquirer": "^6.2.1",
+    "opn": "^5.4.0",
+    "path": "^0.12.7",
+    "tslib": "^1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
+    "@types/fs-extra": "^5.0.4",
     "@oclif/tslint": "^3",
     "@types/chai": "^4",
+    "@types/inquirer": "^0.0.43",
     "@types/mocha": "^5",
     "@types/node": "^10",
     "@types/opn": "^5.1.0",
@@ -36,7 +42,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/arvinrokni/sakku_cli_ts",
+  "homepage": "https://github.com/makbn/sakku_cli_ts",
   "keywords": [
     "oclif"
   ],

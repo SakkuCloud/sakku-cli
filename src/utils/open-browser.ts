@@ -1,6 +1,7 @@
-const openBrowser:String = () => {
+import cli from 'cli-ux'
 
-  return 'asda'
+const openBrowser = function (url: string) {
+  cli.open(url).catch(e => console.log(e))
 }
 
-export default openBrowser()
+export default openBrowser
