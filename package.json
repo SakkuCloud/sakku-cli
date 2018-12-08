@@ -44,7 +44,7 @@
   ],
   "homepage": "https://github.com/makbn/sakku_cli_ts",
   "keywords": [
-    "oclif"
+    "sakku"
   ],
   "license": "MIT",
   "main": "lib/index.js",
@@ -55,7 +55,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "arvinrokni/sakku_cli_ts",
+  "repository": "makbn/sakku_cli_ts",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p . -t stylish",
