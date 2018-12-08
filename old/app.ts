@@ -12,7 +12,7 @@ export default class App extends Command {
     ]
 
     static flags = {
-        all: flags.boolean({ char: 'a' , exclusive:['ps']})
+        all: flags.boolean({ char: 'a' , })
     }
 
     static args = [{ name: 'command' }, { name: 'optional'}]
@@ -73,6 +73,7 @@ export default class App extends Command {
             case 'scale':
                 var appId = await cli.prompt('Enter your app id',{required:true})
                 var appId = await cli.prompt('Enter your app scale',{required:true})
+                
         }
     }
 }
