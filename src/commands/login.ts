@@ -1,5 +1,6 @@
 import color from '@oclif/color'
 import {Command, flags} from '@oclif/command'
+import axios from 'axios'
 import cli from 'cli-ux'
 import * as inquirer from 'inquirer'
 import opn = require('opn')
@@ -16,7 +17,7 @@ export default class Login extends Command {
 
   static user = {username: '', password: ''}
 
-  static auth = {username: '', token: ''}
+  static auth = {token: ''}
 
   static question = {
     name: 'way',
@@ -26,7 +27,6 @@ export default class Login extends Command {
   }
 
   async run() {
-    const {args, flags} = this.parse(Login)
     const token = makeId()
 
     inquirer.prompt([
@@ -47,24 +47,39 @@ export default class Login extends Command {
             Login.user.password = i
           }).then(() => {
               // TODO
-            Login.auth = {username: '', token: ''}
+            Login.auth = {token: ''}
             writeToConfig(this, Login.auth)
             this.log(color.green(`you logged in by Username:${Login.user.username} & Password:${Login.user.password}`))
           })
         })
         break
       case Login.question.choices[1].name:
-        opn('https://cli-auth.sakku.cloud/' + token, {wait: false}).catch(() => {
-          cli.url(`${color.green('https://cli-auth.sakku.cloud/') + token}`,
-              `https://cli-auth.sakku.cloud/${token}`)
+        opn('https://panel.sakku.cloud/auth/cli/' + token, {wait: false}).catch(() => {
+          cli.url(`${color.green('CLICK HERE TO LOGIN TO SAKKU!')}`,
+              `https://panel.sakku.cloud/auth/cli/${token}`)
         }).then(async () => {
-          cli.action.start('loggin to Sakku...')
-          Login.auth = {username: '', token: ''}
-          writeToConfig(this, Login.auth)
+          cli.action.start('logging in to Sakku...')
           await cli.wait(5000)
-          cli.action.stop('done')
-          this.log(`${color.green('you are logged in :)')}`)
-
+          let isLoggedin = false
+          while (!isLoggedin) {
+            try {
+              let resp = await axios.post('https://api.sakku.cloud/users/cli', token)
+              this.log(resp.statusText)
+              Login.auth = {token: resp.data.result}
+              writeToConfig(this, Login.auth)
+              isLoggedin = true
+            } catch (e) {
+              this.log(color.red('Oops!\nthere is a problem with login!'))
+              break
+            }
+            await cli.wait(5000)
+          }
+          if (isLoggedin) {
+            cli.action.stop('done')
+            this.log(`${color.green('you are logged in :)')}`)
+          } else {
+            cli.action.stop('canceled :(')
+          }
         })
       }
     })

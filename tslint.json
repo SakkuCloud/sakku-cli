@@ -1,5 +1,3 @@
 {
-  "extends": "@oclif/tslint",
-  "rules": {
-  }
+  "extends": "@oclif/tslint"
 }
