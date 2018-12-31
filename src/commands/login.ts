@@ -30,12 +30,7 @@ export default class Login extends Command {
     const token = makeId()
 
     inquirer.prompt([
-      {
-        name: 'way',
-        message: 'there is two way you can login:',
-        type: 'list',
-        choices: [{name: 'Login by Usernam/Password'}, {name: 'Login by Browser'}],
-      }
+      Login.question
     ]).then(answers => {
       // @ts-ignore
       switch (answers.way) {
