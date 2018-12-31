@@ -1,7 +1,7 @@
 SAKKU cli
 =========
 
-this is a sakku cli that makes world even better!
+This cli trying to make world a better place!
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/sakku-cli.svg)](https://npmjs.org/package/sakku-cli)
@@ -33,7 +33,7 @@ USAGE
 
 ## `sakku hello [FILE]`
 
-describe the command here
+Describe the command here
 
 ```
 USAGE
