@@ -6,7 +6,7 @@ This cli trying to make world a better place!
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/sakku-cli.svg)](https://npmjs.org/package/sakku-cli)
 [![Downloads/week](https://img.shields.io/npm/dw/sakku-cli.svg)](https://npmjs.org/package/sakku-cli)
-[![License](https://img.shields.io/npm/l/sakku-cli.svg)](https://github.com/arvinrokni/sakku_cli_ts/blob/master/package.json)
+[![License](https://img.shields.io/npm/l/sakku-cli.svg)](https://github.com/SakkuCloud/sakku-cli/blob/master/License)
 
 <!-- toc -->
 * [Usage](#usage)
