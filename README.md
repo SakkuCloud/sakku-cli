@@ -1,4 +1,4 @@
-sakku-cli
+SAKKU cli
 =========
 
 this is a sakku cli that makes world even better!
