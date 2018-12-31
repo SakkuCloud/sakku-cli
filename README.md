@@ -1,12 +1,10 @@
 SAKKU cli
 =========
 
-This cli trying to make world a better place!
+Sakku cli is trying to make real world even a better place!
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/sakku-cli.svg)](https://npmjs.org/package/sakku-cli)
-[![Downloads/week](https://img.shields.io/npm/dw/sakku-cli.svg)](https://npmjs.org/package/sakku-cli)
-[![License](https://img.shields.io/npm/l/sakku-cli.svg)](https://github.com/SakkuCloud/sakku-cli/blob/master/License)
+[![Version](https://img.shields.io/npm/v/sakku.svg)](https://npmjs.org/package/sakku)
+[![Downloads/week](https://img.shields.io/npm/dw/sakku.svg)](https://npmjs.org/package/sakku)
 
 <!-- toc -->
 * [Usage](#usage)
@@ -15,11 +13,11 @@ This cli trying to make world a better place!
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g sakku-cli
+$ npm install -g sakku
 $ sakku COMMAND
 running command...
 $ sakku (-v|--version|version)
-sakku-cli/0.0.0 linux-x64 node-v8.10.0
+sakku/0.0.0 linux-x64 node-v8.10.0
 $ sakku --help [COMMAND]
 USAGE
   $ sakku COMMAND
