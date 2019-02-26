@@ -49,25 +49,30 @@ export default class Login extends Command {
         })
         break
       case Login.question.choices[1].name:
-        opn('https://panel.sakku.cloud/auth/cli/' + token, {wait: false}).catch(() => {
+        opn(`https://panel.sakku.cloud/login/cli/${token}`, {wait: false}).catch(() => {
           cli.url(`${color.green('CLICK HERE TO LOGIN TO SAKKU!')}`,
-              `https://panel.sakku.cloud/auth/cli/${token}`)
+              `https://panel.sakku.cloud/login/cli/${token}`)
         }).then(async () => {
           cli.action.start('logging in to Sakku...')
           await cli.wait(5000)
           let isLoggedin = false
+          let repeatedCount = 0
           while (!isLoggedin) {
+            await cli.wait(5000)
             try {
               let resp = await axios.post('https://api.sakku.cloud/users/cli', token)
-              this.log(resp.statusText)
+              this.log(resp)
               Login.auth = {token: resp.data.result}
               writeToConfig(this, Login.auth)
               isLoggedin = true
             } catch (e) {
-              this.log(color.red('Oops!\nthere is a problem with login!'))
-              break
+              this.log(e)
+              if (repeatedCount > 10) {
+                this.log(color.red('Oops!\nthere is a problem with login!'))
+                break
+              }
+              repeatedCount ++
             }
-            await cli.wait(5000)
           }
           if (isLoggedin) {
             cli.action.stop('done')
