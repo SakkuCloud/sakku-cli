@@ -1,12 +1,25 @@
 import color from '@oclif/color'
-import {Command, flags} from '@oclif/command'
-import axios from 'axios'
+import {
+  Command,
+  flags
+} from '@oclif/command'
 import cli from 'cli-ux'
 import * as inquirer from 'inquirer'
 import opn = require('opn')
 
+import {authService} from '../_service/auth.service'
+import {
+  abort_msg, click_here_to_login_msg,
+  done_msg,
+  password_req,
+  problem_in_login_msg,
+  username_req
+} from '../consts/msg'
+import {
+  auth_url
+} from '../consts/urls'
 import makeId from '../utils/make-id'
-import writeToConfig from '../utils/write-to-file'
+import {writeOverview, writeToken} from '../utils/write-to-file'
 
 export default class Login extends Command {
   static description = `${color.blueBright('login to Sakku cli interface.')}`
@@ -16,9 +29,7 @@ export default class Login extends Command {
   }
 
   static user = {username: '', password: ''}
-
   static auth = {token: ''}
-
   static question = {
     name: 'way',
     message: 'there is two way you can login:',
@@ -27,7 +38,7 @@ export default class Login extends Command {
   }
 
   async run() {
-    const token = makeId()
+    const code = makeId()
 
     inquirer.prompt([
       Login.question
@@ -35,23 +46,23 @@ export default class Login extends Command {
       // @ts-ignore
       switch (answers.way) {
       case Login.question.choices[0].name:
-        cli.prompt('please type your Username (Hint: sometimes username is equal to email)', {required: true}).then(i => {
+        cli.prompt(username_req, {required: true}).then(i => {
           Login.user.username = i
         }).then(() => {
-          cli.prompt('please type your Password', {required: true, type: 'hide'}).then(i => {
+          cli.prompt(password_req, {required: true, type: 'hide'}).then(i => {
             Login.user.password = i
           }).then(() => {
               // TODO
             Login.auth = {token: ''}
-            writeToConfig(this, Login.auth)
+            writeToken(this, Login.auth)
             this.log(color.green(`you logged in by Username:${Login.user.username} & Password:${Login.user.password}`))
           })
         })
         break
       case Login.question.choices[1].name:
-        opn(`https://panel.sakku.cloud/login/cli/${token}`, {wait: false}).catch(() => {
-          cli.url(`${color.green('CLICK HERE TO LOGIN TO SAKKU!')}`,
-              `https://panel.sakku.cloud/login/cli/${token}`)
+        opn(`${auth_url}${code}`, {wait: false}).catch(() => {
+          cli.url(`${color.green(click_here_to_login_msg)}`,
+              `${auth_url}${code}`)
         }).then(async () => {
           cli.action.start('logging in to Sakku...')
           await cli.wait(5000)
@@ -60,25 +71,29 @@ export default class Login extends Command {
           while (!isLoggedin) {
             await cli.wait(5000)
             try {
-              let resp = await axios.post('https://api.sakku.cloud/users/cli', token)
-              this.log(resp)
+              let resp = await authService.authenticate(code)
               Login.auth = {token: resp.data.result}
-              writeToConfig(this, Login.auth)
+              writeToken(this, Login.auth.token)
               isLoggedin = true
-            } catch (e) {
-              this.log(e)
+            } catch (_) {
               if (repeatedCount > 10) {
-                this.log(color.red('Oops!\nthere is a problem with login!'))
+                this.log(color.red(problem_in_login_msg))
                 break
               }
               repeatedCount ++
             }
           }
           if (isLoggedin) {
-            cli.action.stop('done')
+            try {
+              let overview = await authService.overview(this).then(value => JSON.stringify(value.data.result))
+              writeOverview(this, overview)
+            } catch (e) {
+              this.log(e)
+            }
+            cli.action.stop(done_msg)
             this.log(`${color.green('you are logged in :)')}`)
           } else {
-            cli.action.stop('canceled :(')
+            cli.action.stop(abort_msg)
           }
         })
       }
