@@ -19,7 +19,7 @@ import {
   auth_url
 } from '../consts/urls'
 import makeId from '../utils/make-id'
-import {writeOverview, writeToken} from '../utils/write-to-file'
+import {writeOverview, writeToken} from '../utils/writer'
 
 export default class Login extends Command {
   static description = `${color.blueBright('login to Sakku cli interface.')}`

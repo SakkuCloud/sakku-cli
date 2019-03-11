@@ -22,7 +22,7 @@ hello world from ./src/hello.ts!
 
   async run() {
     const {args, flags} = this.parse(Hello)
-    this.log({headers: {Authorization: reader(this)}})
+
     //
     // const name = flags.name || 'world'
     // this.log(`hello ${name} from ./src/commands/hello.ts`)
