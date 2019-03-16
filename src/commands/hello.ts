@@ -1,5 +1,4 @@
 import {Command, flags} from '@oclif/command'
-import reader from '../utils/reader'
 
 export default class Hello extends Command {
   static description = 'describe the command here'

@@ -1,6 +1,5 @@
-import { Command, flags } from '@oclif/command'
+import {Command, flags} from '@oclif/command'
 import cli from 'cli-ux'
-import { isNumber } from 'util';
 
 export default class Scale extends Command {
   static description = 'scale app'

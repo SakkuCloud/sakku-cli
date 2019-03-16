@@ -4,7 +4,7 @@ import axios from 'axios'
 import {app_url} from '../consts/urls'
 import {IApp} from '../interfaces/app.interface'
 import IServerResult from '../interfaces/server-result.interface'
-import reader from '../utils/reader'
+import {readToken} from '../utils/read-token'
 
 export const appService = {
   create,
@@ -30,5 +30,5 @@ function list(ctx: Command, page = 1, data: IApp[] = []): Promise<IApp[]> {
 }
 
 function getHeader(ctx: Command) {
-  return {Authorization: reader(ctx)}
+  return {Authorization: readToken(ctx)}
 }

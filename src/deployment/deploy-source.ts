@@ -1,12 +1,13 @@
+import Command from '@oclif/command'
 import * as fs from 'fs'
-import * as path from 'path'
 import * as FTP from 'promise-ftp'
 import * as tar from 'tar'
+import {readConfig} from '../utils/read-token'
 
-export default async function deploySrc(ctx: any, appName: string) {
+export default async function deploySrc(ctx: Command, appName: string) {
   const ftp = new FTP()
   let date = new Date()
-  let config = await JSON.parse(fs.readFileSync(path.join(ctx.config.cacheDir, 'config.json'), {encoding: 'utf-8'}))
+  let config = await JSON.parse(readConfig(ctx))
   let filename = 'src_' + appName + '_' + date.getTime().toString() + '.tgz'
   return tar.create(
     {

@@ -1,11 +1,10 @@
 import {Command, flags} from '@oclif/command'
-import {string} from '@oclif/command/lib/flags'
 import {cli} from 'cli-ux'
-import inquirer = require('inquirer')
 
 import deployBinary from '../../deployment/deploy-binary'
 import deployImage from '../../deployment/deploy-image'
 import deploySrc from '../../deployment/deploy-source'
+import inquirer = require('inquirer')
 
 export default class Deploy extends Command {
   static description = 'deploy app'
@@ -22,7 +21,7 @@ export default class Deploy extends Command {
   }
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    help: flags.help({char: 'h', hidden: true}),
     app: flags.string({char: 'a', description: 'app name'}),
     image: flags.string({char: 'i', exclusive: ['binary', 'source'], description: 'docker-image file'}),
     binary: flags.string({char: 'b', exclusive: ['image', 'source'], description: 'executable binary file'}),

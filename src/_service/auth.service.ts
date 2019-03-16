@@ -3,7 +3,7 @@ import axios from 'axios'
 import {login_url, overview_url} from '../consts/urls'
 import IServerResult from '../interfaces/server-result.interface'
 import {IOverview} from '../interfaces/user.interface'
-import reader from '../utils/reader'
+import {readToken} from '../utils/read-token'
 
 export const authService = {
   authenticate,
@@ -19,5 +19,5 @@ function overview(ctx: any) {
 }
 
 function getHeader(ctx: any) {
-  return {Authorization: reader(ctx)}
+  return {Authorization: readToken(ctx)}
 }
