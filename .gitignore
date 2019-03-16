@@ -9,4 +9,4 @@ node_modules
 .idea
 /.idea
 /.idea/*
-/src/consts/*
+/src/consts/urls.ts
