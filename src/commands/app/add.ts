@@ -35,9 +35,6 @@ import {writeLocalApps} from '../../utils/writer'
 export default class Add extends Command {
   static description = 'add new app'
 
-  static examples = [
-    '$ sakku app:add',
-  ]
   static port = {host: '', app: ''}
   static link = {name: '', alias: ''}
   static flags = {
@@ -45,6 +42,7 @@ export default class Add extends Command {
   }
 
   async run() {
+    const {flags} = this.parse(Add)
     let maxInstance: any
     let minInstance: any
     let maxCorePerInstance: any

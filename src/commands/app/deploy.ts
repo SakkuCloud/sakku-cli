@@ -9,10 +9,6 @@ import inquirer = require('inquirer')
 export default class Deploy extends Command {
   static description = 'deploy app'
 
-  static examples = [
-    '$ sakku app:deploy',
-  ]
-
   static question = {
     name: 'type',
     message: 'choose type of deploy',

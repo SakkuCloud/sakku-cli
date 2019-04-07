@@ -1,20 +1,15 @@
 import {Command, flags} from '@oclif/command'
 import {cli} from 'cli-ux'
-import {__values} from 'tslib'
 import {appService} from '../../_service/app.service'
-import {IApp, IAppsAccess, IAppsPort} from '../../interfaces/app.interface'
+import {IAppsAccess, IAppsPort} from '../../interfaces/app.interface'
 import {writeApps} from '../../utils/writer'
 
 export default class PS extends Command {
-  static description = 'showing all [running/stoped] app'
-
-  static examples = [
-    '$ sakku app:ps [-a,--all]',
-  ]
+  static description = 'showing all [running/all] app'
 
   static flags = {
     help: flags.help({char: 'h'}),
-    all: flags.boolean({char: 'a'}),
+    all: flags.boolean({char: 'a', description: 'show all apps'}),
   }
 
   async run() {
@@ -58,16 +53,5 @@ export default class PS extends Command {
     } catch (err) {
       this.log(err.response.data.error)
     }
-    // if (flags.all) {
-    //   cli.action.start('please wait...')
-    //   await cli.wait(2000)
-    //   cli.action.stop('done')
-    //   this.log('showing all apps')
-    // } else {
-    //   cli.action.start('please wait...')
-    //   await cli.wait(2000)
-    //   cli.action.stop('done')
-    //   this.log('showing all running apps')
-    // }
   }
 }

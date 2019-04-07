@@ -1,8 +1,13 @@
 import {Command, flags} from '@oclif/command'
-import {string} from '@oclif/command/lib/flags'
 import axios from 'axios'
-import {socket} from 'axon'
-import {Duplex} from 'stream'
+
+import {appService} from '../_service/app.service'
+import {execService} from '../_service/exec.service'
+import {exec_exit_msg} from '../consts/msg'
+import {DetachKey} from '../consts/val'
+import {IApp} from '../interfaces/app.interface'
+import * as inquirer from './login'
+
 let readline = require('readline')
 
 export default class Exec extends Command {
@@ -15,7 +20,8 @@ export default class Exec extends Command {
 
   static flags = {
     help: flags.help({char: 'h'}),
-    interactive: flags.boolean({char: 'i'})
+    interactive: flags.boolean({char: 'i'}),
+    tty: flags.boolean({char: 't'})
   }
 
   static args = [
@@ -35,107 +41,75 @@ export default class Exec extends Command {
 
   async run() {
     const {args, flags} = this.parse(Exec)
-    //test data
+    let appUrl = "http://127.0.0.1:2375" //todo
+    let appFromFile: IApp = appService.getAppFromFile(this, args.app)
+    await inquirer.prompt({
+      name: 'instance',
+      message: 'which instance :',
+      type: 'list',
+      choices: [
+        {name: 'instance-num1-siavash-soraya-1474'},
+        {name: 'instance-num2-siavash-soraya-1474'},
+        {name: 'instance-num3-siavash-soraya-1474'}],
+    })
+    let firstLine = false
     let data = {
       AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
-      DetachKeys: 'ctrl-c,ctrl-q',
-      Tty: true,
+      DetachKeys: 'ctrl-c',
+      Tty: flags.tty,
       Cmd: [
         args.cmd
       ],
       Env: []
     }
     let rl = readline.createInterface(process.stdin, process.stdout)
-    let id = await axios.post(`http://127.0.0.1:2375/containers/${args.app}/exec`, data)
-      .then(value => value.data.Id)
+    let id = await execService.create(this, data, appUrl, args.app)
     if (flags.interactive || args.cmd === 'bash') {
-      axios.post(`http://127.0.0.1:2375/exec/${id}/start`,
+      axios.post(appUrl + `/exec/${id}/start`,
         {
           Detach: false,
-          Tty: true
+          Tty: flags.tty
         }, {
           responseType: 'stream'
         }).then(response => {
           let stream = response.data
           let socket = stream.socket
-
-          socket.on('error', (data: string) => {
-            process.stdin.pause()
-            process.stderr.write(data)
-            process.stdin.resume()
-          })
-
           socket.on('data', (data: string) => {
             process.stdin.pause()
-            process.stdout.write(data)
+            if (!firstLine)
+              process.stdout.write(data)
+            firstLine = false
             process.stdin.resume()
           })
 
-          rl.on('line', (input: string) => {
-            socket.write(input.trim() + '\n')
+          process.stdout.on('data', i => {
+            socket.write(i.toString())
+            if (i == DetachKey) {
+              rl.emit('SIGINT')
+            }
           })
 
           rl.on('SIGINT', function () {
             // stop input
-            process.stdin.pause()
-            process.stderr.write('\nEnding session\n')
-            rl.close()
             socket.emit('end')
+            process.stdin.pause()
+            process.stdout.write(exec_exit_msg)
+            //rl.close()
+          //  process.stdin.end()
+            process.exit(0)
           })
         })
     } else {
-      axios.post<string>(`http://127.0.0.1:2375/exec/${id}/start`,
+      axios.post<string>(appUrl + `/exec/${id}/start`,
         {
           Detach: false,
-          Tty: true
+          Tty: flags.tty
         }).then(response => {
           rl.write(response.data)
           rl.close()
         })
     }
   }
-}
-
-function sendCommand(ctx: Command, cm: string, cid: string) {
-  cm = cm.replace('/\\r?\\n|\\r/g', '')
-    .replace('/\\r?\\n|\\r/', '')
-    .replace('\n', '')
-  let myCm
-  if (cm && (cm === 'bash' || !cm.includes(' ')))
-    myCm = [cm]
-  else
-    myCm = ['bash', '-c', cm]
-  let data = {
-    AttachStdin: true,
-    AttachStdout: true,
-    AttachStderr: true,
-    DetachKeys: 'ctrl-p,ctrl-q',
-    Tty: true,
-    Cmd: myCm,
-    Env: [
-    ]
-  }
-  axios.post<{ Id: '' }>(`http://127.0.0.1:2375/containers/${cid}/exec`, data)
-    .then(value => value.data.Id)
-    .then(id => {
-      axios.post(`http://127.0.0.1:2375/exec/${id}/start`,
-        {
-          Detach: false,
-          Tty: true
-        }, {
-          responseType: 'stream',
-          headers: {
-            Connection: 'Upgrade',
-            Upgrade: 'tcp'
-          }
-        }).then(response => {
-          let stream = response.data
-          ctx.log('done')
-          stream.pipe(process.stdout)
-          process.stdin.pipe(stream)
-        }).catch(reason => ctx.log(reason.toString()))
-    }
-    ).catch(reason => ctx.log(reason.toString()))
 }

@@ -4,11 +4,13 @@ import axios from 'axios'
 import {app_url} from '../consts/urls'
 import {IApp} from '../interfaces/app.interface'
 import IServerResult from '../interfaces/server-result.interface'
+import {readTestApps} from '../utils/read-from-file'
 import {readToken} from '../utils/read-token'
 
 export const appService = {
   create,
-  list
+  list,
+  getAppFromFile
 }
 
 function create(ctx: Command, data: {}) {
@@ -27,6 +29,19 @@ function list(ctx: Command, page = 1, data: IApp[] = []): Promise<IApp[]> {
       reject(res)
     }
   }).catch(err => reject(err)))
+}
+
+function getAppFromFile(ctx: Command, id: string) {
+  let testApp = readTestApps(ctx)
+  try{
+    let appsJson = JSON.parse(testApp)
+    return appsJson.forEach((app: IApp) => {
+      if (app.id.toString().startsWith(id))
+        return app
+    })
+  } catch (e) {
+    return null
+  }
 }
 
 function getHeader(ctx: Command) {

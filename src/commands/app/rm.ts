@@ -5,7 +5,9 @@ export default class RM extends Command {
   static description = 'Remove app*'
 
   static examples = [
-    `$ sakku app:rm`,
+    `$ sakku app:rm 
+Enter your app id: APP-ID
+are you really sure to remove? (y/n): y`,
   ]
 
   static flags = {

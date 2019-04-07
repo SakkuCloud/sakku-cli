@@ -1,8 +1,5 @@
 import color from '@oclif/color'
-import {
-  Command,
-  flags
-} from '@oclif/command'
+import {Command, flags} from '@oclif/command'
 import cli from 'cli-ux'
 import * as inquirer from 'inquirer'
 import opn = require('opn')
@@ -15,14 +12,19 @@ import {
   problem_in_login_msg,
   username_req
 } from '../consts/msg'
-import {
-  auth_url
-} from '../consts/urls'
+import {auth_url} from '../consts/urls'
 import makeId from '../utils/make-id'
 import {writeOverview, writeToken} from '../utils/writer'
 
 export default class Login extends Command {
-  static description = `${color.blueBright('login to Sakku cli interface.')}`
+  static description = 'login to Sakku cli interface.'
+  static examples = [
+    `$ sakku login
+? there is two way you can login: (Use arrow keys)
+${color.cyan('❯ Login by Usernam/Password')}
+  Login by Browser
+`,
+  ]
 
   static flags = {
     help: flags.help({char: 'h'})
@@ -38,6 +40,7 @@ export default class Login extends Command {
   }
 
   async run() {
+    const {args, flags} = this.parse(Login)
     const code = makeId()
 
     inquirer.prompt([
