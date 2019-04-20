@@ -41,7 +41,7 @@ OPTIONS
 EXAMPLE
   $ sakku login
   ? there is two way you can login: (Use arrow keys)
-  ❯ Login by Usernam/Password
+  ❯ Login by Username/Password
      Login by Browser
 
 ```
