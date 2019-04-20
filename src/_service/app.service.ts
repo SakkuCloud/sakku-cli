@@ -2,19 +2,34 @@ import {Command} from '@oclif/command'
 import axios from 'axios'
 
 import {app_url} from '../consts/urls'
-import {IApp} from '../interfaces/app.interface'
+import {IApp, IAppVO} from '../interfaces/app.interface'
 import IServerResult from '../interfaces/server-result.interface'
 import {readTestApps} from '../utils/read-from-file'
 import {readToken} from '../utils/read-token'
 
 export const appService = {
   create,
+  stop,
+  get,
+  getByName,
   list,
   getAppFromFile
 }
 
 function create(ctx: Command, data: {}) {
   return axios.post(app_url, data , {headers: getHeader(ctx)})
+}
+
+function get(ctx: Command, id: string) {
+  return axios.get<IServerResult<IAppVO>>(app_url + '/' + id , {headers: getHeader(ctx)})
+}
+
+function getByName(ctx: Command, name: string) {
+  return axios.get<IServerResult<IAppVO>>(app_url + '/byname/' + name , {headers: getHeader(ctx)})
+}
+
+function stop(ctx: Command, id: string) {
+  return axios.post(`${app_url}/${id}/stop`, null , {headers: getHeader(ctx)})
 }
 
 function list(ctx: Command, page = 1, data: IApp[] = []): Promise<IApp[]> {
@@ -33,7 +48,7 @@ function list(ctx: Command, page = 1, data: IApp[] = []): Promise<IApp[]> {
 
 function getAppFromFile(ctx: Command, id: string) {
   let testApp = readTestApps(ctx)
-  try{
+  try {
     let appsJson = JSON.parse(testApp)
     return appsJson.forEach((app: IApp) => {
       if (app.id.toString().startsWith(id))

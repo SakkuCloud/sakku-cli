@@ -2,10 +2,12 @@ import {Command} from '@oclif/command'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-export async function writeToken(ctx: Command, data: any) {
-  let configUri = path.join(ctx.config.configDir, 'token')
-  if (!fs.pathExistsSync(ctx.config.configDir)) fs.mkdirSync(ctx.config.configDir)
-  fs.writeFileSync(configUri, data, {encoding: 'utf-8'})
+export async function writeToken(ctx: Command, data: {token?: string}) {
+  if(data.token) {
+    let configUri = path.join(ctx.config.configDir, 'token')
+    if (!fs.pathExistsSync(ctx.config.configDir)) fs.mkdirSync(ctx.config.configDir)
+    fs.writeFileSync(configUri, data.token, {encoding: 'utf-8'})
+  }
 }
 
 export async function writeOverview(ctx: Command, data: string) {

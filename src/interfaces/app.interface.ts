@@ -13,6 +13,27 @@ export declare interface IApp {
   ports?: IAppsPort[]
 }
 
+export declare interface IAppVO {
+  id: number,
+  ownerId: number,
+  name: string,
+  uid: number,
+  instances: IAppInstance[],
+  desc: string,
+  created?: string | Date,
+  access: IAppsAccess[],
+  configuration: IAppsConfiguration,
+  status: IAppsStatus,
+  deployType: IAppsDeployType,
+  ports: IAppsPort[]
+}
+
+export declare interface IAppInstance {
+  containerId: number,
+  workerHost?: string,
+  metadata?: string
+}
+
 export declare interface IAppsPort {
   container: number
   host: number

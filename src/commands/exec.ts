@@ -1,14 +1,12 @@
 import {Command, flags} from '@oclif/command'
-import axios from 'axios'
+import {cli} from 'cli-ux'
+import * as readline from 'readline'
 
 import {appService} from '../_service/app.service'
 import {execService} from '../_service/exec.service'
 import {exec_exit_msg} from '../consts/msg'
 import {DetachKey} from '../consts/val'
-import {IApp} from '../interfaces/app.interface'
-import * as inquirer from './login'
-
-let readline = require('readline')
+import inquirer = require('inquirer')
 
 export default class Exec extends Command {
   static description = 'execute command on instance'
@@ -41,75 +39,98 @@ export default class Exec extends Command {
 
   async run() {
     const {args, flags} = this.parse(Exec)
-    let appUrl = "http://127.0.0.1:2375" //todo
-    let appFromFile: IApp = appService.getAppFromFile(this, args.app)
-    await inquirer.prompt({
-      name: 'instance',
-      message: 'which instance :',
-      type: 'list',
-      choices: [
-        {name: 'instance-num1-siavash-soraya-1474'},
-        {name: 'instance-num2-siavash-soraya-1474'},
-        {name: 'instance-num3-siavash-soraya-1474'}],
-    })
-    let firstLine = false
-    let data = {
-      AttachStdin: true,
-      AttachStdout: true,
-      AttachStderr: true,
-      DetachKeys: 'ctrl-c',
-      Tty: flags.tty,
-      Cmd: [
-        args.cmd
-      ],
-      Env: []
-    }
-    let rl = readline.createInterface(process.stdin, process.stdout)
-    let id = await execService.create(this, data, appUrl, args.app)
-    if (flags.interactive || args.cmd === 'bash') {
-      axios.post(appUrl + `/exec/${id}/start`,
-        {
-          Detach: false,
-          Tty: flags.tty
-        }, {
-          responseType: 'stream'
-        }).then(response => {
-          let stream = response.data
-          let socket = stream.socket
-          socket.on('data', (data: string) => {
-            process.stdin.pause()
-            if (!firstLine)
-              process.stdout.write(data)
-            firstLine = false
-            process.stdin.resume()
+    let appId: string
+    if (args.app)
+      appId = args.app
+    else
+      appId = await cli.prompt('enter app id/name')
+    let data
+    try {
+      // @ts-ignore
+      if (!isNaN(appId)) {
+        data = await appService.get(this, appId)
+          .then(value => value.data)
+      } else {
+        data = await appService.getByName(this, appId)
+          .then(value => value.data)
+      }
+      if (data.error) {
+        this.log('error code:', data.code, data.message)
+      } else {
+        let result = data.result!
+        if (result.instances.length === 0) {
+          this.log('there is no instance!')
+        } else {
+          let instances = result.instances
+          let choices: {name: string}[] = []
+          // @ts-ignore
+          instances.forEach(ins => {
+            // @ts-ignore
+            choices.push({name : ins.containerId})
           })
+          await inquirer.prompt({
+            name: 'instance',
+            message: 'which instance :',
+            type: 'list',
+            choices
+          }).then(async answer => {
+            let firstLine = false
+            let initData = {
+              AttachStdin: true,
+              AttachStdout: true,
+              AttachStderr: true,
+              DetachKeys: 'ctrl-c',
+              Tty: flags.tty,
+              Cmd: [
+                args.cmd
+              ],
+              Env: []
+            }
+            // @ts-ignore
+            let url = await instances.find(value => value.containerId === answer.instance!)!.workerHost as string
+            let appUrl = 'http://' + url
+            // @ts-ignore
+            let id = await execService.create(this, initData, appUrl, answer.instance)
+            let rl = readline.createInterface(process.stdin, process.stdout)
+            if (flags.interactive || args.cmd === 'bash') {
+              execService.exec(this, id, appUrl, {Detach: false, Tty: flags.tty}).then(response => {
+                let stream = response.data
+                let socket = stream.socket
+                socket.on('data', (data: string) => {
+                  process.stdin.pause()
+                  if (!firstLine)
+                    process.stdout.write(data)
+                  firstLine = false
+                  process.stdin.resume()
+                })
 
-          process.stdout.on('data', i => {
-            socket.write(i.toString())
-            if (i == DetachKey) {
-              rl.emit('SIGINT')
+                process.stdout.on('data', i => {
+                  socket.write(i.toString())
+                  if (i == DetachKey) {
+                    rl.emit('SIGINT')
+                  }
+                })
+
+                rl.on('SIGINT', function () {
+                  // stop input
+                  socket.emit('end')
+                  process.stdin.pause()
+                  process.stdout.write(exec_exit_msg)
+                  process.exit(0)
+                })
+              })
+            } else {
+              execService.exec(this, id, appUrl, {Detach: false, Tty: flags.tty}).then(response => {
+                rl.write(response.data)
+                rl.close()
+              })
             }
           })
-
-          rl.on('SIGINT', function () {
-            // stop input
-            socket.emit('end')
-            process.stdin.pause()
-            process.stdout.write(exec_exit_msg)
-            //rl.close()
-          //  process.stdin.end()
-            process.exit(0)
-          })
-        })
-    } else {
-      axios.post<string>(appUrl + `/exec/${id}/start`,
-        {
-          Detach: false,
-          Tty: flags.tty
-        }).then(response => {
-          rl.write(response.data)
-          rl.close()
-        })
+        }
+      }
+    } catch (err) {
+      const code = err.code || (err.response && err.response.status.toString())
+      this.log('code:', code, err.response.data.message || '')
     }
   }
 }

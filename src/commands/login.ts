@@ -1,12 +1,13 @@
 import color from '@oclif/color'
 import {Command, flags} from '@oclif/command'
+import {AxiosError} from 'axios'
 import cli from 'cli-ux'
 import * as inquirer from 'inquirer'
-import opn = require('opn')
 
 import {authService} from '../_service/auth.service'
 import {
-  abort_msg, click_here_to_login_msg,
+  abort_msg,
+  click_here_to_login_msg,
   done_msg,
   password_req,
   problem_in_login_msg,
@@ -15,6 +16,7 @@ import {
 import {auth_url} from '../consts/urls'
 import makeId from '../utils/make-id'
 import {writeOverview, writeToken} from '../utils/writer'
+import opn = require('opn')
 
 export default class Login extends Command {
   static description = 'login to Sakku cli interface.'
@@ -31,7 +33,6 @@ ${color.cyan('❯ Login by Usernam/Password')}
   }
 
   static user = {username: '', password: ''}
-  static auth = {token: ''}
   static question = {
     name: 'way',
     message: 'there is two way you can login:',
@@ -49,16 +50,48 @@ ${color.cyan('❯ Login by Usernam/Password')}
       // @ts-ignore
       switch (answers.way) {
       case Login.question.choices[0].name:
-        cli.prompt(username_req, {required: true}).then(i => {
-          Login.user.username = i
+        cli.prompt(username_req, {required: true}).then(user => {
+          Login.user.username = user
         }).then(() => {
-          cli.prompt(password_req, {required: true, type: 'hide'}).then(i => {
-            Login.user.password = i
+          cli.prompt(password_req, {required: true, type: 'hide'}).then(pass => {
+            Login.user.password = pass
           }).then(() => {
-              // TODO
-            Login.auth = {token: ''}
-            writeToken(this, Login.auth)
-            this.log(color.green(`you logged in by Username:${Login.user.username} & Password:${Login.user.password}`))
+            authService.login(Login.user)
+              .then(value => value.data)
+              .then(data => {
+                if (data.error) {
+                  this.log(data.message)
+                } else {
+                  writeToken(this, {token: data.result})
+                    .then(() => {
+                      try {
+                        authService.overview(this).then(value => JSON.stringify(value.data.result)).then(overview => {
+                          writeOverview(this, overview).catch(err => {
+                            this.log(err)
+                          })
+                        }).catch(err => {
+                          this.log(err.code || (err.response && err.response.status.toString()))
+                        })
+                      } catch (e) {
+                        this.log(e)
+                      }
+                      this.log(color.green("you're logged in"))
+                    }).catch(e => {
+                      this.log(e)
+                    })
+                }
+              }).catch((err: AxiosError) => {
+                const code = err.code || (err.response && err.response.status.toString())
+                switch (code) {
+                  // tslint:disable ter-indent
+                  case '403':
+                  case '400':
+                    this.log('Incorrect username or password')
+                    break
+                  default:
+                    this.log('An error occured! ', code + ':', err.response && err.response.data && err.response.data.message || '')
+                }
+              })
           })
         })
         break
@@ -75,10 +108,9 @@ ${color.cyan('❯ Login by Usernam/Password')}
             await cli.wait(5000)
             try {
               let resp = await authService.authenticate(code)
-              Login.auth = {token: resp.data.result}
-              writeToken(this, Login.auth.token)
+              writeToken(this, {token: resp.data.result})
               isLoggedin = true
-            } catch (_) {
+            } catch {
               if (repeatedCount > 10) {
                 this.log(color.red(problem_in_login_msg))
                 break
