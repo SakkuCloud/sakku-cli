@@ -122,6 +122,24 @@ OPTIONS
 ```
 
 
+## `sakku exec`
+execute command on app
+
+```
+USAGE
+  $ sakku exec APP [CMD]
+
+OPTIONS
+  APP  app id/name
+  CMD  [default: bash] command
+
+
+EXAMPLE
+  $ sakku exec -it app-id bash
+
+```
+
+
 ## `sakku app:rm`
 remove app
 

@@ -4,7 +4,7 @@ import axios from 'axios'
 import {app_url} from '../consts/urls'
 import {IApp, IAppVO} from '../interfaces/app.interface'
 import IServerResult from '../interfaces/server-result.interface'
-import {readTestApps} from '../utils/read-from-file'
+import {readLocalApps} from '../utils/read-from-file'
 import {readToken} from '../utils/read-token'
 
 export const appService = {
@@ -47,7 +47,7 @@ function list(ctx: Command, page = 1, data: IApp[] = []): Promise<IApp[]> {
 }
 
 function getAppFromFile(ctx: Command, id: string) {
-  let testApp = readTestApps(ctx)
+  let testApp = readLocalApps(ctx)
   try {
     let appsJson = JSON.parse(testApp)
     return appsJson.forEach((app: IApp) => {

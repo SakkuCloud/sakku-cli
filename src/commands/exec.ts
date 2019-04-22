@@ -44,6 +44,7 @@ export default class Exec extends Command {
       appId = args.app
     else
       appId = await cli.prompt('enter app id/name')
+
     let data
     try {
       // @ts-ignore
