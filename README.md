@@ -9,9 +9,25 @@ Sakku cli is trying to make real world even a better place!
 <!-- toc -->
 * [Usage](#usage)
 * [Commands](#commands)
+* [`sakku app`](#sakku-app)
+<!-- tocstop -->
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 # Usage
 <!-- usage -->
+```sh-session
+$ npm install -g sakku
+$ sakku COMMAND
+running command...
+$ sakku (-v|--version|version)
+sakku/0.0.2 win32-x64 node-v10.15.3
+$ sakku --help [COMMAND]
+USAGE
+  $ sakku COMMAND
+...
+```
+<!-- usagestop -->
 ```sh-session
 $ npm install -g sakku
 $ sakku COMMAND
@@ -26,6 +42,201 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`sakku app:add`](#sakku-appadd)
+* [`sakku app:deploy`](#sakku-appdeploy)
+* [`sakku app:ps`](#sakku-appps)
+* [`sakku app:rm`](#sakku-apprm)
+* [`sakku app:scale`](#sakku-appscale)
+* [`sakku app:stop`](#sakku-appstop)
+* [`sakku exec APP [CMD]`](#sakku-exec-app-cmd)
+* [`sakku help [COMMAND]`](#sakku-help-command)
+* [`sakku login`](#sakku-login)
+* [`sakku whoami`](#sakku-whoami)
+
+## `sakku app:add`
+
+add new app
+
+```
+USAGE
+  $ sakku app:add
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [src\commands\app\add.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\add.ts)_
+
+## `sakku app:deploy`
+
+deploy app
+
+```
+USAGE
+  $ sakku app:deploy
+
+OPTIONS
+  -a, --app=app        app name
+  -b, --binary=binary  executable binary file
+  -i, --image=image    docker-image file
+  -s, --source
+```
+
+_See code: [src\commands\app\deploy.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\deploy.ts)_
+
+## `sakku app:ps`
+
+showing all [running/all] app
+
+```
+USAGE
+  $ sakku app:ps
+
+OPTIONS
+  -a, --all   show all apps
+  -h, --help  show CLI help
+```
+
+_See code: [src\commands\app\ps.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\ps.ts)_
+
+## `sakku app:rm`
+
+Remove app*
+
+```
+USAGE
+  $ sakku app:rm
+
+OPTIONS
+  -f, --force
+  -h, --help   show CLI help
+
+EXAMPLE
+  $ sakku app:rm
+  Enter your app id: APP-ID
+  are you really sure to remove? (y/n): y
+```
+
+_See code: [src\commands\app\rm.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\rm.ts)_
+
+## `sakku app:scale`
+
+scale app
+
+```
+USAGE
+  $ sakku app:scale
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ sakku app:scale
+  Enter your app id: APP-ID
+  Enter your app scale: 2
+  please wait...... done!
+  your app scaled to 2
+```
+
+_See code: [src\commands\app\scale.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\scale.ts)_
+
+## `sakku app:stop`
+
+stop app
+
+```
+USAGE
+  $ sakku app:stop
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ sakku app:stop
+     Enter your app-id: APP-ID
+     please wait...... stoped!
+     your app (APP-ID) is stoped
+```
+
+_See code: [src\commands\app\stop.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\stop.ts)_
+
+## `sakku exec APP [CMD]`
+
+execute command on instance
+
+```
+USAGE
+  $ sakku exec APP [CMD]
+
+ARGUMENTS
+  APP  app id/name
+  CMD  [default: bash] command
+
+OPTIONS
+  -h, --help         show CLI help
+  -i, --interactive
+  -t, --tty
+
+EXAMPLE
+  $ sakku exec
+```
+
+_See code: [src\commands\exec.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\exec.ts)_
+
+## `sakku help [COMMAND]`
+
+display help for sakku
+
+```
+USAGE
+  $ sakku help [COMMAND]
+
+ARGUMENTS
+  COMMAND  command to show help for
+
+OPTIONS
+  --all  see all commands in CLI
+```
+
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src\commands\help.ts)_
+
+## `sakku login`
+
+login to Sakku cli interface.
+
+```
+USAGE
+  $ sakku login
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ sakku login
+  ? there is two way you can login: (Use arrow keys)
+  ❯ Login by Usernam/Password
+     Login by Browser
+```
+
+_See code: [src\commands\login.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\login.ts)_
+
+## `sakku whoami`
+
+show user info and stats
+
+```
+USAGE
+  $ sakku whoami
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ sakku whoami
+```
+
+_See code: [src\commands\whoami.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\whoami.ts)_
+<!-- commandsstop -->
 
 ## `sakku login`
 

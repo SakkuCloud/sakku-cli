@@ -1,1 +1,1 @@
-export const DetachKey = '\x03'
+export const DetachKey = '\x03';

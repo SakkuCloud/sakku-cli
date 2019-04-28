@@ -1,6 +1,7 @@
 {
   "extends": "@oclif/tslint",
   "rules": {
-    "ordered-imports": false
+    "ordered-imports": false,
+    "semicolon": [true, "always"]
   }
 }

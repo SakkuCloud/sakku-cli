@@ -1,10 +1,14 @@
-import color from '@oclif/color'
-import {Command, flags} from '@oclif/command'
-import {AxiosError} from 'axios'
-import cli from 'cli-ux'
-import * as inquirer from 'inquirer'
+// External Modules
+import color from '@oclif/color';
+import {Command, flags} from '@oclif/command';
+import {AxiosError} from 'axios';
+import cli from 'cli-ux';
+import * as inquirer from 'inquirer';
 
-import {authService} from '../_service/auth.service'
+let opn = require('opn');
+
+// Project Modules
+import {authService} from '../_service/auth.service';
 import {
   abort_msg,
   click_here_to_login_msg,
@@ -12,38 +16,33 @@ import {
   password_req,
   problem_in_login_msg,
   username_req
-} from '../consts/msg'
-import {auth_url} from '../consts/urls'
-import makeId from '../utils/make-id'
-import {writeOverview, writeToken} from '../utils/writer'
-import opn = require('opn')
+} from '../consts/msg';
+import {auth_url} from '../consts/urls';
+import makeId from '../utils/make-id';
+import {writeOverview, writeToken} from '../utils/writer';
 
 export default class Login extends Command {
-  static description = 'login to Sakku cli interface.'
+  static description = 'login to Sakku cli interface.';
   static examples = [
     `$ sakku login
 ? there is two way you can login: (Use arrow keys)
-${color.cyan('❯ Login by Usernam/Password')}
-  Login by Browser
-`,
-  ]
-
+${color.cyan('❯ Login by Username & Password')}
+  Login by Browser`
+  ];
   static flags = {
     help: flags.help({char: 'h'})
-  }
-
-  static user = {username: '', password: ''}
+  };
+  static user = {username: '', password: ''};
   static question = {
     name: 'way',
     message: 'there is two way you can login:',
     type: 'list',
-    choices: [{name: 'Login by Usernam/Password'}, {name: 'Login by Browser'}],
-  }
+    choices: [{name: 'Login by Username & Password'}, {name: 'Login by Browser'}],
+  };
 
   async run() {
-    const {args, flags} = this.parse(Login)
-    const code = makeId()
-
+    // const {args, flags} = this.parse(Login);
+    const code = makeId();
     inquirer.prompt([
       Login.question
     ]).then(answers => {
@@ -51,87 +50,88 @@ ${color.cyan('❯ Login by Usernam/Password')}
       switch (answers.way) {
       case Login.question.choices[0].name:
         cli.prompt(username_req, {required: true}).then(user => {
-          Login.user.username = user
+          Login.user.username = user;
         }).then(() => {
           cli.prompt(password_req, {required: true, type: 'hide'}).then(pass => {
-            Login.user.password = pass
+            Login.user.password = pass;
           }).then(() => {
-            authService.login(Login.user)
-              .then(value => value.data)
+            authService.login(Login.user).then(value => value.data)
               .then(data => {
                 if (data.error) {
-                  this.log(data.message)
+                  this.log(data.message);
                 } else {
-                  writeToken(this, {token: data.result})
-                    .then(() => {
-                      try {
-                        authService.overview(this).then(value => JSON.stringify(value.data.result)).then(overview => {
+                  writeToken(this, {token: data.result}).then(() => {
+                    try {
+                      authService.overview(this).then(value => JSON.stringify(value.data.result))
+                        .then(overview => {
                           writeOverview(this, overview).catch(err => {
-                            this.log(err)
-                          })
+                            this.log(err);
+                          });
                         }).catch(err => {
-                          this.log(err.code || (err.response && err.response.status.toString()))
-                        })
-                      } catch (e) {
-                        this.log(e)
-                      }
-                      this.log(color.green("you're logged in"))
-                    }).catch(e => {
-                      this.log(e)
-                    })
+                          this.log(err.code || (err.response && err.response.status.toString()));
+                        });
+                    } catch (e) {
+                      this.log(e);
+                    }
+                    this.log(color.green("you're logged in"));
+                  })
+                    .catch(e => {
+                      this.log(e);
+                    });
                 }
-              }).catch((err: AxiosError) => {
-                const code = err.code || (err.response && err.response.status.toString())
+              })
+              .catch((err: AxiosError) => {
+                const code = err.code || (err.response && err.response.status.toString());
                 switch (code) {
                   // tslint:disable ter-indent
                   case '403':
                   case '400':
-                    this.log('Incorrect username or password')
-                    break
+                    this.log('Incorrect username or password');
+                    break;
                   default:
-                    this.log('An error occured! ', code + ':', err.response && err.response.data && err.response.data.message || '')
+                    this.log('An error occured! ', code + ':', err.response && err.response.data && err.response.data.message || '');
                 }
-              })
-          })
-        })
-        break
-      case Login.question.choices[1].name:
-        opn(`${auth_url}${code}`, {wait: false}).catch(() => {
-          cli.url(`${color.green(click_here_to_login_msg)}`,
-              `${auth_url}${code}`)
-        }).then(async () => {
-          cli.action.start('logging in to Sakku...')
-          await cli.wait(5000)
-          let isLoggedin = false
-          let repeatedCount = 0
-          while (!isLoggedin) {
-            await cli.wait(5000)
-            try {
-              let resp = await authService.authenticate(code)
-              writeToken(this, {token: resp.data.result})
-              isLoggedin = true
-            } catch {
-              if (repeatedCount > 10) {
-                this.log(color.red(problem_in_login_msg))
-                break
+              });
+            });
+          });
+        break;
+        case Login.question.choices[1].name:
+          opn(`${auth_url}${code}`, {wait: false}).catch(() => {
+            cli.url(`${color.green(click_here_to_login_msg)}`,
+              `${auth_url}${code}`);
+          }).then(async () => {
+            cli.action.start('logging in to Sakku...');
+            await cli.wait(5000);
+            let isLoggedin = false;
+            let repeatedCount = 0;
+            while (!isLoggedin) {
+              await cli.wait(5000);
+              try {
+                let resp = await authService.authenticate(code);
+                writeToken(this, {token: resp.data.result});
+                isLoggedin = true;
+              } catch {
+                if (repeatedCount > 10) {
+                  this.log(color.red(problem_in_login_msg));
+                  break;
+                }
+                repeatedCount++;
               }
-              repeatedCount ++
             }
-          }
-          if (isLoggedin) {
-            try {
-              let overview = await authService.overview(this).then(value => JSON.stringify(value.data.result))
-              writeOverview(this, overview)
-            } catch (e) {
-              this.log(e)
+            if (isLoggedin) {
+              try {
+                let overview = await authService.overview(this).then(value => JSON.stringify(value.data.result));
+                writeOverview(this, overview);
+              } catch (e) {
+                this.log(e);
+              }
+              cli.action.stop(done_msg);
+              this.log(`${color.green('you are logged in :)')}`);
+            } else {
+              cli.action.stop(abort_msg);
             }
-            cli.action.stop(done_msg)
-            this.log(`${color.green('you are logged in :)')}`)
-          } else {
-            cli.action.stop(abort_msg)
-          }
-        })
+          });
       }
-    })
+    });
   }
 }

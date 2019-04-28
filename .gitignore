@@ -5,8 +5,10 @@
 /lib
 /package-lock.json
 /tmp
-node_modules
-.idea
+node_modules/
+.idea/
 /.idea
 /.idea/*
 /src/consts/urls.ts
+playground/
+
