@@ -1,22 +1,22 @@
-import {Command, flags} from '@oclif/command'
-import {cli} from 'cli-ux'
-import {appService} from '../../_service/app.service'
-import {IAppsAccess, IAppsPort} from '../../interfaces/app.interface'
-import {writeApps} from '../../utils/writer'
+import {Command, flags} from '@oclif/command';
+import {cli} from 'cli-ux';
+import {appService} from '../../_service/app.service';
+import {IAppsAccess, IAppsPort} from '../../interfaces/app.interface';
+import {writeApps} from '../../utils/writer';
 
 export default class PS extends Command {
-  static description = 'showing all [running/all] app'
+  static description = 'showing all [running/all] app';
 
   static flags = {
     help: flags.help({char: 'h'}),
     all: flags.boolean({char: 'a', description: 'show all apps'}),
-  }
+  };
 
   async run() {
-    const {flags} = this.parse(PS)
+    const {flags} = this.parse(PS);
     try {
-      let data = await appService.list(this)
-      writeApps(this, data)
+      let data = await appService.list(this);
+      writeApps(this, data);
       cli.table(data, {
         columns: [{
           key: 'id',
@@ -49,9 +49,9 @@ export default class PS extends Command {
             .join(' ') || 'No Collaboration'
         }],
         colSep: ' | '
-      })
+      });
     } catch (err) {
-      this.log(err.response.data.error)
+      this.log(err.response.data.error);
     }
   }
 }
