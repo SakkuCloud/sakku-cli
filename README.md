@@ -21,7 +21,7 @@ $ npm install -g sakku
 $ sakku COMMAND
 running command...
 $ sakku (-v|--version|version)
-sakku/0.0.2 win32-x64 node-v10.15.3
+sakku/0.0.3 win32-x64 node-v10.15.3
 $ sakku --help [COMMAND]
 USAGE
   $ sakku COMMAND
@@ -65,7 +65,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src\commands\app\add.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\add.ts)_
+_See code: [src\commands\app\add.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.3/src\commands\app\add.ts)_
 
 ## `sakku app:deploy`
 
@@ -82,7 +82,7 @@ OPTIONS
   -s, --source
 ```
 
-_See code: [src\commands\app\deploy.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\deploy.ts)_
+_See code: [src\commands\app\deploy.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.3/src\commands\app\deploy.ts)_
 
 ## `sakku app:ps`
 
@@ -97,7 +97,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src\commands\app\ps.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\ps.ts)_
+_See code: [src\commands\app\ps.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.3/src\commands\app\ps.ts)_
 
 ## `sakku app:rm`
 
@@ -117,7 +117,7 @@ EXAMPLE
   are you really sure to remove? (y/n): y
 ```
 
-_See code: [src\commands\app\rm.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\rm.ts)_
+_See code: [src\commands\app\rm.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.3/src\commands\app\rm.ts)_
 
 ## `sakku app:scale`
 
@@ -138,7 +138,7 @@ EXAMPLE
   your app scaled to 2
 ```
 
-_See code: [src\commands\app\scale.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\scale.ts)_
+_See code: [src\commands\app\scale.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.3/src\commands\app\scale.ts)_
 
 ## `sakku app:stop`
 
@@ -158,7 +158,7 @@ EXAMPLE
      your app (APP-ID) is stoped
 ```
 
-_See code: [src\commands\app\stop.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\app\stop.ts)_
+_See code: [src\commands\app\stop.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.3/src\commands\app\stop.ts)_
 
 ## `sakku exec APP [CMD]`
 
@@ -181,7 +181,7 @@ EXAMPLE
   $ sakku exec
 ```
 
-_See code: [src\commands\exec.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\exec.ts)_
+_See code: [src\commands\exec.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.3/src\commands\exec.ts)_
 
 ## `sakku help [COMMAND]`
 
@@ -214,11 +214,11 @@ OPTIONS
 EXAMPLE
   $ sakku login
   ? there is two way you can login: (Use arrow keys)
-  ❯ Login by Usernam/Password
+  ❯ Login by Username & Password
      Login by Browser
 ```
 
-_See code: [src\commands\login.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\login.ts)_
+_See code: [src\commands\login.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.3/src\commands\login.ts)_
 
 ## `sakku whoami`
 
@@ -235,7 +235,7 @@ EXAMPLE
   $ sakku whoami
 ```
 
-_See code: [src\commands\whoami.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.2/src\commands\whoami.ts)_
+_See code: [src\commands\whoami.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.3/src\commands\whoami.ts)_
 <!-- commandsstop -->
 
 ## `sakku login`
