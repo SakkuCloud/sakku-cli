@@ -1,7 +1,7 @@
 {
   "name": "sakku",
   "description": "this is a sakku cli that makes world even better!",
-  "version": "0.0.3",
+  "version": "0.0.8",
   "author": "Arvin Rokni",
   "bin": {
     "sakku": "./bin/run"
