@@ -1,11 +1,11 @@
-import {Command, flags} from '@oclif/command';
-import {cli} from 'cli-ux';
+import { Command, flags } from '@oclif/command';
+import { cli } from 'cli-ux';
 import * as readline from 'readline';
 
-import {appService} from '../_service/app.service';
-import {execService} from '../_service/exec.service';
-import {exec_exit_msg} from '../consts/msg';
-import {DetachKey} from '../consts/val';
+import { appService } from '../_service/app.service';
+import { execService } from '../_service/exec.service';
+import { exec_exit_msg } from '../consts/msg';
+import { DetachKey } from '../consts/val';
 import inquirer = require('inquirer');
 
 export default class Exec extends Command {
@@ -17,9 +17,9 @@ export default class Exec extends Command {
   ];
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    interactive: flags.boolean({char: 'i'}),
-    tty: flags.boolean({char: 't'})
+    help: flags.help({ char: 'h' }),
+    interactive: flags.boolean({ char: 'i' }),
+    tty: flags.boolean({ char: 't' })
   };
 
   static args = [
@@ -38,7 +38,7 @@ export default class Exec extends Command {
   ];
 
   async run() {
-    const {args, flags} = this.parse(Exec);
+    const { args, flags } = this.parse(Exec);
     let appId: string;
     if (args.app)
       appId = args.app;
@@ -63,11 +63,11 @@ export default class Exec extends Command {
           this.log('there is no instance!');
         } else {
           let instances = result.instances;
-          let choices: {name: string}[] = [];
+          let choices: { name: string }[] = [];
           // @ts-ignore
           instances.forEach(ins => {
             // @ts-ignore
-            choices.push({name : ins.containerId});
+            choices.push({ name: ins.containerId });
           });
           await inquirer.prompt({
             name: 'instance',
@@ -94,18 +94,24 @@ export default class Exec extends Command {
             let id = await execService.create(this, initData, appUrl, answer.instance);
             let rl = readline.createInterface(process.stdin, process.stdout);
             if (flags.interactive || args.cmd === 'bash') {
-              execService.exec(this, id, appUrl, {Detach: false, Tty: flags.tty}).then(response => {
+              execService.exec(this, id, appUrl, { Detach: false, Tty: flags.tty }).then(response => {
                 let stream = response.data;
                 let socket = stream.socket;
+                let wahtITyped = '';
+
                 socket.on('data', (data: string) => {
                   process.stdin.pause();
-                  if (!firstLine)
-                    process.stdout.write(data);
+                  if (!firstLine) {
+                    if(wahtITyped !== data.toString() && wahtITyped.charCodeAt(0) !== 27){
+                      process.stdout.write(data);
+                    }
+                  }
                   firstLine = false;
                   process.stdin.resume();
                 });
 
-                process.stdout.on('data', i => {
+                process.stdin.on('data', i => {
+                  wahtITyped = i.toString();
                   socket.write(i.toString());
                   if (i == DetachKey) {
                     rl.emit('SIGINT');
@@ -121,7 +127,7 @@ export default class Exec extends Command {
                 });
               });
             } else {
-              execService.exec(this, id, appUrl, {Detach: false, Tty: flags.tty}).then(response => {
+              execService.exec(this, id, appUrl, { Detach: false, Tty: flags.tty }).then(response => {
                 rl.write(response.data);
                 rl.close();
               });
