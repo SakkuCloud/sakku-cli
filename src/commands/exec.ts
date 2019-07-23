@@ -1,12 +1,16 @@
-import { Command, flags } from '@oclif/command';
-import { cli } from 'cli-ux';
+// Native Modules
 import * as readline from 'readline';
 
+// External Modules
+import { Command, flags } from '@oclif/command';
+import { cli } from 'cli-ux';
+import inquirer = require('inquirer');
+
+// Project Modules
 import { appService } from '../_service/app.service';
 import { execService } from '../_service/exec.service';
 import { exec_exit_msg } from '../consts/msg';
 import { DetachKey } from '../consts/val';
-import inquirer = require('inquirer');
 
 export default class Exec extends Command {
   static description = 'execute command on instance';
@@ -80,7 +84,7 @@ export default class Exec extends Command {
               AttachStdin: true,
               AttachStdout: true,
               AttachStderr: true,
-              DetachKeys: 'ctrl-c',
+              DetachKeys: 'ctrl-d',
               Tty: flags.tty,
               Cmd: [
                 args.cmd
@@ -92,38 +96,67 @@ export default class Exec extends Command {
             let appUrl = 'http://' + url;
             // @ts-ignore
             let id = await execService.create(this, initData, appUrl, answer.instance);
-            let rl = readline.createInterface(process.stdin, process.stdout);
+            let rl = readline.createInterface({
+              input: process.stdin,
+              output: process.stdout,
+              // terminal: true,
+              // crlfDelay: Infinity
+            });
             if (flags.interactive || args.cmd === 'bash') {
               execService.exec(this, id, appUrl, { Detach: false, Tty: flags.tty }).then(response => {
                 let stream = response.data;
                 let socket = stream.socket;
-                let wahtITyped = '';
+                let whatITyped = '';
+                let whatITyped2 = '';
 
-                socket.on('data', (data: string) => {
+                socket.on('data', (data: string) => { // Socket on Data Receive or Send
+                  // console.log('###############@@@@@@@@@@@################');
+                  // whatITyped2 = whatITyped;
                   process.stdin.pause();
                   if (!firstLine) {
-                    if(wahtITyped !== data.toString() && wahtITyped.charCodeAt(0) !== 27){
+                    if (whatITyped !== data.toString() && whatITyped.charCodeAt(0) !== 27) {
+                      // console.log('==============================>1');
+                      // console.log(data.toString().charCodeAt(data.length - 1));
+                      // if (data.toString().charCodeAt(data.length - 1) === 13) {
+                      //   data = data.substr(0, data.length -1);
+                      // }
                       process.stdout.write(data);
+                    }
+                    else {
+                      //console.log('=========>2');
                     }
                   }
                   firstLine = false;
                   process.stdin.resume();
                 });
 
-                process.stdin.on('data', i => {
-                  wahtITyped = i.toString();
-                  socket.write(i.toString());
+                process.stdin.on('data', i => { // Getting Input From User
+
+                  whatITyped = i.toString();
+                  
+
+                  // console.log('from remote:[', whatITyped, ']\n');
+                  // console.log(data.toString().charCodeAt(data.length - 1));
+                  // console.log(whatITyped, whatITyped.length, whatITyped.charCodeAt(whatITyped.length - 1), whatITyped.charCodeAt(whatITyped.length - 1) === 13 , whatITyped2.charCodeAt(0) === 27);
+                  if (whatITyped.toString().charCodeAt(whatITyped.length - 1) === 13 && whatITyped2.charCodeAt(0) === 27) {
+                    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    whatITyped = whatITyped.substr(0, whatITyped.length - 1);
+                  }
+                  socket.write(whatITyped);
+
                   if (i == DetachKey) {
-                    rl.emit('SIGINT');
+                    rl.emit('SIGINT', 'ctrl-d');
                   }
                 });
 
-                rl.on('SIGINT', function () {
+                rl.on('SIGINT', function (data: any) { // SIGINT Signal
                   // stop input
-                  socket.emit('end');
-                  process.stdin.pause();
-                  process.stdout.write(exec_exit_msg);
-                  process.exit(0);
+                  if (data === 'ctrl-d') {
+                    socket.emit('end');
+                    process.stdin.pause();
+                    process.stdout.write(exec_exit_msg);
+                    process.exit(0);
+                  }
                 });
               });
             } else {
