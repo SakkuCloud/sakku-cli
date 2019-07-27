@@ -5,12 +5,16 @@ import * as readline from 'readline';
 import { Command, flags } from '@oclif/command';
 import { cli } from 'cli-ux';
 import inquirer = require('inquirer');
+const btoa = require('btoa');
+const WebSocket = require('ws');
+const keypress = require('keypress');
 
 // Project Modules
 import { appService } from '../_service/app.service';
 import { execService } from '../_service/exec.service';
 import { exec_exit_msg } from '../consts/msg';
 import { DetachKey } from '../consts/val';
+import { originUrl } from '../consts/urls';
 
 export default class Exec extends Command {
   static description = 'execute command on instance';
@@ -91,86 +95,111 @@ export default class Exec extends Command {
               ],
               Env: []
             };
+
             // @ts-ignore
             let url = await instances.find(value => value.containerId === answer.instance!)!.workerHost as string;
-            let appUrl = 'http://' + url;
+            console.log(answer, url)
+
+            let appUrl = 'wss://worker.sakku.cloud:7221/exec/bb8fa29e323177f32e6c1ed96e7e2de9b1a25de17774d403c942fbf613918b76,YmFzaA==?app-id=556'
+
             // @ts-ignore
-            let id = await execService.create(this, initData, appUrl, answer.instance);
             let rl = readline.createInterface({
               input: process.stdin,
               output: process.stdout,
-              // terminal: true,
-              // crlfDelay: Infinity
+              terminal: false,
             });
+
             if (flags.interactive || args.cmd === 'bash') {
-              execService.exec(this, id, appUrl, { Detach: false, Tty: flags.tty }).then(response => {
-                let stream = response.data;
-                let socket = stream.socket;
-                let whatITyped = '';
-                let whatITyped2 = '';
+              let whatIsTyped = '';
+              let lastPressedKey = null;
+              // let flag = true;
 
-                socket.on('data', (data: string) => { // Socket on Data Receive or Send
-                  // console.log('###############@@@@@@@@@@@################');
-                  // whatITyped2 = whatITyped;
-                  process.stdin.pause();
-                  if (!firstLine) {
-                    if (whatITyped !== data.toString() && whatITyped.charCodeAt(0) !== 27) {
-                      // console.log('==============================>1');
-                      // console.log(data.toString().charCodeAt(data.length - 1));
-                      // if (data.toString().charCodeAt(data.length - 1) === 13) {
-                      //   data = data.substr(0, data.length -1);
-                      // }
-                      process.stdout.write(data);
-                    }
-                    else {
-                      //console.log('=========>2');
-                    }
+              const ws = new WebSocket(appUrl, {
+                perMessageDeflate: false,
+                origin: originUrl
+              });
+
+              keypress(process.stdin);
+
+              process.stdin.on('keypress', function (ch, key) {
+                lastPressedKey = key;
+                // console.log('========>!!!', whatIsTyped, key.sequence, whatIsTyped !== key.sequence);
+                //if (whatIsTyped !== key.sequence) {
+                  if (key && key.name === 'up') { // up key pressed
+                    // console.log('up key is pressed');
+                    whatIsTyped = '';
+                    ws.send(key.sequence);
                   }
-                  firstLine = false;
-                  process.stdin.resume();
-                });
-
-                process.stdin.on('data', i => { // Getting Input From User
-
-                  whatITyped = i.toString();
-                  
-
-                  // console.log('from remote:[', whatITyped, ']\n');
-                  // console.log(data.toString().charCodeAt(data.length - 1));
-                  // console.log(whatITyped, whatITyped.length, whatITyped.charCodeAt(whatITyped.length - 1), whatITyped.charCodeAt(whatITyped.length - 1) === 13 , whatITyped2.charCodeAt(0) === 27);
-                  if (whatITyped.toString().charCodeAt(whatITyped.length - 1) === 13 && whatITyped2.charCodeAt(0) === 27) {
-                    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                    whatITyped = whatITyped.substr(0, whatITyped.length - 1);
+                  else if (key && key.name === 'down') { // down key pressed
+                    // console.log('down key is pressed');
+                    whatIsTyped = '';
+                    ws.send(key.sequence);
                   }
-                  socket.write(whatITyped);
-
-                  if (i == DetachKey) {
+                  else if (key && key.name === 'tab') { // tab pressed
+                    // console.log('tab is pressed');
+                    //if (lastPressedKey.name != 'tab' && whatIsTyped.length === 0) {
+                      ws.send(key.sequence);
+                    //}
+                  }
+                  else if (key && key.name === 'return') { // enter pressed
+                    // console.log('enter key is pressed');
+                    whatIsTyped = key.sequence;
+                    ws.send(whatIsTyped);
+                    whatIsTyped = '';
+                  }
+                  else if (key && key.ctrl && key.name == 'd') { // ctrl + d pressed
+                    // console.log('ctrl + d is pressed');
                     rl.emit('SIGINT', 'ctrl-d');
                   }
-                });
-
-                rl.on('SIGINT', function (data: any) { // SIGINT Signal
-                  // stop input
-                  if (data === 'ctrl-d') {
-                    socket.emit('end');
-                    process.stdin.pause();
-                    process.stdout.write(exec_exit_msg);
-                    process.exit(0);
+                  else {
+                    whatIsTyped = key.sequence;
+                    ws.send(whatIsTyped);
+                    // process.stdout.write(whatIsTyped);
                   }
-                });
+                //}
               });
-            } else {
-              execService.exec(this, id, appUrl, { Detach: false, Tty: flags.tty }).then(response => {
-                rl.write(response.data);
-                rl.close();
+
+              // @ts-ignore
+              process.stdin.setRawMode(true);
+              process.stdin.resume();
+
+              rl.on('SIGINT', function (data: any) { // SIGINT Signal
+                if (data === 'ctrl-d') {
+                  ws.emit('end');
+                  process.stdin.pause();
+                  process.stdout.write(exec_exit_msg);
+                  process.exit(0);
+                }
+                else {
+                  // ws.send()
+                }
               });
+
+              ws.on('open', function open() {
+                // console.log('Socket Initialized Sucessfully.');
+              });
+
+              ws.on('message', function incoming(data: any) {
+                process.stdin.pause();
+                process.stdout.write(data);
+                process.stdin.resume();
+              });
+
+              ws.on('error', function incoming(error: any) {
+                console.log('Socket Error.');
+              });
+            }
+            else {
+              console.log('Currently just bash is supported');
+              rl.close();
             }
           });
         }
       }
     } catch (err) {
+      this.log(err);
       const code = err.code || (err.response && err.response.status.toString());
-      this.log('code:', code, err.response.data.message || '');
+      // this.log('code:', code, err.response.data.message || '');
     }
   }
 }
