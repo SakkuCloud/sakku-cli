@@ -127,12 +127,12 @@ export default class Exec extends Command {
                 //if (whatIsTyped !== key.sequence) {
                   if (key && key.name === 'up') { // up key pressed
                     // console.log('up key is pressed');
-                    whatIsTyped = '';
+                    //whatIsTyped = '';
                     ws.send(key.sequence);
                   }
                   else if (key && key.name === 'down') { // down key pressed
                     // console.log('down key is pressed');
-                    whatIsTyped = '';
+                    //whatIsTyped = '';
                     ws.send(key.sequence);
                   }
                   else if (key && key.name === 'tab') { // tab pressed
@@ -145,7 +145,7 @@ export default class Exec extends Command {
                     // console.log('enter key is pressed');
                     whatIsTyped = key.sequence;
                     ws.send(whatIsTyped);
-                    whatIsTyped = '';
+                    //whatIsTyped = '';
                   }
                   else if (key && key.ctrl && key.name == 'd') { // ctrl + d pressed
                     // console.log('ctrl + d is pressed');
