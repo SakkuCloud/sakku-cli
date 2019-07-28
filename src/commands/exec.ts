@@ -102,7 +102,7 @@ export default class Exec extends Command {
             // @ts-ignore
             let appUrl = socketBaseUrl + 'exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
 
-            if(args.cmd.toLowerCase() === 'seyed'){
+            if (args.cmd.toLowerCase() === 'seyed') {
               this.log('Salam Seyed! 1398/05/06');
             }
 
