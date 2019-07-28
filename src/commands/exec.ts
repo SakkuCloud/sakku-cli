@@ -7,7 +7,7 @@ import { cli } from 'cli-ux';
 import inquirer = require('inquirer');
 const btoa = require('btoa');
 const WebSocket = require('ws');
-const keypress = require('keypress');
+// const keypress = require('keypress');
 
 // Project Modules
 import { appService } from '../_service/app.service';
@@ -133,16 +133,24 @@ export default class Exec extends Command {
             });
 
             if (flags.interactive) {
-              keypress(process.stdin);
+              // keypress(process.stdin);
 
-              process.stdin.on('keypress', function (ch, key) {
-                if (key && key.ctrl && key.name == 'd') { // ctrl + d pressed
+              // process.stdin.on('keypress', function (ch, key) {
+              //   if (key && key.ctrl && key.name == 'd') { // ctrl + d pressed
+              //     rl.emit('SIGINT', 'ctrl-d');
+              //   }
+              //   else {
+              //     if (typeof key === 'object' && key.hasOwnProperty('sequence')) {
+              //       ws.send(key.sequence);
+              //     }
+              //   }
+              // });
+
+              process.stdin.on('data', data => {
+                data = data.toString();
+                ws.send(data);
+                if (data == DetachKey) {
                   rl.emit('SIGINT', 'ctrl-d');
-                }
-                else {
-                  if (key.hasOwnProperty('sequence')) {
-                    ws.send(key.sequence);
-                  }
                 }
               });
 

@@ -18,7 +18,6 @@
     "cli-ux": "^4.9.3",
     "fs-extra": "^7.0.1",
     "inquirer": "^6.2.1",
-    "keypress": "^0.2.1",
     "lang-detector": "^1.0.6",
     "opn": "^5.4.0",
     "path": "^0.12.7",
