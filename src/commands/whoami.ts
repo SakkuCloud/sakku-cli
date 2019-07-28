@@ -1,10 +1,13 @@
-import {Command, flags} from '@oclif/command';
-import {cli} from 'cli-ux';
-import {Tree} from 'cli-ux/lib/styled/tree';
-import {authService} from '../_service/auth.service';
+// External Modules
+import { Command, flags } from '@oclif/command';
+import { cli } from 'cli-ux';
+import { Tree } from 'cli-ux/lib/styled/tree';
+
+// Project Modules
+import { authService } from '../_service/auth.service';
 
 export default class Whoami extends Command {
-  static description = 'show user info and stats';
+  static description = 'Shows user info and stats';
 
   static examples = [
     `$ sakku whoami
@@ -12,11 +15,11 @@ export default class Whoami extends Command {
   ];
 
   static flags = {
-    help: flags.help({char: 'h'})
+    help: flags.help({ char: 'h' })
   };
 
   async run() {
-    const {flags} = this.parse(Whoami);
+    const { flags } = this.parse(Whoami);
     try {
       const res = await authService.overview(this);
       await cli.action.start('please wait...');
@@ -24,13 +27,21 @@ export default class Whoami extends Command {
       if (data) {
         generateTree(data).display();
       }
-    } catch (_) {
-      this.log('there is a problem!!');
+    } catch (e) {
+      if (typeof e === 'object' && e.hasOwnProperty('code') && e.code === 'ENOENT') {
+        this.log('Login with your credentials.');
+      }
+      else if (typeof e === 'object' && e.hasOwnProperty('code')) {
+        this.log('There is a problem! Error Code is: ', e.code);
+      }
+      else {
+        this.log('There is a problem!');
+      }
     }
   }
 }
 
-function generateTree(data: {[key: string]: any}): Tree {
+function generateTree(data: { [key: string]: any }): Tree {
   let tree = cli.tree();
   for (let p1 of Object.keys(data)) {
     if (data[p1] && typeof data[p1] === 'object') {

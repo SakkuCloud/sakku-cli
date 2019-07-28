@@ -1,12 +1,20 @@
-import { Command, flags } from '@oclif/command';
-import { cli } from 'cli-ux';
+// Native Modules
 import * as readline from 'readline';
 
+// External Modules
+import { Command, flags } from '@oclif/command';
+import { cli } from 'cli-ux';
+import inquirer = require('inquirer');
+const btoa = require('btoa');
+const WebSocket = require('ws');
+// const keypress = require('keypress');
+
+// Project Modules
 import { appService } from '../_service/app.service';
 import { execService } from '../_service/exec.service';
 import { exec_exit_msg } from '../consts/msg';
 import { DetachKey } from '../consts/val';
-import inquirer = require('inquirer');
+import { originUrl, socketBaseUrl } from '../consts/urls';
 
 export default class Exec extends Command {
   static description = 'execute command on instance';
@@ -80,56 +88,83 @@ export default class Exec extends Command {
               AttachStdin: true,
               AttachStdout: true,
               AttachStderr: true,
-              DetachKeys: 'ctrl-c',
+              DetachKeys: 'ctrl-d',
               Tty: flags.tty,
               Cmd: [
                 args.cmd
               ],
               Env: []
             };
+
             // @ts-ignore
             let url = await instances.find(value => value.containerId === answer.instance!)!.workerHost as string;
-            let appUrl = 'http://' + url;
+
             // @ts-ignore
-            let id = await execService.create(this, initData, appUrl, answer.instance);
-            let rl = readline.createInterface(process.stdin, process.stdout);
-            if (flags.interactive || args.cmd === 'bash') {
-              execService.exec(this, id, appUrl, { Detach: false, Tty: flags.tty }).then(response => {
-                let stream = response.data;
-                let socket = stream.socket;
-                let wahtITyped = '';
+            let appUrl = socketBaseUrl + 'exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
 
-                socket.on('data', (data: string) => {
-                  process.stdin.pause();
-                  if (!firstLine) {
-                    if(wahtITyped !== data.toString() && wahtITyped.charCodeAt(0) !== 27){
-                      process.stdout.write(data);
-                    }
-                  }
-                  firstLine = false;
-                  process.stdin.resume();
-                });
+            if (args.cmd.toLowerCase() === 'seyed') {
+              this.log('Salam Seyed! 1398/05/06');
+            }
 
-                process.stdin.on('data', i => {
-                  wahtITyped = i.toString();
-                  socket.write(i.toString());
-                  if (i == DetachKey) {
-                    rl.emit('SIGINT');
-                  }
-                });
+            const ws = new WebSocket(appUrl, {
+              perMessageDeflate: false,
+              origin: originUrl
+            });
 
-                rl.on('SIGINT', function () {
-                  // stop input
-                  socket.emit('end');
+            ws.on('open', function open() {
+              console.log('Connection established successfully');
+            });
+
+            ws.on('message', function incoming(data: any) {
+              process.stdin.pause();
+              process.stdout.write(data);
+              process.stdin.resume();
+            });
+
+            ws.on('error', function incoming(error: any) {
+              console.log('Can not connect to remote host!');
+            });
+
+            // @ts-ignore
+            let rl = readline.createInterface({
+              input: process.stdin,
+              output: process.stdout,
+              terminal: false,
+            });
+
+            if (flags.interactive) {
+              // keypress(process.stdin);
+
+              // process.stdin.on('keypress', function (ch, key) {
+              //   if (key && key.ctrl && key.name == 'd') { // ctrl + d pressed
+              //     rl.emit('SIGINT', 'ctrl-d');
+              //   }
+              //   else {
+              //     if (typeof key === 'object' && key.hasOwnProperty('sequence')) {
+              //       ws.send(key.sequence);
+              //     }
+              //   }
+              // });
+
+              process.stdin.on('data', data => {
+                data = data.toString();
+                ws.send(data);
+                if (data == DetachKey) {
+                  rl.emit('SIGINT', 'ctrl-d');
+                }
+              });
+
+              // @ts-ignore
+              process.stdin.setRawMode(true);
+              process.stdin.resume();
+
+              rl.on('SIGINT', function (data: any) { // SIGINT Signal
+                if (data === 'ctrl-d') {
+                  ws.emit('end');
                   process.stdin.pause();
                   process.stdout.write(exec_exit_msg);
                   process.exit(0);
-                });
-              });
-            } else {
-              execService.exec(this, id, appUrl, { Detach: false, Tty: flags.tty }).then(response => {
-                rl.write(response.data);
-                rl.close();
+                }
               });
             }
           });
@@ -137,7 +172,7 @@ export default class Exec extends Command {
       }
     } catch (err) {
       const code = err.code || (err.response && err.response.status.toString());
-      this.log('code:', code, err.response.data.message || '');
+      this.log(code);
     }
   }
 }
