@@ -35,7 +35,7 @@ export default class Whoami extends Command {
         this.log('There is a problem! Error Code is: ', e.code);
       }
       else {
-        this.log('There is a problem!');
+        this.log('There is a problem: ', e.response && e.response.status);
       }
     }
   }
