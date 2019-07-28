@@ -11,4 +11,4 @@ node_modules/
 /.idea/*
 /src/consts/urls.ts
 playground/
-
+.vscode/
