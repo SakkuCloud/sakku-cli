@@ -14,7 +14,7 @@ import { appService } from '../_service/app.service';
 import { execService } from '../_service/exec.service';
 import { exec_exit_msg } from '../consts/msg';
 import { DetachKey } from '../consts/val';
-import { originUrl } from '../consts/urls';
+import { originUrl, socketBaseUrl } from '../consts/urls';
 
 export default class Exec extends Command {
   static description = 'execute command on instance';
@@ -98,9 +98,32 @@ export default class Exec extends Command {
 
             // @ts-ignore
             let url = await instances.find(value => value.containerId === answer.instance!)!.workerHost as string;
-            console.log(answer, url)
 
-            let appUrl = 'wss://worker.sakku.cloud:7221/exec/bb8fa29e323177f32e6c1ed96e7e2de9b1a25de17774d403c942fbf613918b76,YmFzaA==?app-id=556'
+            // @ts-ignore
+            let appUrl = socketBaseUrl + 'exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
+
+            if(args.cmd.toLowerCase() === 'seyed'){
+              this.log('Salam Seyed! 1398/05/06');
+            }
+
+            const ws = new WebSocket(appUrl, {
+              perMessageDeflate: false,
+              origin: originUrl
+            });
+
+            ws.on('open', function open() {
+              console.log('Connection established successfully');
+            });
+
+            ws.on('message', function incoming(data: any) {
+              process.stdin.pause();
+              process.stdout.write(data);
+              process.stdin.resume();
+            });
+
+            ws.on('error', function incoming(error: any) {
+              console.log('Can not connect to remote host!');
+            });
 
             // @ts-ignore
             let rl = readline.createInterface({
@@ -109,54 +132,18 @@ export default class Exec extends Command {
               terminal: false,
             });
 
-            if (flags.interactive || args.cmd === 'bash') {
-              let whatIsTyped = '';
-              let lastPressedKey = null;
-              // let flag = true;
-
-              const ws = new WebSocket(appUrl, {
-                perMessageDeflate: false,
-                origin: originUrl
-              });
-
+            if (flags.interactive) {
               keypress(process.stdin);
 
               process.stdin.on('keypress', function (ch, key) {
-                lastPressedKey = key;
-                // console.log('========>!!!', whatIsTyped, key.sequence, whatIsTyped !== key.sequence);
-                //if (whatIsTyped !== key.sequence) {
-                  if (key && key.name === 'up') { // up key pressed
-                    // console.log('up key is pressed');
-                    //whatIsTyped = '';
+                if (key && key.ctrl && key.name == 'd') { // ctrl + d pressed
+                  rl.emit('SIGINT', 'ctrl-d');
+                }
+                else {
+                  if (key.hasOwnProperty('sequence')) {
                     ws.send(key.sequence);
                   }
-                  else if (key && key.name === 'down') { // down key pressed
-                    // console.log('down key is pressed');
-                    //whatIsTyped = '';
-                    ws.send(key.sequence);
-                  }
-                  else if (key && key.name === 'tab') { // tab pressed
-                    // console.log('tab is pressed');
-                    //if (lastPressedKey.name != 'tab' && whatIsTyped.length === 0) {
-                      ws.send(key.sequence);
-                    //}
-                  }
-                  else if (key && key.name === 'return') { // enter pressed
-                    // console.log('enter key is pressed');
-                    whatIsTyped = key.sequence;
-                    ws.send(whatIsTyped);
-                    //whatIsTyped = '';
-                  }
-                  else if (key && key.ctrl && key.name == 'd') { // ctrl + d pressed
-                    // console.log('ctrl + d is pressed');
-                    rl.emit('SIGINT', 'ctrl-d');
-                  }
-                  else {
-                    whatIsTyped = key.sequence;
-                    ws.send(whatIsTyped);
-                    // process.stdout.write(whatIsTyped);
-                  }
-                //}
+                }
               });
 
               // @ts-ignore
@@ -170,36 +157,14 @@ export default class Exec extends Command {
                   process.stdout.write(exec_exit_msg);
                   process.exit(0);
                 }
-                else {
-                  // ws.send()
-                }
               });
-
-              ws.on('open', function open() {
-                // console.log('Socket Initialized Sucessfully.');
-              });
-
-              ws.on('message', function incoming(data: any) {
-                process.stdin.pause();
-                process.stdout.write(data);
-                process.stdin.resume();
-              });
-
-              ws.on('error', function incoming(error: any) {
-                console.log('Socket Error.');
-              });
-            }
-            else {
-              console.log('Currently just bash is supported');
-              rl.close();
             }
           });
         }
       }
     } catch (err) {
-      this.log(err);
       const code = err.code || (err.response && err.response.status.toString());
-      // this.log('code:', code, err.response.data.message || '');
+      this.log(code);
     }
   }
 }
