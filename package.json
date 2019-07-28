@@ -2,7 +2,7 @@
   "name": "sakku",
   "description": "this is a sakku cli that makes world even better!",
   "version": "0.0.10",
-  "author": "Arvin Rokni",
+  "author": "Fanap Node.js Team",
   "bin": {
     "sakku": "./bin/run"
   },
@@ -79,7 +79,7 @@
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
-    "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
