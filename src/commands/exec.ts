@@ -13,8 +13,7 @@ const WebSocket = require('ws');
 import { appService } from '../_service/app.service';
 import { execService } from '../_service/exec.service';
 import { exec_exit_msg } from '../consts/msg';
-import { DetachKey } from '../consts/val';
-import { originUrl, socketBaseUrl } from '../consts/urls';
+import { DetachKey, socketPort } from '../consts/val';
 
 export default class Exec extends Command {
   static description = 'execute command on instance';
@@ -95,12 +94,13 @@ export default class Exec extends Command {
               ],
               Env: []
             };
-
+            
             // @ts-ignore
             let url = await instances.find(value => value.containerId === answer.instance!)!.workerHost as string;
+            let originUrl = 'https://' + url + ':' + socketPort;
 
             // @ts-ignore
-            let appUrl = socketBaseUrl + 'exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
+            let appUrl = 'wss://' + url + ':' + socketPort + '/exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
 
             if (args.cmd.toLowerCase() === 'seyed') {
               this.log('Salam Seyed! 1398/05/06');
