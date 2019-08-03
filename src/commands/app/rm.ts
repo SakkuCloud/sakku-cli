@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
 
 export default class RM extends Command {
@@ -11,13 +11,13 @@ are you really sure to remove? (y/n): y`,
   ];
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    force: flags.boolean({char: 'f'})
+    help: flags.help({ char: 'h' }),
+    force: flags.boolean({ char: 'f' })
   };
 
   async run() {
-    const {flags} = this.parse(RM);
-    let appId = await cli.prompt('Enter your app id', {required: true});
+    const { flags } = this.parse(RM);
+    let appId = await cli.prompt('Enter your app id', { required: true });
     if (flags.force) {
       await cli.action.start('please wait...');
       await cli.wait(2000);

@@ -33,7 +33,7 @@ export default class PS extends Command {
           {
             key: 'created',
             label: 'Create Time'
-          }, 
+          },
           {
             key: 'status',
             label: 'Status'
@@ -43,12 +43,12 @@ export default class PS extends Command {
             label: 'PORT',
             get: (row: any) => row.ports && row.ports.host && row.ports.map((port: IAppsPort) => port.host + '-' + port.container)
               .filter((ports: IAppsPort) => ports).join('-') || '-'
-          }, 
+          },
           {
             key: 'deployType',
             label: 'TYPE',
             get: (row: any) => row.deployType ? row.deployType : '-'
-          }, 
+          },
           {
             key: 'access',
             label: 'Access',
@@ -63,8 +63,18 @@ export default class PS extends Command {
           }],
           colSep: ' | '
         });
-    } catch (err) {
-      this.log(err.response.data.error);
+    }
+    catch (err) {
+      const code = err.code || (err.response && err.response.status.toString());
+      if (err.response && err.response.data) {
+        this.log('An error occured!', code + ':', err.response.data.message || '');
+      }
+      else if (err.response && err.response.statusText) {
+        this.log('An error occured!', code + ':', err.response.data.statusText || '');
+      }
+      else {
+        this.log('An error occured!', code);
+      }
     }
   }
 }

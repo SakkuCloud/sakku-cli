@@ -7,35 +7,47 @@ import { Tree } from 'cli-ux/lib/styled/tree';
 import { authService } from '../_service/auth.service';
 
 export default class Whoami extends Command {
-  static description = 'Shows user info and stats';
+  static description = 'Shows username or complete user info and stats';
 
   static examples = [
-    `$ sakku whoami
-    `,
+    `$ sakku whoami`,
+    `$ sakku whoami -c`
   ];
 
   static flags = {
-    help: flags.help({ char: 'h' })
+    help: flags.help({ char: 'h' }),
+    complete: flags.boolean({ char: 'c' })
   };
 
   async run() {
     const { flags } = this.parse(Whoami);
+
     try {
+      this.log('Please Wait ...');
       const res = await authService.overview(this);
-      await cli.action.start('please wait...');
       const data = res.data.result;
       if (data) {
-        generateTree(data).display();
-      }
-    } catch (e) {
-      if (typeof e === 'object' && e.hasOwnProperty('code') && e.code === 'ENOENT') {
-        this.log('Login with your credentials.');
-      }
-      else if (typeof e === 'object' && e.hasOwnProperty('code')) {
-        this.log('There is a problem! Error Code is: ', e.code);
+        if (flags.complete) {
+          generateTree(data).display();
+        }
+        else {
+          // @ts-ignore
+          this.log(data.user.username);
+        }
       }
       else {
-        this.log('There is a problem: ', e.response && e.response.status);
+        this.log('Unexpected Error');
+      }
+    }
+    catch (e) {
+      if (typeof e === 'object' && e.hasOwnProperty('code') && e.code === 'ENOENT') {
+        this.log('You are not logged in. Please Login with your credentials.');
+      }
+      else if (typeof e.response === 'object' && e.hasOwnProperty('status')) {
+        this.log('Can not fetch user data from server, error code is: ', e.response.status, 'Please try later. If the error persists, log in again');
+      }
+      else if (typeof e === 'object' && e.hasOwnProperty('code')) {
+        this.log('There is a problem! error Code is: ', e.code, 'If the error persists, log in again');
       }
     }
   }

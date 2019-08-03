@@ -7,11 +7,9 @@ import { cli } from 'cli-ux';
 import inquirer = require('inquirer');
 const btoa = require('btoa');
 const WebSocket = require('ws');
-// const keypress = require('keypress');
 
 // Project Modules
 import { appService } from '../_service/app.service';
-import { execService } from '../_service/exec.service';
 import { exec_exit_msg } from '../consts/msg';
 import { DetachKey, socketPort } from '../consts/val';
 
@@ -19,8 +17,7 @@ export default class Exec extends Command {
   static description = 'execute command on instance';
 
   static examples = [
-    `$ sakku exec
-`,
+    `$ sakku exec`,
   ];
 
   static flags = {
@@ -35,7 +32,8 @@ export default class Exec extends Command {
       required: true,
       description: 'app id/name',
       hidden: false
-    }, {
+    },
+    {
       name: 'cmd',
       required: false,
       description: 'command',
@@ -47,28 +45,34 @@ export default class Exec extends Command {
   async run() {
     const { args, flags } = this.parse(Exec);
     let appId: string;
+
     if (args.app)
       appId = args.app;
     else
       appId = await cli.prompt('enter app id/name');
 
     let data;
+
     try {
       // @ts-ignore
       if (!isNaN(appId)) {
         data = await appService.get(this, appId)
           .then(value => value.data);
-      } else {
+      }
+      else {
         data = await appService.getByName(this, appId)
           .then(value => value.data);
       }
+
       if (data.error) {
         this.log('error code:', data.code, data.message);
-      } else {
+      }
+      else {
         let result = data.result!;
         if (result.instances.length === 0) {
           this.log('there is no instance!');
-        } else {
+        }
+        else {
           let instances = result.instances;
           let choices: { name: string }[] = [];
           // @ts-ignore
@@ -81,98 +85,98 @@ export default class Exec extends Command {
             message: 'which instance :',
             type: 'list',
             choices
-          }).then(async answer => {
-            let firstLine = false;
-            let initData = {
-              AttachStdin: true,
-              AttachStdout: true,
-              AttachStderr: true,
-              DetachKeys: 'ctrl-d',
-              Tty: flags.tty,
-              Cmd: [
-                args.cmd
-              ],
-              Env: []
-            };
-            
-            // @ts-ignore
-            let url = await instances.find(value => value.containerId === answer.instance!)!.workerHost as string;
-            let originUrl = 'https://' + url + ':' + socketPort;
+          })
+            .then(async answer => {
+              let firstLine = false;
+              let initData = {
+                AttachStdin: true,
+                AttachStdout: true,
+                AttachStderr: true,
+                DetachKeys: 'ctrl-d',
+                Tty: flags.tty,
+                Cmd: [
+                  args.cmd
+                ],
+                Env: []
+              };
 
-            // @ts-ignore
-            let appUrl = 'wss://' + url + ':' + socketPort + '/exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
+              // @ts-ignore
+              let url = await instances.find(value => value.containerId === answer.instance!)!.workerHost as string;
+              let originUrl = 'https://' + url + ':' + socketPort;
 
-            if (args.cmd.toLowerCase() === 'seyed') {
-              this.log('Salam Seyed! 1398/05/06');
-            }
+              // @ts-ignore
+              let appUrl = 'wss://' + url + ':' + socketPort + '/exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
 
-            const ws = new WebSocket(appUrl, {
-              perMessageDeflate: false,
-              origin: originUrl
-            });
+              if (args.cmd.toLowerCase() === 'seyed') {
+                this.log('Salam Seyed! 1398/05/06');
+              }
 
-            ws.on('open', function open() {
-              console.log('Connection established successfully');
-            });
+              const ws = new WebSocket(appUrl, {
+                perMessageDeflate: false,
+                origin: originUrl
+              });
 
-            ws.on('message', function incoming(data: any) {
-              process.stdin.pause();
-              process.stdout.write(data);
-              process.stdin.resume();
-            });
+              ws.on('open', function open() {
+                console.log('Connection established successfully');
+              });
 
-            ws.on('error', function incoming(error: any) {
-              console.log('Can not connect to remote host!');
-            });
+              ws.on('message', function incoming(data: any) {
+                process.stdin.pause();
+                process.stdout.write(data);
+                process.stdin.resume();
+              });
 
-            // @ts-ignore
-            let rl = readline.createInterface({
-              input: process.stdin,
-              output: process.stdout,
-              terminal: false,
-            });
-
-            if (flags.interactive) {
-              // keypress(process.stdin);
-
-              // process.stdin.on('keypress', function (ch, key) {
-              //   if (key && key.ctrl && key.name == 'd') { // ctrl + d pressed
-              //     rl.emit('SIGINT', 'ctrl-d');
-              //   }
-              //   else {
-              //     if (typeof key === 'object' && key.hasOwnProperty('sequence')) {
-              //       ws.send(key.sequence);
-              //     }
-              //   }
-              // });
-
-              process.stdin.on('data', data => {
-                data = data.toString();
-                ws.send(data);
-                if (data == DetachKey) {
-                  rl.emit('SIGINT', 'ctrl-d');
-                }
+              ws.on('error', function incoming(error: any) {
+                console.log('Can not connect to remote host!');
               });
 
               // @ts-ignore
-              process.stdin.setRawMode(true);
-              process.stdin.resume();
-
-              rl.on('SIGINT', function (data: any) { // SIGINT Signal
-                if (data === 'ctrl-d') {
-                  ws.emit('end');
-                  process.stdin.pause();
-                  process.stdout.write(exec_exit_msg);
-                  process.exit(0);
-                }
+              let rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout,
+                terminal: false,
               });
-            }
-          });
+
+              if (flags.interactive) {
+                process.stdin.on('data', data => {
+                  data = data.toString();
+                  ws.send(data);
+                  if (data == DetachKey) {
+                    rl.emit('SIGINT', 'ctrl-d');
+                  }
+                });
+
+                // @ts-ignore
+                process.stdin.setRawMode(true);
+                process.stdin.resume();
+
+                rl.on('SIGINT', function (data: any) { // SIGINT Signal
+                  if (data === 'ctrl-d') {
+                    ws.emit('end');
+                    process.stdin.pause();
+                    process.stdout.write(exec_exit_msg);
+                    process.exit(0);
+                  }
+                });
+              }
+            });
         }
       }
-    } catch (err) {
+    }
+    catch (err) {
       const code = err.code || (err.response && err.response.status.toString());
-      this.log(code);
+      if (err.response && err.response.data) {
+        this.log('An error occured!', code + ':', err.response.data.message || '');
+      }
+      else if (err.response && err.response.statusText) {
+        this.log('An error occured!', code + ':', err.response.data.statusText || '');
+      }
+      else if (code === 'ENOENT') {
+        this.log('An error occured!', 'You are not logged in');
+      }
+      else {
+        this.log('An error occured!', code);
+      }
     }
   }
 }
