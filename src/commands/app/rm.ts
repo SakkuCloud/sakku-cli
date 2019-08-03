@@ -23,14 +23,16 @@ are you really sure to remove? (y/n): y`,
       await cli.wait(2000);
       cli.action.stop('removed!');
       this.log('your app is not any more exist in this universe!');
-    } else {
+    } 
+    else {
       let confimation = await cli.confirm('are you really sure to remove? (y/n)');
       if (confimation) {
         await cli.action.start('please wait...');
         await cli.wait(2000);
         cli.action.stop('removed!');
         this.log('your app is not any more exist in this universe!');
-      } else {
+      } 
+      else {
         this.log('notting happend!');
       }
     }
