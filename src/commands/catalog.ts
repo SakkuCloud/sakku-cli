@@ -18,6 +18,18 @@ export default class Whoami extends Command {
   };
 
   async run() {
+    this.log(catalogService);
+    let result;
+    // catalogService.getAll(this)
+    // .then(function (result) {
+    //   this.log(result);
+    // })
+    // .catch(function(err){
+    //   this.log(err);
+    // })
+
+    result = await catalogService.getAll(this);
+    // console.log(result);
 
   }
 }

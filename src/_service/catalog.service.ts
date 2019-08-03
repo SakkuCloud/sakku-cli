@@ -1,23 +1,21 @@
-import {Command} from '@oclif/command';
+// External Modules
+import { Command } from '@oclif/command';
 import axios from 'axios';
 
-import {readToken} from '../utils/read-token';
+// Project Modules
+import { readToken } from '../utils/read-token';
+import { catalog_url } from '../consts/urls';
+import IServerResult from '../interfaces/server-result.interface';
+
 
 export const catalogService = {
-  create,
-  exec
+  getAll
 };
 
-function create(ctx: Command, data: {}, host: string, cid: string) {
-  return axios.post(host + '/containers/' + cid + '/exec', data, {headers: getHeader(ctx)})
-    .then(value => value.data.Id);
+function getAll(ctx: any) {
+  return axios.get(catalog_url, { headers: getHeader(ctx) });
 }
 
-function exec(ctx: Command, id: string, host: string, data: {}) {
-  return axios.post(host + `/exec/${id}/start`,
-    data, {responseType: 'stream'});
-}
-
-function getHeader(ctx: Command) {
-  return {Authorization: readToken(ctx)};
+function getHeader(ctx: any) {
+  return { Authorization: readToken(ctx) };
 }
