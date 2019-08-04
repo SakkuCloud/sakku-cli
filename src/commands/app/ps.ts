@@ -67,13 +67,16 @@ export default class PS extends Command {
     catch (err) {
       const code = err.code || (err.response && err.response.status.toString());
       if (err.response && err.response.data) {
-        this.log('An error occured!', code + ':', err.response.data.message || '');
+        console.log('An error occured!', code + ':', err.response.data.message || '');
       }
       else if (err.response && err.response.statusText) {
-        this.log('An error occured!', code + ':', err.response.data.statusText || '');
+        console.log('An error occured!', code + ':', err.response.data.statusText || '');
+      }
+      else if (code === 'ENOENT') {
+        console.log('An error occured!', 'You are not logged in');
       }
       else {
-        this.log('An error occured!', code);
+        console.log('An error occured!', code);
       }
     }
   }
