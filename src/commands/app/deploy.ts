@@ -35,6 +35,8 @@ export default class Deploy extends Command {
         return;
       }
       console.log('=====@@@@====>', typeof stdout);
+      console.log('=====@@@@====>', typeof stderr);
+
     });
   }
 }
