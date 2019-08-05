@@ -19,21 +19,33 @@ export default class Scale extends Command {
   static examples = [
     `$ sakku app:scale
 Enter your app id: APP-ID
-Enter your app scale: 2
-your app scaled to 2
-`,
+Enter your new Configuration`,
   ];
 
   static flags = {
     help: flags.help({ char: 'h' })
   };
 
+  static args = [
+    {
+      name: 'app',
+      required: false,
+      description: 'app id/name',
+      hidden: false
+    },
+  ];
+
   async run() {
-    const { flags } = this.parse(Scale);
+    const { args, flags } = this.parse(Scale);
     let self = this;
     // @ts-ignore
-    let appData;
-    let appId = await cli.prompt('Enter your app id', { required: true });
+    let appData, appId;
+    if (args.hasOwnProperty('app') && args.app) {
+      appId = args.app;
+    }
+    else {
+      appId = await cli.prompt('Enter your app id', { required: true });
+    }
     let question = {
       name: 'config',
       message: 'Choose your configuration: ',
