@@ -35,6 +35,8 @@ export default class Deploy extends Command {
     let self = this;
     let email: string;
     let token: string;
+    let username: string;
+    let tag = '';
     const { flags } = this.parse(Deploy);
     let appName = await (flags.app ? await flags.app : await cli.prompt('please enter app name', { required: true }));
 
@@ -45,25 +47,43 @@ export default class Deploy extends Command {
             authService.overview(self)
               .then(function (result) {
                 // @ts-ignore
-                email = result.data.result.user.email;
+                email = result.data.result.user.email; username = result.data.result.user.username;
               })
               .then(function () {
                 token = appService.getToken(self);
                 return dockerLogin();
               })
+              .then(function (result) {
+                return cli.prompt('Enter your tag(optional): ', { required: false })
+              })
+              .then(function(answer){
+                tag = answer.trim();
+                return dockerCreateTag();
+              })
+              .then(function (result) {
+                return dockerPush();
+              })
+              .then(function () {
+                console.log('Deploy completed successfully.');
+              })
               .catch(function (err) {
-                const code = err.code || (err.response && err.response.status.toString());
-                if (err.response && err.response.data) {
-                  console.log('An error occured!', code + ':', err.response.data.message || '');
-                }
-                else if (err.response && err.response.statusText) {
-                  console.log('An error occured!', code + ':', err.response.data.statusText || '');
-                }
-                else if (code === 'ENOENT') {
-                  console.log('An error occured!', 'You are not logged in');
+                if (typeof err === 'object') {
+                  const code = err.code || (err.response && err.response.status.toString());
+                  if (err.response && err.response.data) {
+                    console.log('An error occured!', code + ':', err.response.data.message || '');
+                  }
+                  else if (err.response && err.response.statusText) {
+                    console.log('An error occured!', code + ':', err.response.data.statusText || '');
+                  }
+                  else if (code === 'ENOENT') {
+                    console.log('An error occured!', 'You are not logged in');
+                  }
+                  else {
+                    console.log('An error occured!', code);
+                  }
                 }
                 else {
-                  console.log('An error occured!', code);
+                  console.log('An error occured!', err);
                 }
               })
           })
@@ -102,16 +122,52 @@ export default class Deploy extends Command {
     function dockerLogin() {
       let defer = q.defer();
       let command = '"docker" login -u=' + email + ' -p=' + token + ' registry.sakku.cloud';
-      console.log(command);
       // @ts-ignore
       exec(command, (err, stdout, stderr) => {
         if (err) {
           defer.reject(err);
         }
-        defer.resolve();
+        defer.resolve(stdout);
       });
       return defer.promise;
     }
 
+    function dockerCreateTag() {
+      let defer = q.defer();
+      let command;
+      if (tag.length === 0) {
+        command = '"docker" tag ' + appName + ' registy.sakku.cloud/ ' + username + '/' + appName;
+      }
+      else {
+        command = '"docker" tag' + appName + ':' + tag + ' registy.sakku.cloud/' + username + '/' + appName + ':' + tag;
+      }
+      // @ts-ignore
+      exec(command, (err, stdout, stderr) => {
+        if (err) {
+          defer.reject(err);
+        }
+        defer.resolve(stdout);
+      });
+      return defer.promise;
+    }
+
+    function dockerPush() {
+      let defer = q.defer();
+      let command;
+      if (tag.length === 0) {
+        command = '"docker" push registy.sakku.cloud/' + username + '/' + appName;
+      }
+      else {
+        command = '"docker" push registy.sakku.cloud/' + username + '/' + appName + ':' + tag;
+      }
+      // @ts-ignore
+      exec(command, (err, stdout, stderr) => {
+        if (err) {
+          defer.reject(err);
+        }
+        defer.resolve(stdout);
+      });
+      return defer.promise;
+    }
   }
 }

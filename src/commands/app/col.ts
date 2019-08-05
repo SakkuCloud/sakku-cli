@@ -16,7 +16,9 @@ export default class Scale extends Command {
 
   static flags = {
     help: flags.help({ char: 'h' }),
-    add: flags.boolean({ char: 'a' })
+    add: flags.boolean({ char: 'a', exclusive: ['edit', 'delete'] }),
+    edit: flags.boolean({ char: 'e', exclusive: ['add', 'delete'] }),
+    delete: flags.boolean({ char: 'e', exclusive: ['add', 'edit'] }),
   };
 
   static args = [
