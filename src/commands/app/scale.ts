@@ -5,12 +5,12 @@ import * as inquirer from 'inquirer';
 
 // Project Modules
 import { appService } from '../../_service/app.service';
-import {
-  enter_your_instance_msg,
-  enter_your_core_msg,
-  enter_your_ram_msg,
-  enter_your_disk_msg,
-} from '../../consts/msg';
+// import {
+//   enter_your_instance_msg,
+//   enter_your_core_msg,
+//   enter_your_ram_msg,
+//   enter_your_disk_msg,
+// } from '../../consts/msg';
 
 
 export default class Scale extends Command {
@@ -39,7 +39,7 @@ Enter your new Configuration`,
     const { args, flags } = this.parse(Scale);
     let self = this;
     // @ts-ignore
-    let appData, appId;
+    let appData, appId: any;
     if (args.hasOwnProperty('app') && args.app) {
       appId = args.app;
     }
@@ -67,10 +67,10 @@ Enter your new Configuration`,
     //   "scalingMode": "OFF"
     // }
     let sendData = {
-      cpu: 0,
-      disk: 0,
+      cpu: null,
+      disk: null,
       instances: 0,
-      mem: 0,
+      mem: null,
       ports: null,
       scalingMode: ''
     }
@@ -85,8 +85,14 @@ Enter your new Configuration`,
         appData = result.data.result; minInstances = appData.configuration.minInstances; maxInstances = appData.configuration.maxInstances;
         // @ts-ignore
         let scalingMode = appData.configuration.scalingMode;
-        if (scalingMode.toLowerCase() === 'and') {
+        if (scalingMode.toLowerCase() === 'off') {
+          scalingMode = 'Manual'
+        }
+        else if (scalingMode.toLowerCase() === 'and') {
           scalingMode = 'CPU and Memory'
+        }
+        else if (scalingMode.toLowerCase() === 'mem') {
+          scalingMode = 'Memory'
         }
         else if (scalingMode.toLowerCase() === 'or') {
           scalingMode = 'CPU or Memory'
@@ -100,26 +106,28 @@ Enter your new Configuration`,
         sendData.scalingMode = mode;
         // @ts-ignore
         if (answer.config === 'Manual') {
+          return getInstanceValue('Enter your scale value:', minInstances, maxInstances)
           // @ts-ignore
-          return getInstanceValue(enter_your_core_msg, 1, 10)
-            // @ts-ignore
-            .then(function (answer) {
-              sendData.cpu = parseInt(answer);
-              return getInstanceValue(enter_your_ram_msg, 1, 10)
-            })
-            // @ts-ignore
-            .then(function (answer) {
-              sendData.mem = parseInt(answer);
-              return getInstanceValue(enter_your_disk_msg, 1, 10)
-            })
-            // @ts-ignore
-            .then(function (answer) {
-              sendData.disk = parseInt(answer);
-              return;
-            })
+          // return getInstanceValue(enter_your_core_msg, 1, 10)
+          //   // @ts-ignore
+          //   .then(function (answer) {
+          //     sendData.cpu = parseInt(answer);
+          //     return getInstanceValue(enter_your_ram_msg, 1, 10)
+          //   })
+          //   // @ts-ignore
+          //   .then(function (answer) {
+          //     sendData.mem = parseInt(answer);
+          //     return getInstanceValue(enter_your_disk_msg, 1, 10)
+          //   })
+          //   // @ts-ignore
+          //   .then(function (answer) {
+          //     sendData.disk = parseInt(answer);
+          //     return;
+          //   })
         }
       })
       .then(function (answer) {
+        sendData.instances = answer;
         return appService.scale(self, appId, sendData)
       })
       .then(function (result) {
@@ -143,7 +151,7 @@ Enter your new Configuration`,
 
     // @ts-ignore
     function getInstanceValue(message: string, minInstances: number, maxInstances: number) {
-      let newMessage = message // + ' (min:' + minInstances + ' ,max: ' + maxInstances + ')';
+      let newMessage = message + ' (min:' + minInstances + ' ,max: ' + maxInstances + ')';
       return cli.prompt(newMessage, { required: true })
         .then(function (answer) {
           if (!(parseInt(answer) >= minInstances && parseInt(answer) <= maxInstances)) {

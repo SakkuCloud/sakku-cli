@@ -1,11 +1,11 @@
-import {Command} from '@oclif/command';
+import { Command } from '@oclif/command';
 import axios from 'axios';
 
-import {app_url} from '../consts/urls';
-import {IApp, IAppVO} from '../interfaces/app.interface';
+import { app_url } from '../consts/urls';
+import { IApp, IAppVO } from '../interfaces/app.interface';
 import IServerResult from '../interfaces/server-result.interface';
-import {readLocalApps} from '../utils/read-from-file';
-import {readToken} from '../utils/read-token';
+import { readLocalApps } from '../utils/read-from-file';
+import { readToken } from '../utils/read-token';
 
 export const appService = {
   create,
@@ -14,30 +14,34 @@ export const appService = {
   getByName,
   list,
   getAppFromFile,
-  scale
+  scale,
+  getCollaborators,
+  addCollaborator
 };
 
 function create(ctx: Command, data: {}) {
-  return axios.post(app_url, data , {headers: getHeader(ctx)});
+  return axios.post(app_url, data, { headers: getHeader(ctx) });
 }
 
 function get(ctx: Command, id: string) {
-  return axios.get<IServerResult<IAppVO>>(app_url + '/' + id , {headers: getHeader(ctx)});
+  return axios.get<IServerResult<IAppVO>>(app_url + '/' + id, { headers: getHeader(ctx) });
 }
 
 function getByName(ctx: Command, name: string) {
-  return axios.get<IServerResult<IAppVO>>(app_url + '/byname/' + name , {headers: getHeader(ctx)});
+  return axios.get<IServerResult<IAppVO>>(app_url + '/byname/' + name, { headers: getHeader(ctx) });
 }
 
 function stop(ctx: Command, id: string) {
-  return axios.get(`${app_url}/${id}/stop`, {headers: getHeader(ctx)});
+  return axios.get(`${app_url}/${id}/stop`, { headers: getHeader(ctx) });
 }
 
 function list(ctx: Command, page = 1, data: IApp[] = []): Promise<IApp[]> {
-  return new Promise((accept, reject) => axios.get<IServerResult<IApp[]>>(app_url, {headers: getHeader(ctx), params: {
-    page,
-    size: 15
-  }}).then(res => {
+  return new Promise((accept, reject) => axios.get<IServerResult<IApp[]>>(app_url, {
+    headers: getHeader(ctx), params: {
+      page,
+      size: 15
+    }
+  }).then(res => {
     if (res && res.data && !res.data.error && res.data.result) {
       data.push(...res.data.result);
       accept(res.data.result.length > 0 ? list(ctx, page + 1, data) : data);
@@ -65,8 +69,19 @@ function scale(ctx: any, id: any, data: any) {
   return axios.put(url, data, { headers: getHeader(ctx) });
 }
 
+function getCollaborators(ctx: any, id: any) {
+  let url = app_url + '/' + id + '/collaborators'
+  return axios.get(url, { headers: getHeader(ctx) });
+}
+
+function addCollaborator(ctx: any, id: any, data: any) {
+  let url = app_url + '/' + id + '/collaborators?level=1'
+  return axios.post(url, data, { headers: getHeader(ctx) });
+}
+
+
 function getHeader(ctx: Command) {
-  return {Authorization: readToken(ctx)};
+  return { Authorization: readToken(ctx) };
 }
 
 

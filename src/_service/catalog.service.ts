@@ -26,7 +26,6 @@ function getAllCatalogApps(ctx: any, id: any) {
 
 function catalogDeploy(ctx: any, id: any, data: any) {
   let url = catalog_deploy + id;
-  console.log(url, data)
   return axios.post(url, data, { headers: getHeader(ctx) });
 }
 
