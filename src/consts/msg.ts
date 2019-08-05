@@ -30,3 +30,4 @@ export const w8_msg = 'please wait...';
 export const abort_msg = 'abort! :(';
 export const done_msg = 'done! :)';
 export const exec_exit_msg = '\nEnding session\n';
+export const enter_your_instance_msg = 'Enter your the instance number you want'
