@@ -1,22 +1,27 @@
+// External Modules
 import { Command, flags } from '@oclif/command';
 import { cli } from 'cli-ux';
 const { exec } = require('child_process');
-
-
-import deployBinary from '../../deployment/deploy-binary';
-import deployImage from '../../deployment/deploy-image';
-import deploySrc from '../../deployment/deploy-source';
+const q = require('q');
 import inquirer = require('inquirer');
+
+// Project Modules
+import { authService } from '../../_service/auth.service';
+import { appService } from '../../_service/app.service';
+// import deployBinary from '../../deployment/deploy-binary';
+// import deployImage from '../../deployment/deploy-image';
+// import deploySrc from '../../deployment/deploy-source';
+
 
 export default class Deploy extends Command {
   static description = 'deploy app';
 
-  static question = {
-    name: 'type',
-    message: 'choose type of deploy',
-    type: 'list',
-    choices: [{ name: 'docker image' }, { name: 'executable binary' }, { name: 'raw source' }],
-  };
+  // static question = {
+  //   name: 'type',
+  //   message: 'choose type of deploy',
+  //   type: 'list',
+  //   choices: [{ name: 'docker image' }, { name: 'executable binary' }, { name: 'raw source' }],
+  // };
 
   static flags = {
     help: flags.help({ char: 'h', hidden: true }),
@@ -27,16 +32,86 @@ export default class Deploy extends Command {
   };
 
   async run() {
+    let self = this;
+    let email: string;
+    let token: string;
     const { flags } = this.parse(Deploy);
-    // let appName = await (flags.app ? await flags.app : await cli.prompt('please enter app name', {required: true}));
-    exec('docker', (err, stdout, stderr) => {
-      if (err) {
-        console.error('====!!!!=====>', err);
-        return;
-      }
-      console.log('=====@@@@====>', typeof stdout);
-      console.log('=====@@@@====>', typeof stderr);
+    let appName = await (flags.app ? await flags.app : await cli.prompt('please enter app name', { required: true }));
 
-    });
+    isDockerInstalled()
+      .then(function () {
+        isDockerRun()
+          .then(function () {
+            authService.overview(self)
+              .then(function (result) {
+                // @ts-ignore
+                email = result.data.result.user.email;
+              })
+              .then(function () {
+                token = appService.getToken(self);
+                return dockerLogin();
+              })
+              .catch(function (err) {
+                const code = err.code || (err.response && err.response.status.toString());
+                if (err.response && err.response.data) {
+                  console.log('An error occured!', code + ':', err.response.data.message || '');
+                }
+                else if (err.response && err.response.statusText) {
+                  console.log('An error occured!', code + ':', err.response.data.statusText || '');
+                }
+                else if (code === 'ENOENT') {
+                  console.log('An error occured!', 'You are not logged in');
+                }
+                else {
+                  console.log('An error occured!', code);
+                }
+              })
+          })
+          .catch(function () {
+            console.log('Run Docker!')
+          })
+      })
+      .catch(function () {
+        console.log('Docker is not installed!')
+      });
+
+    function isDockerInstalled() {
+      let defer = q.defer();
+      // @ts-ignore
+      exec('docker', (err, stdout, stderr) => {
+        if (err) {
+          defer.reject();
+        }
+        defer.resolve();
+      });
+      return defer.promise;
+    }
+
+    function isDockerRun() {
+      let defer = q.defer();
+      // @ts-ignore
+      exec('"docker" info', (err, stdout, stderr) => {
+        if (err) {
+          defer.reject();
+        }
+        defer.resolve();
+      });
+      return defer.promise;
+    }
+
+    function dockerLogin() {
+      let defer = q.defer();
+      let command = '"docker" login -u=' + email + ' -p=' + token + ' registry.sakku.cloud';
+      console.log(command);
+      // @ts-ignore
+      exec(command, (err, stdout, stderr) => {
+        if (err) {
+          defer.reject(err);
+        }
+        defer.resolve();
+      });
+      return defer.promise;
+    }
+
   }
 }

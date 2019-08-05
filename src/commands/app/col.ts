@@ -6,7 +6,6 @@ import * as inquirer from 'inquirer';
 // Project Modules
 import { appService } from '../../_service/app.service';
 
-
 export default class Scale extends Command {
   static description = 'add new collaborators, as well ad showing the list of collaborators';
 

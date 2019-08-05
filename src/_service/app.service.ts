@@ -16,7 +16,8 @@ export const appService = {
   getAppFromFile,
   scale,
   getCollaborators,
-  addCollaborator
+  addCollaborator,
+  getToken
 };
 
 function create(ctx: Command, data: {}) {
@@ -75,7 +76,7 @@ function getCollaborators(ctx: any, id: any) {
 }
 
 function addCollaborator(ctx: any, id: any, data: any) {
-  let url = app_url + '/' + id + '/collaborators?level=1'
+  let url = app_url + '/' + id + '/collaborators?level=7'
   return axios.post(url, data, { headers: getHeader(ctx) });
 }
 
@@ -83,5 +84,11 @@ function addCollaborator(ctx: any, id: any, data: any) {
 function getHeader(ctx: Command) {
   return { Authorization: readToken(ctx) };
 }
+
+function getToken(ctx: Command) {
+  // @ts-ignore
+  return readToken(ctx).split(' ')[1];
+}
+
 
 
