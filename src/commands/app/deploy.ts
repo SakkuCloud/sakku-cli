@@ -172,7 +172,7 @@ export default class Deploy extends Command {
 
     function dockerPush(sakkuImage: string) {
       let defer = q.defer();
-      let command = '"docker" push registy.sakku.cloud/' + username + '/' + sakkuImage;
+      let command = '"docker" push registry.sakku.cloud/' + username + '/' + sakkuImage;
       // @ts-ignore
       exec(command, (err, stdout, stderr) => {
         if (err) {
