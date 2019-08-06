@@ -28,7 +28,7 @@ import {
   enter_your_ram_msg,
   w8_msg
 } from '../../consts/msg';
-import {IAppsDeployType} from '../../enums/apps.enum';
+// import {IAppsDeployType} from '../../enums/apps.enum';
 import {writeLocalApps} from '../../utils/writer';
 
 export default class Add extends Command {
@@ -76,13 +76,13 @@ export default class Add extends Command {
     do {
       disk = await cli.prompt(enter_your_disk_msg, {required: true});
     } while (isNaN(Number(disk)));
-    while (await cli.confirm('is there any/more ports?')) {
+    while (await cli.confirm('is there any/more ports(y or n)?')) {
       do {
         Add.port.port = await cli.prompt(enter_your_port_msg, {required: false});
       } while (isNaN(Number(Add.port.port)));
-      do {
+      // do {
         Add.port.protocol = await cli.prompt(enter_your_protocol_msg, {required: false});
-      } while (isNaN(Number(Add.port.protocol)));
+      // } while (isNaN(Number(Add.port.protocol)));
       ports.push(Add.port);
     }
     do {
@@ -132,9 +132,10 @@ export default class Add extends Command {
       type: 'list',
       choices: [
         {name: 'DOCKER_IMAGE'},
-        {name: 'CODE'},
-        {name: 'APP'},
-        {name: 'DOCKER_FILE'}]
+        {name: 'CODE'}
+        // {name: 'APP'},
+        // {name: 'DOCKER_FILE'}
+      ]
     }).then(value => value.name);
 
     if (deployType === 'DOCKER_IMAGE') {

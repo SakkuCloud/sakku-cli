@@ -17,14 +17,17 @@ export default class Catalog extends Command {
 
   static examples = [
     `$ sakku catalog`,
+    `$ sakku catalog -a`
   ];
 
   static flags = {
-    help: flags.help({ char: 'h' })
+    help: flags.help({ char: 'h' }),
+    add: flags.help({ char: 'a' })
   };
 
 
   async run() {
+    const { args, flags } = this.parse(Catalog);
     // @ts-ignore
     let categories;
     let id: any;
@@ -33,66 +36,105 @@ export default class Catalog extends Command {
     let appId: any;
     let apps: any;
 
-    catalogService.getAllCatalogs(this)
-      .then(function (result) {
-        return result.data.result;
-      })
-      .then(function (result) {
-        categories = result;
-        let question = createQuestionCategoty(categories);
-        return inquirer.prompt([question])
-      })
-      .then(function (answer) {
-        // @ts-ignore
-        id = findCategoryId(categories, answer);
-        return catalogService.getAllCatalogApps(self, id)
-      })
-      .then(function (result) {
-        apps = result.data.result;
-        let question = createQuestionApp(apps);
-        return inquirer.prompt([question])
-      })
-      .then(function (answer) {
-        appId = findAppId(apps, answer);
-        return cli.prompt(enter_your_core_msg, { required: true });
-      })
-      .then(function (result) {
-        // @ts-ignore
-        appDataObj.cpu = parseInt(result);
-        return cli.prompt(enter_your_ram_msg, { required: true });
-      })
-      .then(function (result) {
-        // @ts-ignore
-        appDataObj.mem = parseInt(result);
-        return cli.prompt(enter_your_disk_msg, { required: true });
-      })
-      .then(function (result) {
-        // @ts-ignore
-        appDataObj.disk = parseInt(result);
-        return cli.prompt(enter_your_app_name_msg, { required: true });
-      })
-      .then(function (result) {
-        appDataObj.name = result;
-        return catalogService.catalogDeploy(self, appId, appDataObj);
-      })
-      .then(function (result) {
-        console.log('Your app is successfully submitted.');
-      })
-      .catch(function (err) {
-        const code = err.code || (err.response && err.response.status.toString());
-        if (err.response && err.response.data) {
-          console.log('An error occured!', code + ':', err.response.data.message || '');
-        }
-        else if (err.response && err.response.statusText) {
-          console.log('An error occured!', code + ':', err.response.data.statusText || '');
-        }
-        else if (code === 'ENOENT') {
-          console.log('An error occured!', 'You are not logged in');
-        }
-        else {
-          console.log('An error occured!', code);
-        }
-      });
+    // @ts-ignore
+    if (flags.add) {
+      catalogService.getAllCatalogs(this)
+        .then(function (result) {
+          return result.data.result;
+        })
+        .then(function (result) {
+          categories = result;
+          let question = createQuestionCategoty(categories);
+          return inquirer.prompt([question])
+        })
+        .then(function (answer) {
+          // @ts-ignore
+          id = findCategoryId(categories, answer);
+          return catalogService.getAllCatalogApps(self, id)
+        })
+        .then(function (result) {
+          apps = result.data.result;
+          let question = createQuestionApp(apps);
+          return inquirer.prompt([question])
+        })
+        .then(function (answer) {
+          appId = findAppId(apps, answer);
+          return cli.prompt(enter_your_core_msg, { required: true });
+        })
+        .then(function (result) {
+          // @ts-ignore
+          appDataObj.cpu = parseInt(result);
+          return cli.prompt(enter_your_ram_msg, { required: true });
+        })
+        .then(function (result) {
+          // @ts-ignore
+          appDataObj.mem = parseInt(result);
+          return cli.prompt(enter_your_disk_msg, { required: true });
+        })
+        .then(function (result) {
+          // @ts-ignore
+          appDataObj.disk = parseInt(result);
+          return cli.prompt(enter_your_app_name_msg, { required: true });
+        })
+        .then(function (result) {
+          appDataObj.name = result;
+          return catalogService.catalogDeploy(self, appId, appDataObj);
+        })
+        .then(function (result) {
+          console.log('Your app is successfully submitted.');
+        })
+        .catch(function (err) {
+          const code = err.code || (err.response && err.response.status.toString());
+          if (err.response && err.response.data) {
+            console.log('An error occured!', code + ':', err.response.data.message || '');
+          }
+          else if (err.response && err.response.statusText) {
+            console.log('An error occured!', code + ':', err.response.data.statusText || '');
+          }
+          else if (code === 'ENOENT') {
+            console.log('An error occured!', 'You are not logged in');
+          }
+          else {
+            console.log('An error occured!', code);
+          }
+        });
+    }
+    else {
+      catalogService.getAllCatalogs(this)
+        .then(function (result) {
+          console.log(result);
+          return result.data.result;
+        })
+        .then(function (result) {
+          categories = result;
+          let question = createQuestionCategoty(categories);
+          return inquirer.prompt([question])
+        })
+        .then(function (answer) {
+          // @ts-ignore
+          id = findCategoryId(categories, answer);
+          return catalogService.getAllCatalogApps(self, id)
+        })
+        .then(function (result) {
+          apps = result.data.result;
+          console.log(apps);
+        })
+        .catch(function (err) {
+          const code = err.code || (err.response && err.response.status.toString());
+          if (err.response && err.response.data) {
+            console.log('An error occured!', code + ':', err.response.data.message || '');
+          }
+          else if (err.response && err.response.statusText) {
+            console.log('An error occured!', code + ':', err.response.data.statusText || '');
+          }
+          else if (code === 'ENOENT') {
+            console.log('An error occured!', 'You are not logged in');
+          }
+          else {
+            console.log('An error occured!', code);
+          }
+        });
+    }
 
     function createQuestionCategoty(categories: any) {
       let question = {
