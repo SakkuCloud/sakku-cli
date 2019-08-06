@@ -159,7 +159,7 @@ export default class Deploy extends Command {
 
     function dockerCreateTag(sakkuImage: string) {
       let defer = q.defer();
-      let command = '"docker" tag ' + (imageName + ":" + tag) + ' registy.sakku.cloud/' + username + '/' + sakkuImage;
+      let command = '"docker" tag ' + (imageName + ":" + tag) + ' registry.sakku.cloud/' + username + '/' + sakkuImage;
       // @ts-ignore
       exec(command, (err, stdout, stderr) => {
         if (err) {
