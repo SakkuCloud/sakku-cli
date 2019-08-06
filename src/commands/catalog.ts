@@ -12,7 +12,7 @@ import {
   enter_your_app_name_msg
 } from '../consts/msg';
 
-export default class Whoami extends Command {
+export default class Catalog extends Command {
   static description = 'List all different Program Catalogs';
 
   static examples = [

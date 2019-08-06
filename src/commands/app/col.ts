@@ -6,7 +6,7 @@ import * as inquirer from 'inquirer';
 // Project Modules
 import { appService } from '../../_service/app.service';
 
-export default class Scale extends Command {
+export default class Col extends Command {
   static description = 'add new collaborators, as well ad showing the list of collaborators';
 
   static examples = [
@@ -31,7 +31,7 @@ export default class Scale extends Command {
   ];
 
   async run() {
-    const { args, flags } = this.parse(Scale);
+    const { args, flags } = this.parse(Col);
     let self = this;
     let collaborators;
     // @ts-ignore
@@ -172,7 +172,6 @@ export default class Scale extends Command {
 
     // @ts-ignore
     function handleError(err) {
-      console.log(err)
       const code = err.code || (err.response && err.response.status.toString());
       if (err.response && err.response.data) {
         console.log('An error occured!', code + ':', err.response.data.message || '');

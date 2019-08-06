@@ -8,27 +8,13 @@ import inquirer = require('inquirer');
 // Project Modules
 import { authService } from '../../_service/auth.service';
 import { appService } from '../../_service/app.service';
-// import deployBinary from '../../deployment/deploy-binary';
-// import deployImage from '../../deployment/deploy-image';
-// import deploySrc from '../../deployment/deploy-source';
-
 
 export default class Deploy extends Command {
   static description = 'deploy app';
 
-  // static question = {
-  //   name: 'type',
-  //   message: 'choose type of deploy',
-  //   type: 'list',
-  //   choices: [{ name: 'docker image' }, { name: 'executable binary' }, { name: 'raw source' }],
-  // };
-
   static flags = {
     help: flags.help({ char: 'h', hidden: true }),
-    app: flags.string({ char: 'a', description: 'app name' }),
-    // image: flags.string({char: 'i', exclusive: ['binary', 'source'], description: 'docker-image file'}),
-    // binary: flags.string({char: 'b', exclusive: ['image', 'source'], description: 'executable binary file'}),
-    // source: flags.boolean({char: 's', exclusive: ['binary', 'image']})
+    app: flags.string({ char: 'a', description: 'app name' })
   };
 
   async run() {

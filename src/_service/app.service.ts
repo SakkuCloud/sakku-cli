@@ -19,6 +19,7 @@ export const appService = {
   addCollaborator,
   editCollaborator,
   deleteCollaborator,
+  logs,
   getToken
 };
 
@@ -90,6 +91,11 @@ function editCollaborator(ctx: any, id: any, cid: any, data: any) {
 function deleteCollaborator(ctx: any, id: any, cid: any) {
   let url = app_url + '/' + id + '/collaborators/' + cid;
   return axios.delete(url, { headers: getHeader(ctx) });
+}
+
+function logs(ctx: any, id: any, time: any) {
+  let url = app_url + '/' + id + '/logs?time=' + time;
+  return axios.get(url, { headers: getHeader(ctx) });
 }
 
 function getHeader(ctx: Command) {
