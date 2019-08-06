@@ -22,9 +22,10 @@ export default class Deploy extends Command {
     let email: string;
     let token: string;
     let username: string;
-    let tag = '';
+    let tag: string = '';
+    let sakkuImage = '';
     const { flags } = this.parse(Deploy);
-    let appName = await (flags.app ? await flags.app : await cli.prompt('please enter app name', { required: true }));
+    let imageName = await (flags.app ? await flags.app : await cli.prompt('please enter local image name', { required: true }));
 
     isDockerInstalled()
       .then(function () {
@@ -37,17 +38,28 @@ export default class Deploy extends Command {
               })
               .then(function () {
                 token = appService.getToken(self);
+                // return dockerLogin();
+              })
+              .then(function (result) {
+                return cli.prompt('Enter your local image tag (optional, default:latest)', { required: false })
+              })
+              .then(function (param) {
+                tag = (param || "latest").trim();
+                return isImageExists(imageName + ":" + tag)
+              }).then(function (result) {
+                return cli.prompt('Enter your new image name and tag (required format: name:tag)', { required: true })
+              })
+              .then(function (answer) {
+                sakkuImage = answer.trim();
+                return dockerCreateTag(sakkuImage);
+              })
+              .then(function (result) {
+                console.log("trying to loging in...")
                 return dockerLogin();
               })
               .then(function (result) {
-                return cli.prompt('Enter your tag(optional): ', { required: false })
-              })
-              .then(function(answer){
-                tag = answer.trim();
-                return dockerCreateTag();
-              })
-              .then(function (result) {
-                return dockerPush();
+                console.log("trying to push...")
+                return dockerPush(sakkuImage);
               })
               .then(function () {
                 console.log('Deploy completed successfully.');
@@ -64,8 +76,20 @@ export default class Deploy extends Command {
                   else if (code === 'ENOENT') {
                     console.log('An error occured!', 'You are not logged in');
                   }
+                  else if (err.hasOwnProperty('cmd') && err.cmd.indexOf('login') !== -1) {
+                    console.log('An error occured!', 'can not login to docker');
+                  }
+                  else if (err.hasOwnProperty('cmd') && err.cmd.indexOf('image inspect') !== -1) {
+                    console.log('An error occured!', 'image does not exists');
+                  }
+                  else if (err.hasOwnProperty('cmd') && err.cmd.indexOf('push registy') !== -1) {
+                    console.log('An error occured!', 'can not push docker image');
+                  }
+                  else if (err.hasOwnProperty('cmd') && err.cmd.indexOf('tag') !== -1) {
+                    console.log('An error occured!', 'can create tag');
+                  }
                   else {
-                    console.log('An error occured!', code);
+                    console.log('An error occured! code:', code, err);
                   }
                 }
                 else {
@@ -74,7 +98,7 @@ export default class Deploy extends Command {
               })
           })
           .catch(function () {
-            console.log('Run Docker!')
+            console.log('Docker is not running! Run Docker or check your dockerd!')
           })
       })
       .catch(function () {
@@ -93,12 +117,27 @@ export default class Deploy extends Command {
       return defer.promise;
     }
 
+
+    function isImageExists(image: string) {
+      //docker image inspect
+
+      let defer = q.defer();
+      // @ts-ignore
+      exec('"docker" image inspect ' + image, (err, stdout, stderr) => {
+        if (err) {
+          defer.reject(err);
+        }
+        defer.resolve();
+      });
+      return defer.promise;
+    }
+
     function isDockerRun() {
       let defer = q.defer();
       // @ts-ignore
-      exec('"docker" info', (err, stdout, stderr) => {
+      exec('"docker" info ', (err, stdout, stderr) => {
         if (err) {
-          defer.reject();
+          defer.reject(err);
         }
         defer.resolve();
       });
@@ -118,15 +157,9 @@ export default class Deploy extends Command {
       return defer.promise;
     }
 
-    function dockerCreateTag() {
+    function dockerCreateTag(sakkuImage: string) {
       let defer = q.defer();
-      let command;
-      if (tag.length === 0) {
-        command = '"docker" tag ' + appName + ' registy.sakku.cloud/ ' + username + '/' + appName;
-      }
-      else {
-        command = '"docker" tag' + appName + ':' + tag + ' registy.sakku.cloud/' + username + '/' + appName + ':' + tag;
-      }
+      let command = '"docker" tag ' + (imageName + ":" + tag) + ' registy.sakku.cloud/' + username + '/' + sakkuImage;
       // @ts-ignore
       exec(command, (err, stdout, stderr) => {
         if (err) {
@@ -137,15 +170,9 @@ export default class Deploy extends Command {
       return defer.promise;
     }
 
-    function dockerPush() {
+    function dockerPush(sakkuImage: string) {
       let defer = q.defer();
-      let command;
-      if (tag.length === 0) {
-        command = '"docker" push registy.sakku.cloud/' + username + '/' + appName;
-      }
-      else {
-        command = '"docker" push registy.sakku.cloud/' + username + '/' + appName + ':' + tag;
-      }
+      let command = '"docker" push registy.sakku.cloud/' + username + '/' + sakkuImage;
       // @ts-ignore
       exec(command, (err, stdout, stderr) => {
         if (err) {
