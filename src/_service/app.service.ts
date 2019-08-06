@@ -17,6 +17,8 @@ export const appService = {
   scale,
   getCollaborators,
   addCollaborator,
+  editCollaborator,
+  deleteCollaborator,
   getToken
 };
 
@@ -80,6 +82,15 @@ function addCollaborator(ctx: any, id: any, data: any) {
   return axios.post(url, data, { headers: getHeader(ctx) });
 }
 
+function editCollaborator(ctx: any, id: any, cid: any, data: any) {
+  let url = app_url + '/' + id + '/collaborators/' + cid + '?level=7'
+  return axios.post(url, data, { headers: getHeader(ctx) });
+}
+
+function deleteCollaborator(ctx: any, id: any, cid: any) {
+  let url = app_url + '/' + id + '/collaborators/' + cid;
+  return axios.delete(url, { headers: getHeader(ctx) });
+}
 
 function getHeader(ctx: Command) {
   return { Authorization: readToken(ctx) };

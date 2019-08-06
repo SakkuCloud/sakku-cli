@@ -36,11 +36,13 @@ export default class Scale extends Command {
     let collaborators;
     // @ts-ignore
     let appData, appId: any;
-    let colData = {
-      accessLevel: 'VIEW',
-      email: '',
-      imageRegistry: ''
-    }
+
+    let question = {
+      name: 'accessLevel',
+      message: 'Choose your Access Level: ',
+      type: 'list',
+      choices: ['VIEW', 'MODERATE', 'MODIFY']
+    };
 
     if (args.hasOwnProperty('app') && args.app) {
       appId = args.app;
@@ -49,36 +51,18 @@ export default class Scale extends Command {
       appId = await cli.prompt('Enter your app id', { required: true });
     }
 
-    appService.getCollaborators(this, appId)
-      .then(result => {
-        collaborators = result.data.result
-        printCollaborators(collaborators);
-        if (flags.add) {
-          return cli.prompt('Enter your collaborator\'s email: ', { required: true })
-            .then(answer => {
-              colData.email = answer;
-              return appService.addCollaborator(self, appId, colData)
-            })
-            .then(result => {
-              console.log('collaborator added successfully!');
-            })
-        }
-      })
-      .catch(function (err) {
-        const code = err.code || (err.response && err.response.status.toString());
-        if (err.response && err.response.data) {
-          console.log('An error occured!', code + ':', err.response.data.message || '');
-        }
-        else if (err.response && err.response.statusText) {
-          console.log('An error occured!', code + ':', err.response.data.statusText || '');
-        }
-        else if (code === 'ENOENT') {
-          console.log('An error occured!', 'You are not logged in');
-        }
-        else {
-          console.log('An error occured!', code);
-        }
-      });
+    if (flags.add) {
+      addCol();
+    }
+    else if (flags.edit) {
+      editCol();
+    }
+    else if (flags.delete) {
+      deleteCol();
+    }
+    else {
+      getAllCollaborators();
+    }
 
     function printCollaborators(collaborators: Array<Object>) {
       if (collaborators.length === 0) {
@@ -90,6 +74,118 @@ export default class Scale extends Command {
         }
       }
 
+    }
+
+    function getAllCollaborators() {
+      appService.getCollaborators(self, appId)
+        .then(result => {
+          collaborators = result.data.result
+          printCollaborators(collaborators);
+        })
+        .catch(function (err) {
+          handleError(err);
+        });
+    }
+
+    function addCol() {
+      let colData = {
+        accessLevel: 'VIEW',
+        email: '',
+        imageRegistry: ''
+      }
+      return cli.prompt('Enter your collaborator\'s email', { required: true })
+        .then(answer => {
+          colData.email = answer;
+          return inquirer.prompt([question])
+        })
+        .then(function (answer) {
+          // @ts-ignore
+          colData.accessLevel = answer;
+          return cli.prompt('Enter your collaborator\'s image registry (Optional)', { required: false });
+        })
+        .then(function (answer) {
+          // @ts-ignore
+          colData.imageRegistry = answer;
+          return appService.addCollaborator(self, appId, colData)
+        })
+        .then(result => {
+          console.log('collaborator added successfully!');
+        })
+        .catch(function (err) {
+          handleError(err);
+        })
+    }
+
+    function editCol() {
+      let cid: string;
+      let colData = {
+        accessLevel: 'VIEW',
+        email: '',
+        imageRegistry: ''
+      }
+      cli.prompt('Enter your collaborator\'s id', { required: true })
+        .then(function (answer) {
+          cid = answer;
+          return cli.prompt('Enter your collaborator\'s email', { required: true })
+        })
+        .then(answer => {
+          colData.email = answer;
+          return inquirer.prompt([question])
+        })
+        .then(function (answer) {
+          // @ts-ignore
+          colData.accessLevel = answer;
+          return cli.prompt('Enter your collaborator\'s image registry (Optional)', { required: false });
+        })
+        .then(function (answer) {
+          // @ts-ignore
+          colData.imageRegistry = answer;
+          return appService.editCollaborator(self, appId, cid, colData)
+        })
+        .then(result => {
+          console.log('collaborator edited successfully!');
+        })
+        .catch(function (err) {
+          handleError(err);
+        })
+    }
+
+    function deleteCol() {
+      let cid: string;
+      let colData = {
+        accessLevel: 'VIEW',
+        email: '',
+        imageRegistry: ''
+      }
+      cli.prompt('Enter your collaborator\'s id', { required: true })
+        .then(function (answer) {
+          cid = answer;
+          return appService.deleteCollaborator(self, appId, cid)
+        })
+        .then(result => {
+          console.log('collaborator deleted successfully!');
+        })
+        .catch(function (err) {
+          handleError(err);
+        })
+    }
+
+    // @ts-ignore
+    function handleError(err) {
+      console.log(err)
+      const code = err.code || (err.response && err.response.status.toString());
+      if (err.response && err.response.data) {
+        console.log('An error occured!', code + ':', err.response.data.message || '');
+      }
+      else if (err.response && err.response.statusText) {
+        console.log('An error occured!', code + ':', err.response.data.statusText || '');
+      }
+      else if (code === 'ENOENT') {
+        console.log('An error occured!', 'You are not logged in');
+      }
+      else {
+        console.log('An error occured!', code);
+      }
     }
   }
 }
