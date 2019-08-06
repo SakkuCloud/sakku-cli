@@ -150,8 +150,8 @@ export default class Add extends Command {
           {name: 'sakkureg'},
           {name: 'gitlab'}]
       }).then(value => value.name);
-
-    } else if (deployType === 'CODE') {
+    } 
+    else if (deployType === 'CODE') {
       git.username = await cli.prompt(enter_your_git_username_msg, {required: true});
       git.accessToken = await cli.prompt(enter_your_git_access_token_msg, {required: true});
       git.url = await cli.prompt(enter_your_git_url_msg, {required: true});
