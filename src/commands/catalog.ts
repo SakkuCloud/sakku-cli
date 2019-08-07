@@ -102,7 +102,6 @@ export default class Catalog extends Command {
     else {
       catalogService.getAllCatalogs(this)
         .then(function (result) {
-          console.log(result);
           return result.data.result;
         })
         .then(function (result) {
@@ -117,7 +116,7 @@ export default class Catalog extends Command {
         })
         .then(function (result) {
           apps = result.data.result;
-          console.log(apps);
+          printApps();
         })
         .catch(function (err) {
           const code = err.code || (err.response && err.response.status.toString());
@@ -187,6 +186,17 @@ export default class Catalog extends Command {
         }
       }
       return id;
+    }
+
+    function printApps() {
+      if (apps.length === 0) {
+        console.log('Collaborator List is Empty');
+      }
+      else {
+        for (let i = 0; i < apps.length; i++) {
+          console.log('#', i + 1, '->', apps[i].name);
+        }
+      }
     }
   }
 }

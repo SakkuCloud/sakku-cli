@@ -24,6 +24,7 @@ export const appService = {
 };
 
 function create(ctx: Command, data: {}) {
+  console.log(getHeader(ctx));
   return axios.post(app_url, data, { headers: getHeader(ctx) });
 }
 
