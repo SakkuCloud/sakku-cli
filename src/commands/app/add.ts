@@ -72,23 +72,20 @@ export default class Add extends Command {
     let labels: {
       [key: string]: string;
     } = {};
-    let healthChecks = {
-      endpoint: '/ping',
-      response: '',
-      scheme: 'http'
-    }
+    // @ts-ignore
+    let healthChecks = [];
     let sendObj = {};
 
 
     let name: any = await cli.prompt(enter_your_app_name_msg, { required: true });
     do {
-      cpu = await cli.prompt(enter_your_core_msg, { required: true });
+      cpu = parseFloat(await cli.prompt(enter_your_core_msg, { required: true }));
     } while (isNaN(Number(cpu)));
     do {
-      mem = await cli.prompt(enter_your_ram_msg, { required: true });
+      mem = parseFloat(await cli.prompt(enter_your_ram_msg, { required: true }));
     } while (isNaN(Number(mem)));
     do {
-      disk = await cli.prompt(enter_your_disk_msg, { required: true });
+      disk = parseFloat(await cli.prompt(enter_your_disk_msg, { required: true }));
     } while (isNaN(Number(disk)));
     while (await cli.confirm('Is there any/more ports (y or n)')) {
       do {
@@ -100,10 +97,10 @@ export default class Add extends Command {
       ports.push(Add.port);
     }
     do {
-      minInstance = await cli.prompt(enter_your_min_instance_msg, { required: true });
+      minInstance = parseInt(await cli.prompt(enter_your_min_instance_msg, { required: true }));
     } while (isNaN(Number(minInstance)));
     do {
-      maxInstance = await cli.prompt(enter_your_max_instance_msg, { required: true });
+      maxInstance = parseInt(await cli.prompt(enter_your_max_instance_msg, { required: true }));
     } while (isNaN(Number(maxInstance)));
     let cmd = await cli.prompt(enter_your_cmd_msg, { required: false });
     if (cmd) {
@@ -138,9 +135,17 @@ export default class Add extends Command {
     //   Add.link.alias = await cli.prompt(enter_your_link_alias_msg);
     //   links.push(Add.link);
     // }
-    healthChecks.endpoint = (await cli.prompt(enter_your_check_point, { required: false })) || healthChecks.endpoint
-    healthChecks.response = await cli.prompt(enter_your_response, { required: true });
-    healthChecks.scheme = (await cli.prompt(enter_your_scheme, { required: false })) || healthChecks.scheme;
+
+    while (await cli.confirm('Is there any/more health checks (y or n)')) {
+      let tempObj = {};
+      // @ts-ignore
+      tempObj.endpoint = (await cli.prompt(enter_your_check_point, { required: false })) || '/ping'
+      // @ts-ignore
+      tempObj.response = await cli.prompt(enter_your_response, { required: true });
+      // @ts-ignore
+      tempObj.scheme = (await cli.prompt(enter_your_scheme, { required: false })) || 'http';
+      healthChecks.push(tempObj);
+    }
 
     // @ts-ignore
     deployType = await inquirer.prompt<{ name: string }>({
@@ -218,6 +223,7 @@ export default class Add extends Command {
             entrypoint: null,
             environments,
             git: null,
+            // @ts-ignore
             healthChecks,
             image,
             labels,
@@ -245,11 +251,22 @@ export default class Add extends Command {
 
       // #0: image_name
       git.image_name = await cli.prompt('Enter your image name', { required: true });
-      
+
       // #1: url
       git.url = await cli.prompt(enter_your_git_url_msg, { required: true });
       if (!git.url.endsWith('.git')) {
         git.url + '.git'
+      }
+
+      git.url = git.url.toLowerCase();
+      if (git.url.indexOf('gitlab')) {
+        git.type = 'GITHUB';
+      }
+      else if (git.url.toLowerCase.indexOf('github')) {
+        git.type = 'GITLAB';
+      } 
+      else {
+        git.type = 'SAKKUGIT';
       }
 
       // #2: username

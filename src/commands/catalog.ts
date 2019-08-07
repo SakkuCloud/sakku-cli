@@ -63,17 +63,17 @@ export default class Catalog extends Command {
         })
         .then(function (result) {
           // @ts-ignore
-          appDataObj.cpu = parseInt(result);
+          appDataObj.cpu = parseFloat(result);
           return cli.prompt(enter_your_ram_msg, { required: true });
         })
         .then(function (result) {
           // @ts-ignore
-          appDataObj.mem = parseInt(result);
+          appDataObj.mem = parseFloat(result);
           return cli.prompt(enter_your_disk_msg, { required: true });
         })
         .then(function (result) {
           // @ts-ignore
-          appDataObj.disk = parseInt(result);
+          appDataObj.disk = parseFloat(result);
           return cli.prompt(enter_your_app_name_msg, { required: true });
         })
         .then(function (result) {
