@@ -30,3 +30,8 @@ export const w8_msg = 'please wait...';
 export const abort_msg = 'abort! :(';
 export const done_msg = 'done! :)';
 export const exec_exit_msg = '\nEnding session\n';
+export const enter_your_instance_msg = 'Enter your the instance number you want'
+export const enter_your_check_point = 'Enter your check point for health check (default is /ping)'
+export const enter_your_response = 'Enter your reponse for health check'
+export const enter_your_scheme = 'Enter your scheme for health checkw (default is http)'
+
