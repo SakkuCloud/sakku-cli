@@ -1,6 +1,10 @@
+// Native Modules
+import * as path from 'path';
+
+// External Modules
 import {Command} from '@oclif/command';
 import * as fs from 'fs-extra';
-import * as path from 'path';
+
 
 export async function readFromConfigSync(ctx: any) {
   return fs.readFile(path.join(ctx.config.configDir, 'config.json'), 'utf-8');

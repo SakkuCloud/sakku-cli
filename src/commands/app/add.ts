@@ -262,7 +262,7 @@ export default class Add extends Command {
       if (git.url.indexOf('gitlab')) {
         git.type = 'GITHUB';
       }
-      else if (git.url.toLowerCase.indexOf('github')) {
+      else if (git.url.indexOf('github')) {
         git.type = 'GITLAB';
       } 
       else {
