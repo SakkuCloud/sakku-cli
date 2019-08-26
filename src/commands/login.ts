@@ -37,8 +37,8 @@ ${color.cyan('❯ Login by Username & Password')}
       choices: [{ name: 'Login by Username & Password' }, { name: 'Login by Browser' }]
     };
 
-    const maxRepeat: number = 10;
-    const waitTime: number = 5000;
+    const maxRepeat: number = 10;    // for login with browser
+    const waitTime: number = 5000;   // for login with browser
     const code = makeId();
     const answer: { way: string } = await inquirer.prompt([question]);
 
@@ -46,11 +46,11 @@ ${color.cyan('❯ Login by Username & Password')}
       user.username = await cli.prompt(messages.username_req, { required: true });
       user.password = await cli.prompt(messages.password_req, { required: true, type: 'hide' });
       try {
-        let data = (await authService.login(user)).data;
-        await writeToken(this, { token: data.result });
-        let value = await authService.overview(this);
+        let data = (await authService.login(user)).data;   // sends user credentials to the server
+        await writeToken(this, { token: data.result });    // write the access token in the file
+        let value = await authService.overview(this);      // sends request the get the user's config
         let overview = JSON.stringify(value.data.result);
-        writeOverview(this, overview)
+        await writeOverview(this, overview)                // write the user's config to the file
         this.log(color.green(messages.loggedin));
       }
       catch (e) {

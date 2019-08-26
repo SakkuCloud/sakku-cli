@@ -18,7 +18,7 @@ export default class Whoami extends Command {
 
   static flags = {
     help: flags.help({ char: 'h' }),
-    complete: flags.boolean({ char: 'c' })
+    complete: flags.boolean({ char: 'c',  description: 'Shows the complete user info & stats' })
   };
 
   async run() {
