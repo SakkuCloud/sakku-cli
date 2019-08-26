@@ -74,93 +74,73 @@ export default class Exec extends Command {
       else {
         let instances = result.instances;
         let choices: { name: string }[] = [];
-        // @ts-ignore
         instances.forEach(ins => {
-          // @ts-ignore
-          choices.push({ name: ins.containerId });
+          choices.push({ name: ins.containerId.toString() });
         });
-        await inquirer.prompt({
+
+        let answer: { instance: string } = await inquirer.prompt({
           name: 'instance',
           message: 'which instance :',
           type: 'list',
           choices
-        })
-          .then(async answer => {
-            let firstLine = false;
-            let initData = {
-              AttachStdin: true,
-              AttachStdout: true,
-              AttachStderr: true,
-              DetachKeys: 'ctrl-d',
-              Tty: flags.tty,
-              Cmd: [
-                args.cmd
-              ],
-              Env: []
-            };
+        });
 
-            // @ts-ignore
-            let url = await instances.find(value => value.containerId === answer.instance!)!.workerHost as string;
-            let originUrl = 'https://' + url + ':' + socketPort;
+        let url = await instances.find(value => value.containerId.toString() === answer.instance!)!.workerHost as string;
+        let originUrl = 'https://' + url + ':' + socketPort;
+        let appUrl = 'wss://' + url + ':' + socketPort + '/exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
 
-            // @ts-ignore
-            let appUrl = 'wss://' + url + ':' + socketPort + '/exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
+        if (args.cmd.toLowerCase() === 'seyed') {
+          this.log('Salam Seyed! 1398/05/06');
+        }
 
-            if (args.cmd.toLowerCase() === 'seyed') {
-              this.log('Salam Seyed! 1398/05/06');
-            }
+        const ws = new WebSocket(appUrl, {
+          perMessageDeflate: false,
+          origin: originUrl
+        });
 
-            const ws = new WebSocket(appUrl, {
-              perMessageDeflate: false,
-              origin: originUrl
-            });
+        ws.on('open', function open() {
+          console.log(messages.connectionSuccess);
+        });
 
-            ws.on('open', function open() {
-              console.log('Connection established successfully');
-            });
+        ws.on('message', function incoming(data: any) {
+          process.stdin.pause();
+          process.stdout.write(data);
+          process.stdin.resume();
+        });
 
-            ws.on('message', function incoming(data: any) {
-              process.stdin.pause();
-              process.stdout.write(data);
-              process.stdin.resume();
-            });
+        ws.on('error', function incoming(error: any) {
+          console.log(messages.connectionFail);
+        });
 
-            ws.on('error', function incoming(error: any) {
-              console.log('Can not connect to remote host!');
-            });
+        let rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout,
+          terminal: false,
+        });
 
-            // @ts-ignore
-            let rl = readline.createInterface({
-              input: process.stdin,
-              output: process.stdout,
-              terminal: false,
-            });
-
-            if (flags.interactive) {
-              process.stdin.on('data', data => {
-                data = data.toString();
-                ws.send(data);
-                if (data == DetachKey) {
-                  rl.emit('SIGINT', 'ctrl-d');
-                }
-              });
-
-              // @ts-ignore
-              process.stdin.setRawMode(true);
-              process.stdin.resume();
-
-              rl.on('SIGINT', function (data: any) { // SIGINT Signal
-                if (data === 'ctrl-d') {
-                  ws.emit('end');
-                  process.stdin.pause();
-                  process.stdout.write(messages.exec_exit_msg);
-                  process.exit(0);
-                }
-              });
+        if (flags.interactive) {
+          process.stdin.on('data', data => {
+            data = data.toString();
+            ws.send(data);
+            if (data == DetachKey) {
+              rl.emit('SIGINT', 'ctrl-d');
             }
           });
-      }
 
+          // @ts-ignore
+          process.stdin.setRawMode(true);
+          process.stdin.resume();
+
+          rl.on('SIGINT', function (data: any) { // SIGINT Signal
+            if (data === 'ctrl-d') {
+              ws.emit('end');
+              process.stdin.pause();
+              process.stdout.write(messages.exec_exit_msg);
+              process.exit(0);
+            }
+          });
+        }
+      }
     }
     catch (err) {
       common.logError(err);

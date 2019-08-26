@@ -10,7 +10,6 @@ import { readLocalApps } from '../utils/read-from-file';
 import { readToken } from '../utils/read-token';
 import { common } from '../utils/common';
 
-
 export const appService = {
   create,
   stop,
@@ -63,15 +62,18 @@ function list(ctx: Command, page = 1, data: IApp[] = []): Promise<IApp[]> {
       size: 15
     }
   })
-  .then(res => {
-    if (res && res.data && !res.data.error && res.data.result) {
-      data.push(...res.data.result);
-      accept(res.data.result.length > 0 ? list(ctx, page + 1, data) : data);
-    } else {
-      reject(res);
-    }
-  })
-  .catch(err => reject(err)));
+    .then(res => {
+      if (res && res.data && !res.data.error && res.data.result) {
+        data.push(...res.data.result);
+        accept(res.data.result.length > 0 ? list(ctx, page + 1, data) : data);
+      }
+      else {
+        reject(res);
+      }
+    })
+    .catch(err => {
+      throw common.handleRequestError(err)
+    }));
 }
 
 function getAppFromFile(ctx: Command, id: string) {
@@ -82,7 +84,7 @@ function getAppFromFile(ctx: Command, id: string) {
       if (app.id.toString().startsWith(id))
         return app;
     });
-  } 
+  }
   catch (e) {
     return null;
   }
@@ -90,32 +92,50 @@ function getAppFromFile(ctx: Command, id: string) {
 
 function scale(ctx: any, id: any, data: any) {
   let url = app_url + '/' + id + '/config'
-  return axios.put(url, data, { headers: getHeader(ctx) });
+  return axios.put(url, data, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
 }
 
 function getCollaborators(ctx: any, id: any) {
   let url = app_url + '/' + id + '/collaborators'
-  return axios.get(url, { headers: getHeader(ctx) });
+  return axios.get(url, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
 }
 
 function addCollaborator(ctx: any, id: any, data: any) {
   let url = app_url + '/' + id + '/collaborators?level=7'
-  return axios.post(url, data, { headers: getHeader(ctx) });
+  return axios.post(url, data, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
 }
 
 function editCollaborator(ctx: any, id: any, cid: any, data: any) {
   let url = app_url + '/' + id + '/collaborators/' + cid + '?level=7'
-  return axios.post(url, data, { headers: getHeader(ctx) });
+  return axios.post(url, data, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
 }
 
 function deleteCollaborator(ctx: any, id: any, cid: any) {
   let url = app_url + '/' + id + '/collaborators/' + cid;
-  return axios.delete(url, { headers: getHeader(ctx) });
+  return axios.delete(url, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
 }
 
 function logs(ctx: any, id: any, time: any) {
   let url = app_url + '/' + id + '/logs?time=' + time;
-  return axios.get(url, { headers: getHeader(ctx) });
+  return axios.get(url, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
 }
 
 function getHeader(ctx: Command) {
@@ -123,7 +143,6 @@ function getHeader(ctx: Command) {
 }
 
 function getToken(ctx: Command) {
-  // @ts-ignore
   return readToken(ctx).split(' ')[1];
 }
 

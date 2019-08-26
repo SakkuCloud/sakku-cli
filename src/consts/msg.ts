@@ -41,5 +41,7 @@ export const messages = {
   unexpected: 'Unexpected Error',
   not_logged_in: 'You are not logged in. Please Login with your credentials',
   appIdName: 'Enter app id/name',
-  noInstance: 'There is no instance!'
+  noInstance: 'There is no instance!',
+  connectionSuccess: 'Connection established successfully.',
+  connectionFail: 'Can not connect to remote host!',
 }
