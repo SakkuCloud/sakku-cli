@@ -39,5 +39,7 @@ export const messages = {
   tryToLog: 'Logging in to Sakku...',
   incorrect_credentials: 'Incorrect username or password.',
   unexpected: 'Unexpected Error',
-  not_logged_in: 'You are not logged in. Please Login with your credentials'
+  not_logged_in: 'You are not logged in. Please Login with your credentials',
+  appIdName: 'Enter app id/name',
+  noInstance: 'There is no instance!'
 }
