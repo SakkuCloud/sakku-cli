@@ -26,7 +26,7 @@ export default class Whoami extends Command {
 
     this.log(messages.w8_msg);
     try {
-      const res = await authService.overview(this);
+      const res = await authService.overview(this); // sends request the get the user's config
       const data = res.data.result;
       if (data) {
         if (flags.complete) {
