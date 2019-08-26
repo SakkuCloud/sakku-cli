@@ -34,5 +34,10 @@ export const messages = {
   enter_your_instance_msg: 'Enter your the instance number you want',
   enter_your_check_point: 'Enter your check point for health check (default is /ping)',
   enter_your_response: 'Enter your response for health check',
-  enter_your_scheme: 'Enter your scheme for health check (default is http)'
+  enter_your_scheme: 'Enter your scheme for health check (default is http)',
+  loggedin: 'You are logged in.',
+  tryToLog: 'Logging in to Sakku...',
+  incorrect_credentials: 'Incorrect username or password.',
+  unexpected: 'Unexpected Error',
+  not_logged_in: 'You are not logged in. Please Login with your credentials'
 }

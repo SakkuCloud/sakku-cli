@@ -1,7 +1,6 @@
 // External Modules
 import color from '@oclif/color';
 import { Command, flags } from '@oclif/command';
-import { AxiosError } from 'axios';
 import cli from 'cli-ux';
 import * as inquirer from 'inquirer';
 const opn = require('opn');
@@ -38,6 +37,8 @@ ${color.cyan('❯ Login by Username & Password')}
       choices: [{ name: 'Login by Username & Password' }, { name: 'Login by Browser' }]
     };
 
+    const maxRepeat: number = 10;
+    const waitTime: number = 5000;
     const code = makeId();
     const answer: { way: string } = await inquirer.prompt([question]);
 
@@ -50,116 +51,56 @@ ${color.cyan('❯ Login by Username & Password')}
         let value = await authService.overview(this);
         let overview = JSON.stringify(value.data.result);
         writeOverview(this, overview)
-        this.log(color.green("You're logged in."));
+        this.log(color.green(messages.loggedin));
       }
       catch (e) {
         common.logError(e);
       }
     }
     else { // login with browser
+      try {
+        await opn(`${auth_url}${code}`, { wait: false });
+      }
+      catch (e) {
+        cli.url(`${color.green(messages.click_here_to_login_msg)}`, `${auth_url}${code}`);
+      }
 
-    }
+      cli.action.start(messages.tryToLog);
+      await cli.wait(waitTime);
+      let isLoggedin = false;
+      let repeatedCount = 0;
 
-
-
-    inquirer.prompt([question])
-      .then(answers => {
-        // @ts-ignore
-        switch (answers.way) {
-          case Login.question.choices[0].name: // login with username & password
-            cli.prompt(username_req, { required: true })
-              .then(user => {
-                /*if (user.indexOf('@') === -1) {
-                  user += usernameDomain;
-                }*/
-                Login.user.username = user;
-              })
-              .then(() => {
-                cli.prompt(password_req, { required: true, type: 'hide' })
-                  .then(pass => {
-                    Login.user.password = pass;
-                  })
-                  .then(() => {
-                    authService.login(Login.user)
-                      .then(value => value.data)
-                      .then(data => {
-                        if (data.error) {
-                          this.log(data.message);
-                        }
-                        else {
-                          writeToken(this, { token: data.result })
-                            .then(() => {
-                              try {
-                                authService.overview(this)
-                                  .then(value => JSON.stringify(value.data.result))
-                                  .then(overview => {
-                                    writeOverview(this, overview)
-                                      .catch(err => {
-                                        this.log(err);
-                                      });
-                                  })
-                                  .catch(err => {
-                                    this.log(err.code || (err.response && err.response.status.toString()));
-                                  });
-                              }
-                              catch (e) {
-                                this.log(e);
-                              }
-                              this.log(color.green("you're logged in"));
-                            })
-                            .catch(e => {
-                              this.log(e);
-                            });
-                        }
-                      })
-                      .catch((err: AxiosError) => {
-
-                      });
-                  });
-              });
-            break;
-          case Login.question.choices[1].name: // login with browser
-            opn(`${auth_url}${code}`, { wait: false })
-              .catch(() => {
-                cli.url(`${color.green(click_here_to_login_msg)}`,
-                  `${auth_url}${code}`);
-              })
-              .then(async () => {
-                cli.action.start('logging in to Sakku...');
-                await cli.wait(5000);
-                let isLoggedin = false;
-                let repeatedCount = 0;
-                while (!isLoggedin) {
-                  await cli.wait(5000);
-                  try {
-                    let resp = await authService.authenticate(code);
-                    writeToken(this, { token: resp.data.result });
-                    isLoggedin = true;
-                  }
-                  catch {
-                    if (repeatedCount > 10) {
-                      this.log(color.red(problem_in_login_msg));
-                      break;
-                    }
-                    repeatedCount++;
-                  }
-                }
-                if (isLoggedin) {
-                  try {
-                    let overview = await authService.overview(this).then(value => JSON.stringify(value.data.result));
-                    writeOverview(this, overview);
-                  }
-                  catch (e) {
-                    this.log(e);
-                  }
-                  cli.action.stop(done_msg);
-                  this.log(`${color.green('you are logged in :)')}`);
-                }
-                else {
-                  cli.action.stop(abort_msg);
-                }
-              });
+      while (!isLoggedin) {
+        await cli.wait(waitTime);
+        try {
+          let resp = await authService.authenticate(code);
+          await writeToken(this, { token: resp.data.result });
+          isLoggedin = true;
         }
-      });
+        catch {
+          if (repeatedCount > maxRepeat) {
+            this.log(color.red(messages.problem_in_login_msg));
+            break;
+          }
+          repeatedCount++;
+        }
+      }
+
+      if (isLoggedin) {
+        try {
+          let value = await authService.overview(this);
+          let overview = JSON.stringify(value.data.result);
+          writeOverview(this, overview);
+        }
+        catch (e) {
+          common.logError(e);
+        }
+        cli.action.stop(messages.done_msg);
+        this.log(color.green(messages.loggedin));
+      }
+      else {
+        cli.action.stop(messages.abort_msg);
+      }
+    }
   }
 }
