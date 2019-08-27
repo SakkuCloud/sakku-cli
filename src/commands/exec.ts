@@ -10,11 +10,12 @@ const WebSocket = require('ws');
 
 // Project Modules
 import { appService } from '../_service/app.service';
-import { exec_exit_msg } from '../consts/msg';
+import { messages } from '../consts/msg';
 import { DetachKey, socketPort } from '../consts/val';
+import { common } from '../utils/common';
 
 export default class Exec extends Command {
-  static description = 'execute command on instance';
+  static description = 'Execute command on the selected instance';
 
   static examples = [
     `$ sakku exec`,
@@ -45,138 +46,104 @@ export default class Exec extends Command {
   async run() {
     const { args, flags } = this.parse(Exec);
     let appId: string;
+    let data;
 
     if (args.app)
       appId = args.app;
     else
-      appId = await cli.prompt('enter app id/name');
+      appId = await cli.prompt(messages.appIdName);
 
-    let data;
 
     try {
       // @ts-ignore
       if (!isNaN(appId)) {
-        data = await appService.get(this, appId)
-          .then(value => value.data);
+        data = (await appService.get(this, appId)).data;
       }
       else {
-        data = await appService.getByName(this, appId)
-          .then(value => value.data);
+        data = (await appService.getByName(this, appId)).data
       }
 
       if (data.error) {
-        this.log('error code:', data.code, data.message);
+        throw { code: data.code, message: data.message };
+      }
+
+      let result = data.result!;
+      if (result.instances.length === 0) {
+        this.log(messages.noInstance);
       }
       else {
-        let result = data.result!;
-        if (result.instances.length === 0) {
-          this.log('there is no instance!');
+        let instances = result.instances;
+        let choices: { name: string }[] = [];
+        instances.forEach(ins => {
+          choices.push({ name: ins.containerId.toString() });
+        });
+
+        let answer: { instance: string } = await inquirer.prompt({
+          name: 'instance',
+          message: 'which instance :',
+          type: 'list',
+          choices
+        });
+
+        let url = await instances.find(value => value.containerId.toString() === answer.instance!)!.workerHost as string;
+        let originUrl = 'https://' + url + ':' + socketPort;
+        let appUrl = 'wss://' + url + ':' + socketPort + '/exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
+
+        if (args.cmd.toLowerCase() === 'seyed') {
+          this.log('Salam Seyed! 1398/05/06');
         }
-        else {
-          let instances = result.instances;
-          let choices: { name: string }[] = [];
-          // @ts-ignore
-          instances.forEach(ins => {
-            // @ts-ignore
-            choices.push({ name: ins.containerId });
+
+        const ws = new WebSocket(appUrl, {
+          perMessageDeflate: false,
+          origin: originUrl
+        });
+
+        ws.on('open', function open() {
+          console.log(messages.connectionSuccess);
+        });
+
+        ws.on('message', function incoming(data: any) {
+          process.stdin.pause();
+          process.stdout.write(data);
+          process.stdin.resume();
+        });
+
+        ws.on('error', function incoming(error: any) {
+          console.log(messages.connectionFail);
+        });
+
+        let rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout,
+          terminal: false,
+        });
+
+        if (flags.interactive) {
+          process.stdin.on('data', data => {
+            data = data.toString();
+            ws.send(data);
+            if (data == DetachKey) {
+              rl.emit('SIGINT', 'ctrl-d');
+            }
           });
-          await inquirer.prompt({
-            name: 'instance',
-            message: 'which instance :',
-            type: 'list',
-            choices
-          })
-            .then(async answer => {
-              let firstLine = false;
-              let initData = {
-                AttachStdin: true,
-                AttachStdout: true,
-                AttachStderr: true,
-                DetachKeys: 'ctrl-d',
-                Tty: flags.tty,
-                Cmd: [
-                  args.cmd
-                ],
-                Env: []
-              };
 
-              // @ts-ignore
-              let url = await instances.find(value => value.containerId === answer.instance!)!.workerHost as string;
-              let originUrl = 'https://' + url + ':' + socketPort;
+          // @ts-ignore
+          process.stdin.setRawMode(true);
+          process.stdin.resume();
 
-              // @ts-ignore
-              let appUrl = 'wss://' + url + ':' + socketPort + '/exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
-
-              if (args.cmd.toLowerCase() === 'seyed') {
-                this.log('Salam Seyed! 1398/05/06');
-              }
-
-              const ws = new WebSocket(appUrl, {
-                perMessageDeflate: false,
-                origin: originUrl
-              });
-
-              ws.on('open', function open() {
-                console.log('Connection established successfully');
-              });
-
-              ws.on('message', function incoming(data: any) {
-                process.stdin.pause();
-                process.stdout.write(data);
-                process.stdin.resume();
-              });
-
-              ws.on('error', function incoming(error: any) {
-                console.log('Can not connect to remote host!');
-              });
-
-              // @ts-ignore
-              let rl = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout,
-                terminal: false,
-              });
-
-              if (flags.interactive) {
-                process.stdin.on('data', data => {
-                  data = data.toString();
-                  ws.send(data);
-                  if (data == DetachKey) {
-                    rl.emit('SIGINT', 'ctrl-d');
-                  }
-                });
-
-                // @ts-ignore
-                process.stdin.setRawMode(true);
-                process.stdin.resume();
-
-                rl.on('SIGINT', function (data: any) { // SIGINT Signal
-                  if (data === 'ctrl-d') {
-                    ws.emit('end');
-                    process.stdin.pause();
-                    process.stdout.write(exec_exit_msg);
-                    process.exit(0);
-                  }
-                });
-              }
-            });
+          rl.on('SIGINT', function (data: any) { // SIGINT Signal
+            if (data === 'ctrl-d') {
+              ws.emit('end');
+              process.stdin.pause();
+              process.stdout.write(messages.exec_exit_msg);
+              process.exit(0);
+            }
+          });
         }
       }
     }
     catch (err) {
-      const code = err.code || (err.response && err.response.status.toString());
-      if (err.response && err.response.data) {
-        this.log('An error occured!', code + ':', err.response.data.message || '');
-      }
-      else if (err.response && err.response.statusText) {
-        this.log('An error occured!', code + ':', err.response.data.statusText || '');
-      }
-      else if (code === 'ENOENT') {
-        this.log('An error occured!', 'You are not logged in');
-      }
-      else {
-        this.log('An error occured!', code);
-      }
+      common.logError(err);
     }
   }
 }

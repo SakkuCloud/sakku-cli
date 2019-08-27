@@ -5,12 +5,8 @@ import cli from 'cli-ux';
 
 // Project Modules
 import { catalogService } from '../_service/catalog.service';
-import {
-  enter_your_core_msg,
-  enter_your_ram_msg,
-  enter_your_disk_msg,
-  enter_your_app_name_msg
-} from '../consts/msg';
+import { messages } from '../consts/msg';
+import { common } from '../utils/common';
 
 export default class Catalog extends Command {
   static description = 'List all different Program Catalogs';
@@ -22,22 +18,21 @@ export default class Catalog extends Command {
 
   static flags = {
     help: flags.help({ char: 'h' }),
-    add: flags.help({ char: 'a' })
+    add: flags.boolean({ char: 'a' })
   };
-
 
   async run() {
     const { args, flags } = this.parse(Catalog);
-    // @ts-ignore
-    let categories;
+    let categories: any;
     let id: any;
-    let appDataObj = { cpu: null, mem: null, disk: null, name: null };
+    let appDataObj:
+      { cpu: null | number, mem: null | number, disk: null | number, name: null | number }
+      = { cpu: null, mem: null, disk: null, name: null };
     let self = this;
-    let appId: any;
+    let appId: string;
     let apps: any;
 
-    // @ts-ignore
-    if (flags.add) {
+    if (flags.hasOwnProperty('add') && flags.add === true) {
       catalogService.getAllCatalogs(this)
         .then(function (result) {
           return result.data.result;
@@ -48,7 +43,6 @@ export default class Catalog extends Command {
           return inquirer.prompt([question])
         })
         .then(function (answer) {
-          // @ts-ignore
           id = findCategoryId(categories, answer);
           return catalogService.getAllCatalogApps(self, id)
         })
@@ -59,44 +53,28 @@ export default class Catalog extends Command {
         })
         .then(function (answer) {
           appId = findAppId(apps, answer);
-          return cli.prompt(enter_your_core_msg, { required: true });
+          return cli.prompt(messages.enter_your_core_msg, { required: true });
         })
         .then(function (result) {
-          // @ts-ignore
           appDataObj.cpu = parseFloat(result);
-          return cli.prompt(enter_your_ram_msg, { required: true });
+          return cli.prompt(messages.enter_your_ram_msg, { required: true });
         })
         .then(function (result) {
-          // @ts-ignore
           appDataObj.mem = parseFloat(result);
-          return cli.prompt(enter_your_disk_msg, { required: true });
+          return cli.prompt(messages.enter_your_disk_msg, { required: true });
         })
         .then(function (result) {
-          // @ts-ignore
           appDataObj.disk = parseFloat(result);
-          return cli.prompt(enter_your_app_name_msg, { required: true });
+          return cli.prompt(messages.enter_your_app_name_msg, { required: true });
         })
         .then(function (result) {
-          appDataObj.name = result;
           return catalogService.catalogDeploy(self, appId, appDataObj);
         })
-        .then(function (result) {
+        .then(function () {
           console.log('Your app is successfully submitted.');
         })
         .catch(function (err) {
-          const code = err.code || (err.response && err.response.status.toString());
-          if (err.response && err.response.data) {
-            console.log('An error occured!', code + ':', err.response.data.message || '');
-          }
-          else if (err.response && err.response.statusText) {
-            console.log('An error occured!', code + ':', err.response.data.statusText || '');
-          }
-          else if (code === 'ENOENT') {
-            console.log('An error occured!', 'You are not logged in');
-          }
-          else {
-            console.log('An error occured!', code);
-          }
+          common.logError(err);
         });
     }
     else {
@@ -119,24 +97,18 @@ export default class Catalog extends Command {
           printApps();
         })
         .catch(function (err) {
-          const code = err.code || (err.response && err.response.status.toString());
-          if (err.response && err.response.data) {
-            console.log('An error occured!', code + ':', err.response.data.message || '');
-          }
-          else if (err.response && err.response.statusText) {
-            console.log('An error occured!', code + ':', err.response.data.statusText || '');
-          }
-          else if (code === 'ENOENT') {
-            console.log('An error occured!', 'You are not logged in');
-          }
-          else {
-            console.log('An error occured!', code);
-          }
+          common.logError(err);
         });
     }
 
     function createQuestionCategoty(categories: any) {
-      let question = {
+      let question:
+        {
+          name: string,
+          message: string,
+          type: string,
+          choices: { name: string }[]
+        } = {
         name: 'category',
         message: 'Choose your category: ',
         type: 'list',
@@ -144,7 +116,6 @@ export default class Catalog extends Command {
       };
 
       for (let i = 0; i < categories.length; i++) {
-        // @ts-ignore
         question.choices.push(categories[i].name);
       }
 
@@ -153,7 +124,13 @@ export default class Catalog extends Command {
 
 
     function createQuestionApp(categories: any) {
-      let question = {
+      let question:
+        {
+          name: string,
+          message: string,
+          type: string,
+          choices: { name: string }[]
+        } = {
         name: 'app',
         message: 'Choose your app: ',
         type: 'list',
@@ -161,7 +138,6 @@ export default class Catalog extends Command {
       };
 
       for (let i = 0; i < categories.length; i++) {
-        // @ts-ignore
         question.choices.push(categories[i].name);
       }
 
@@ -194,7 +170,7 @@ export default class Catalog extends Command {
       }
       else {
         for (let i = 0; i < apps.length; i++) {
-          console.log('#', i + 1, '->', apps[i].name);
+          console.log((i + 1) + '-', apps[i].name);
         }
       }
     }

@@ -5,6 +5,8 @@ import { Tree } from 'cli-ux/lib/styled/tree';
 
 // Project Modules
 import { authService } from '../_service/auth.service';
+import { messages } from '../consts/msg';
+import { common } from '../utils/common';
 
 export default class Whoami extends Command {
   static description = 'Shows username or complete user info and stats';
@@ -16,39 +18,33 @@ export default class Whoami extends Command {
 
   static flags = {
     help: flags.help({ char: 'h' }),
-    complete: flags.boolean({ char: 'c' })
+    complete: flags.boolean({ char: 'c',  description: 'Shows the complete user info & stats' })
   };
 
   async run() {
     const { flags } = this.parse(Whoami);
 
+    this.log(messages.w8_msg);
     try {
-      this.log('Please Wait ...');
-      const res = await authService.overview(this);
+      const res = await authService.overview(this); // sends request the get the user's config
       const data = res.data.result;
       if (data) {
         if (flags.complete) {
           generateTree(data).display();
         }
-        else {
-          // @ts-ignore
+        else if (data.user) {
           this.log(data.user.username);
+        }
+        else {
+          this.log(messages.unexpected);
         }
       }
       else {
-        this.log('Unexpected Error');
+        this.log(messages.unexpected);
       }
     }
     catch (e) {
-      if (typeof e === 'object' && e.hasOwnProperty('code') && e.code === 'ENOENT') {
-        this.log('You are not logged in. Please Login with your credentials.');
-      }
-      else if (typeof e.response === 'object' && e.hasOwnProperty('status')) {
-        this.log('Can not fetch user data from server, error code is: ', e.response.status, 'Please try later. If the error persists, log in again');
-      }
-      else if (typeof e === 'object' && e.hasOwnProperty('code')) {
-        this.log('There is a problem! error Code is: ', e.code, 'If the error persists, log in again');
-      }
+      common.logError(e);
     }
   }
 }
