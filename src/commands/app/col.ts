@@ -6,6 +6,7 @@ import * as inquirer from 'inquirer';
 // Project Modules
 import { appService } from '../../_service/app.service';
 import { common } from '../../utils/common';
+import { messages } from '../../consts/msg';
 
 export default class Col extends Command {
   static description = 'Adds new collaborators, as well ad showing the list of collaborators';
@@ -50,7 +51,7 @@ export default class Col extends Command {
       appId = args.app;
     }
     else {
-      appId = await cli.prompt('Enter your app id', { required: true });
+      appId = await cli.prompt(messages.enter_app_id, { required: true });
     }
 
     if (flags.add) {
@@ -68,7 +69,7 @@ export default class Col extends Command {
 
     function printCollaborators(collaborators: Array<Object>) {
       if (collaborators.length === 0) {
-        console.log('Collaborator List is Empty');
+        console.log(messages.empty_list);
       }
       else {
         for (let i = 0; i < collaborators.length; i++) {
@@ -90,12 +91,12 @@ export default class Col extends Command {
     }
 
     function addCol() {
-      let colData = {
+      let colData: { accessLevel: string, email: string, imageRegistry: string } = {
         accessLevel: 'VIEW',
         email: '',
         imageRegistry: ''
       }
-      return cli.prompt('Enter your collaborator\'s email', { required: true })
+      return cli.prompt(messages.enter_col_email, { required: true })
         .then(answer => {
           colData.email = answer;
           return inquirer.prompt([question])
@@ -103,15 +104,14 @@ export default class Col extends Command {
         .then(function (answer) {
           // @ts-ignore
           colData.accessLevel = answer;
-          return cli.prompt('Enter your collaborator\'s image registry (Optional)', { required: false });
+          return cli.prompt(messages.enter_col_image_reg, { required: false });
         })
         .then(function (answer) {
-          // @ts-ignore
           colData.imageRegistry = answer;
           return appService.addCollaborator(self, appId, colData)
         })
         .then(result => {
-          console.log('collaborator added successfully!');
+          console.log(messages.col_add_success);
         })
         .catch(function (err) {
           common.logError(err);
@@ -125,10 +125,10 @@ export default class Col extends Command {
         email: '',
         imageRegistry: ''
       }
-      cli.prompt('Enter your collaborator\'s id', { required: true })
+      cli.prompt(messages.enter_col_id, { required: true })
         .then(function (answer) {
           cid = answer;
-          return cli.prompt('Enter your collaborator\'s email', { required: true })
+          return cli.prompt(messages.enter_col_email, { required: true })
         })
         .then(answer => {
           colData.email = answer;
@@ -137,15 +137,14 @@ export default class Col extends Command {
         .then(function (answer) {
           // @ts-ignore
           colData.accessLevel = answer;
-          return cli.prompt('Enter your collaborator\'s image registry (Optional)', { required: false });
+          return cli.prompt(messages.enter_col_image_reg, { required: false });
         })
         .then(function (answer) {
-          // @ts-ignore
           colData.imageRegistry = answer;
           return appService.editCollaborator(self, appId, cid, colData)
         })
         .then(result => {
-          console.log('collaborator edited successfully!');
+          console.log(messages.col_edit_success);
         })
         .catch(function (err) {
           common.logError(err);
@@ -154,18 +153,13 @@ export default class Col extends Command {
 
     function deleteCol() {
       let cid: string;
-      let colData = {
-        accessLevel: 'VIEW',
-        email: '',
-        imageRegistry: ''
-      }
-      cli.prompt('Enter your collaborator\'s id', { required: true })
+      cli.prompt(messages.enter_col_id, { required: true })
         .then(function (answer) {
           cid = answer;
           return appService.deleteCollaborator(self, appId, cid)
         })
         .then(result => {
-          console.log('collaborator deleted successfully!');
+          console.log(messages.col_del_success);
         })
         .catch(function (err) {
           common.logError(err);

@@ -41,6 +41,7 @@ export const messages = {
   unexpected: 'Unexpected Error',
   not_logged_in: 'You are not logged in. Please Login with your credentials',
   appIdName: 'Enter app id/name',
+  enter_app_id: 'Enter app id',
   noInstance: 'There is no instance!',
   connectionSuccess: 'Connection established successfully.',
   connectionFail: 'Can not connect to remote host!',
@@ -59,5 +60,12 @@ export const messages = {
   more_tag: 'Is there any/more tags (y or n)',
   enter_tag: 'Enter your tag',
   more_build_args: 'Is there any/more build arguments (y or n)',
-  enter_build_arg: 'Enter your build documentّ'
+  enter_build_arg: 'Enter your build document',
+  empty_list: 'Empty List',
+  enter_col_email: 'Enter your collaborator\'s email',
+  enter_col_image_reg: 'Enter your collaborator\'s image registry (Optional)',
+  col_add_success: 'Collaborator added successfully.',
+  col_edit_success: 'Collaborator edited successfully.',
+  col_del_success: 'Collaborator deleted successfully.',
+  enter_col_id: 'Enter your collaborator\'s id'
 }
