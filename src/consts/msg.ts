@@ -67,5 +67,11 @@ export const messages = {
   col_add_success: 'Collaborator added successfully.',
   col_edit_success: 'Collaborator edited successfully.',
   col_del_success: 'Collaborator deleted successfully.',
-  enter_col_id: 'Enter your collaborator\'s id'
+  enter_col_id: 'Enter your collaborator\'s id',
+  enter_local_image: 'please enter local image name',
+  enter_local_image_tag: 'Enter your local image tag (optional, default:latest)',
+  enter_new_image_name_tag: 'Enter your new image name and tag (required format: name:tag)',
+  deploySuccess: 'Deploy completed successfully.',
+  docker_not_running: 'Docker is not running! Run Docker or check your dockerd!',
+  docker_not_installed: 'Docker is not installed!'
 }

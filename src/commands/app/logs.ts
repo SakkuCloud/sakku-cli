@@ -1,7 +1,6 @@
 // External Modules
 import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
-import * as inquirer from 'inquirer';
 
 // Project Modules
 import { appService } from '../../_service/app.service';
