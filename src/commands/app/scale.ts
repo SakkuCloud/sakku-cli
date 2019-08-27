@@ -5,13 +5,8 @@ import * as inquirer from 'inquirer';
 
 // Project Modules
 import { appService } from '../../_service/app.service';
-// import {
-//   enter_your_instance_msg,
-//   enter_your_core_msg,
-//   enter_your_ram_msg,
-//   enter_your_disk_msg,
-// } from '../../consts/msg';
-
+import { common } from '../../utils/common';
+import { messages } from '../../consts/msg';
 
 export default class Scale extends Command {
   static description = 'scale app';
@@ -38,13 +33,13 @@ Enter your new Configuration`,
   async run() {
     const { args, flags } = this.parse(Scale);
     let self = this;
-    // @ts-ignore
-    let appData, appId: any;
+    let appData: any;
+    let appId: string;
     if (args.hasOwnProperty('app') && args.app) {
       appId = args.app;
     }
     else {
-      appId = await cli.prompt('Enter your app id', { required: true });
+      appId = await cli.prompt(messages.enter_app_id, { required: true });
     }
     let question = {
       name: 'config',
@@ -81,9 +76,7 @@ Enter your new Configuration`,
 
     appService.get(this, appId)
       .then(function (result) {
-        // @ts-ignore
         appData = result.data.result; minInstances = appData.configuration.minInstances; maxInstances = appData.configuration.maxInstances;
-        // @ts-ignore
         let scalingMode = appData.configuration.scalingMode;
         if (scalingMode.toLowerCase() === 'off') {
           scalingMode = 'Manual'
@@ -134,19 +127,7 @@ Enter your new Configuration`,
         console.log('Your new Configuration is saved.');
       })
       .catch(function (err) {
-        const code = err.code || (err.response && err.response.status.toString());
-        if (err.response && err.response.data) {
-          console.log('An error occured!', code + ':', err.response.data.message || '');
-        }
-        else if (err.response && err.response.statusText) {
-          console.log('An error occured!', code + ':', err.response.data.statusText || '');
-        }
-        else if (code === 'ENOENT') {
-          console.log('An error occured!', 'You are not logged in');
-        }
-        else {
-          console.log('An error occured!', code);
-        }
+        common.logError(err);
       });
 
     // @ts-ignore
@@ -164,7 +145,7 @@ Enter your new Configuration`,
     }
 
     function getScalingMode(answer: { config: string }) {
-      let mode;
+      let mode: string = '';
       switch (answer.config) {
         case 'Manual':
           mode = 'OFF'
