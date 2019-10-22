@@ -10,18 +10,7 @@ Sakku cli is trying to make real world even a better place!
 * [Usage](#usage)
 * [Commands](#commands)
 * [`sakku app`](#sakku-app)
-<!-- tocstop -->
-* [Usage](#usage)
-* [Commands](#commands)
-* [`sakku app`](#sakku-app)
-<!-- tocstop -->
-* [Usage](#usage)
-* [Commands](#commands)
-* [`sakku app`](#sakku-app)
-<!-- tocstop -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
+
 # Usage
 <!-- usage -->
 ```sh-session
