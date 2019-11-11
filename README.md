@@ -12,42 +12,7 @@ Sakku cli is trying to make real world even a better place!
 * [`sakku app`](#sakku-app)
 
 # Usage
-<!-- usage -->
-```sh-session
-$ npm install -g sakku
-$ sakku COMMAND
-running command...
-$ sakku (-v|--version|version)
-sakku/0.1.0 win32-x64 node-v8.16.0
-$ sakku --help [COMMAND]
-USAGE
-  $ sakku COMMAND
-...
-```
-<!-- usagestop -->
-```sh-session
-$ npm install -g sakku
-$ sakku COMMAND
-running command...
-$ sakku (-v|--version|version)
-sakku/0.0.11 win32-x64 node-v8.16.0
-$ sakku --help [COMMAND]
-USAGE
-  $ sakku COMMAND
-...
-```
-<!-- usagestop -->
-```sh-session
-$ npm install -g sakku
-$ sakku COMMAND
-running command...
-$ sakku (-v|--version|version)
-sakku/0.0.3 win32-x64 node-v10.15.3
-$ sakku --help [COMMAND]
-USAGE
-  $ sakku COMMAND
-...
-```
+
 <!-- usagestop -->
 ```sh-session
 $ npm install -g sakku
