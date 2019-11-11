@@ -9,7 +9,6 @@ Sakku cli is trying to make real world even a better place!
 <!-- toc -->
 * [Usage](#usage)
 * [Commands](#commands)
-* [`sakku app`](#sakku-app)
 
 # Usage
 
