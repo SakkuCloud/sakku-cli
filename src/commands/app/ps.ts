@@ -6,6 +6,7 @@ import { cli } from 'cli-ux';
 import { appService } from '../../_service/app.service';
 import { IAppsAccess, IAppsPort } from '../../interfaces/app.interface';
 import { writeApps } from '../../utils/writer';
+import { common } from '../../utils/common';
 
 export default class PS extends Command {
   static description = 'showing all [running/all] app';
@@ -65,19 +66,7 @@ export default class PS extends Command {
         });
     }
     catch (err) {
-      const code = err.code || (err.response && err.response.status.toString());
-      if (err.response && err.response.data) {
-        console.log('An error occured!', code + ':', err.response.data.message || '');
-      }
-      else if (err.response && err.response.statusText) {
-        console.log('An error occured!', code + ':', err.response.data.statusText || '');
-      }
-      else if (code === 'ENOENT') {
-        console.log('An error occured!', 'You are not logged in');
-      }
-      else {
-        console.log('An error occured!', code);
-      }
+      common.logError(err);
     }
   }
 }

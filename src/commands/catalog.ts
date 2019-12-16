@@ -170,7 +170,7 @@ export default class Catalog extends Command {
       }
       else {
         for (let i = 0; i < apps.length; i++) {
-          console.log('#', i + 1, '->', apps[i].name);
+          console.log((i + 1) + '-', apps[i].name);
         }
       }
     }

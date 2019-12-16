@@ -1,10 +1,11 @@
 // External Modules
 import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
-import * as inquirer from 'inquirer';
 
 // Project Modules
 import { appService } from '../../_service/app.service';
+import { common } from '../../utils/common';
+import { messages } from '../../consts/msg';
 
 export default class Logs extends Command {
   static description = 'Shows logs of an app';
@@ -42,7 +43,7 @@ export default class Logs extends Command {
       appId = args.app;
     }
     else {
-      appId = await cli.prompt('Enter your app id', { required: true });
+      appId = await cli.prompt(messages.enter_app_id, { required: true });
     }
 
     let dt = new Date();
@@ -61,25 +62,8 @@ export default class Logs extends Command {
         intervalLog();
       })
       .catch(function (err) {
-        handleError(err);
+        common.logError(err);
       });
-
-    // @ts-ignore
-    function handleError(err) {
-      const code = err.code || (err.response && err.response.status.toString());
-      if (err.response && err.response.data) {
-        console.log('An error occured!', code + ':', err.response.data.message || '');
-      }
-      else if (err.response && err.response.statusText) {
-        console.log('An error occured!', code + ':', err.response.data.statusText || '');
-      }
-      else if (code === 'ENOENT') {
-        console.log('An error occured!', 'You are not logged in');
-      }
-      else {
-        console.log('An error occured!', code);
-      }
-    }
 
     function intervalLog() {
       setInterval(getandShowLogs, interval);
@@ -98,7 +82,7 @@ export default class Logs extends Command {
         })
         .catch(function (err) {
           timestamp = (new Date()).getTime();
-          handleError(err);
+          common.logError(err);
         });
     }
   }
