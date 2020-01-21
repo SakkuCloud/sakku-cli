@@ -6,14 +6,12 @@ Sakku cli is trying to make real world even a better place!
 [![Version](https://img.shields.io/npm/v/sakku.svg)](https://npmjs.org/package/sakku)
 [![Downloads/week](https://img.shields.io/npm/dw/sakku.svg)](https://npmjs.org/package/sakku)
 
-<!-- toc -->
 * [Usage](#usage)
 * [Commands](#commands)
 
 # Usage
 
-<!-- usagestop -->
-```sh-session
+```bash
 $ npm install -g sakku
 $ sakku COMMAND
 running command...
@@ -22,11 +20,11 @@ sakku/0.0.0 linux-x64 node-v8.10.0
 $ sakku --help [COMMAND]
 USAGE
   $ sakku COMMAND
-...
 ```
-<!-- usagestop -->
+
+
 # Commands
-<!-- commands -->
+
 * [`sakku app:add`](#sakku-appadd)
 * [`sakku app:col [APP]`](#sakku-appcol-app)
 * [`sakku app:deploy`](#sakku-appdeploy)
@@ -45,7 +43,8 @@ USAGE
 
 add new app
 
-```
+
+```bash 
 USAGE
   $ sakku app:add
 
@@ -55,9 +54,12 @@ OPTIONS
 
 _See code: [src\commands\app\add.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.1.0/src\commands\app\add.ts)_
 
+
 ## `sakku app:col [APP]`
 
-add new collaborators, as well ad showing the list of collaborators
+
+Add new collaborators, as well ad showing the list of collaborators
+
 
 ```
 USAGE
@@ -77,11 +79,13 @@ EXAMPLES
   $ sakku app:col -a
 ```
 
+
 _See code: [src\commands\app\col.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.1.0/src\commands\app\col.ts)_
 
 ## `sakku app:deploy`
 
 deploy app
+
 
 ```
 USAGE
@@ -97,7 +101,8 @@ _See code: [src\commands\app\deploy.ts](https://github.com/makbn/sakku_cli_ts/bl
 
 Shows logs of an app
 
-```
+
+```bash
 USAGE
   $ sakku app:logs [APP]
 
@@ -116,6 +121,7 @@ _See code: [src\commands\app\logs.ts](https://github.com/makbn/sakku_cli_ts/blob
 ## `sakku app:ps`
 
 showing all [running/all] app
+
 
 ```
 USAGE
