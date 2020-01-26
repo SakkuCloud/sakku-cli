@@ -63,7 +63,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/makbn/sakku_cli_ts",
+  "homepage": "https://cli.sakku.page",
   "keywords": [
     "sakku"
   ],
