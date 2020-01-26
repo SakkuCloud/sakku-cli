@@ -73,5 +73,14 @@ export const messages = {
   enter_new_image_name_tag: 'Enter your new image name and tag (required format: name:tag)',
   deploySuccess: 'Deploy completed successfully.',
   docker_not_running: 'Docker is not running! Run Docker or check your dockerd!',
-  docker_not_installed: 'Docker is not installed!'
+  docker_not_installed: 'Docker is not installed!',
+  enter_page_size: 'Enter the page size (default is 30)',
+  enter_page_number: 'Enter the page number you want',
+  enter_path: 'Enter the path to your file or folder (default is /)',
+  enter_man_path: 'Enter the path of the file or folder you want to download',
+  enter_dl_path: 'Enter the path where you want the file to be placed',
+  continue: 'Do you want to continue',
+  nextPage: 'Do you want to see the next page',
+  upload_path: 'Enter the path of the file you want to upload',
+  remote_path: 'Enter the path on the server where you want your file to be uploaded'
 }

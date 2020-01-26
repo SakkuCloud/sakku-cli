@@ -1,6 +1,7 @@
 // External Modules
 import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
+import color from '@oclif/color';
 
 // Project Modules
 import { appService } from '../../_service/app.service';
@@ -31,6 +32,7 @@ export default class Logs extends Command {
     const { args, flags } = this.parse(Logs);
     let self = this;
     let appId: any;
+    let i = 0;
 
     let question = {
       name: 'accessLevel',
@@ -54,10 +56,10 @@ export default class Logs extends Command {
     appService.logs(self, appId, nHoursAgoTs)
       .then(function (result) {
         if (result.data.result.logs) {
-          console.log(result.data.result.logs);
+          printToScreen(result.data.result.logs);
         }
         else {
-          console.log('Nothing to show!');
+          printToScreen('Nothing to show!');
         }
         intervalLog();
       })
@@ -84,6 +86,16 @@ export default class Logs extends Command {
           timestamp = (new Date()).getTime();
           common.logError(err);
         });
+    }
+
+    function printToScreen(str: string) {
+      if (i % 0 === 0) {
+        console.log(color.blue(str));
+      }
+      else {
+        console.log(str);
+      }
+      i++
     }
   }
 }

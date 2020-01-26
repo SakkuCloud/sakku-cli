@@ -18,9 +18,21 @@ export default class PS extends Command {
 
   async run() {
     const { flags } = this.parse(PS);
+    let promiseArray = [];
+
     try {
       let data = await appService.list(this);
       writeApps(this, data);
+
+      for (let i = 0; i < data.length; i++) {
+        promiseArray.push(appService.getCollaborators(this, data[i].id));
+      }
+
+      let collsData = await Promise.all(promiseArray);
+      for (let i = 0; i < collsData.length; i++) {
+        data[i].colls = collsData[i].data.result;
+      }
+
       cli.table(data,
         {
           columns: [{
@@ -53,14 +65,15 @@ export default class PS extends Command {
           {
             key: 'access',
             label: 'Access',
-            get: (row: any) => row.access && typeof row.access === 'object' && row.access.map((access: IAppsAccess) =>
-              access.person ?
-                access.person.firstName ?
-                  access.person.firstName +
-                    access.person.lastName ? ' ' + access.person.lastName : '' :
-                  access.person.username :
-                null).filter((access: IAppsAccess) => access)
-              .join(' ') || 'No Collaboration'
+            get: (row: any) => row.colls && typeof row.colls === 'object' && row.colls.map((access: IAppsAccess) => {
+              let returnValue = null;
+              if (access.hasOwnProperty('person')) {
+                if (access.person) {
+                  returnValue = (access.person.firstName || 'UNKNOWN') + ' ' + (access.person.lastName || 'UNKNOWN');
+                }
+              }
+              return returnValue;
+            }).filter((access: IAppsAccess) => access).join(', ') || 'No Collaboration'
           }],
           colSep: ' | '
         });

@@ -1,14 +1,26 @@
+// Native Modules
+import * as fs from 'fs';
+import * as util from 'util';
+import * as path from 'path';
+
 // External Modules
 import { Command } from '@oclif/command';
 import axios from 'axios';
+const request = require('request');
+const mkdirp = require('mkdirp-promise')
+const mime = require('mime');
+const q = require('q');
+const readFile = util.promisify(fs.readFile);
 
 // Project Modules
 import { app_url } from '../consts/urls';
+import { file_url } from '../consts/urls';
 import { IApp, IAppVO } from '../interfaces/app.interface';
 import IServerResult from '../interfaces/server-result.interface';
 import { readLocalApps } from '../utils/read-from-file';
 import { readToken } from '../utils/read-token';
 import { common } from '../utils/common';
+import { start } from 'repl';
 
 export const appService = {
   create,
@@ -23,11 +35,15 @@ export const appService = {
   editCollaborator,
   deleteCollaborator,
   logs,
-  getToken
+  getToken,
+  dir,
+  getDownloadLink,
+  download,
+  upload
 };
+let stat = util.promisify(fs.stat);
 
 function create(ctx: Command, data: {}) {
-  console.log(getHeader(ctx));
   return axios.post(app_url, data, { headers: getHeader(ctx) })
     .catch((error) => {
       throw common.handleRequestError(error);
@@ -136,6 +152,88 @@ function logs(ctx: any, id: any, time: any) {
     .catch((error) => {
       throw common.handleRequestError(error);
     });
+}
+
+function dir(ctx: any, id: any, data: object) {
+  let url = file_url + '/' + id + '/dir';
+  return axios.get(url, { headers: getHeader(ctx), params: data })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function getDownloadLink(ctx: any, id: any, data: object) {
+  let url = file_url + '/download/' + id;
+  return axios.get(url, { headers: getHeader(ctx), params: data })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function download(ctx: any, id: any, directory: string, fileName: string) {
+  let url = file_url + '/get/' + id;
+  if (directory.substr(directory.length - 1) !== '/' && directory.substr(directory.length - 1) !== '\\') {
+    directory += '/';
+  }
+  return stat(directory)
+    .then((result) => {
+      return startDownload();
+    })
+    .catch((error) => {
+      return mkdirp(directory)
+        .then(() => {
+          return startDownload();
+        })
+        .catch((error: any) => {
+          throw common.handleRequestError(error);
+        });
+    });
+
+  function startDownload() {
+    return axios.get(url, { headers: getHeader(ctx), responseType: 'stream' })
+      .then((response: any) => {
+        response.data.pipe(fs.createWriteStream(directory + fileName + '.zip'));
+        return true;
+      });
+  }
+}
+
+function upload(ctx: any, id: any, fullPath: string, data: { containerId: string, path: string }) {
+  let defer = q.defer();
+  let url = file_url + '/' + id + '/upload';
+  let ext = path.extname(fullPath);
+  let fileName = path.basename(fullPath);
+  let mimeType = mime.getType(fullPath);
+  let headers = {
+    "Content-Type": "multipart/form-data"
+  };
+
+  var options = {
+    'method': 'POST',
+    'url': url,
+    'headers': Object.assign(getHeader(ctx), { 'Content-Type': 'multipart/form-data' }),
+    formData: {
+      'containerId': data.containerId,
+      'path': data.path,
+      'file': {
+        'value': fs.createReadStream(fullPath),
+        'options': {
+          'filename': fileName,
+          'contentType': mimeType
+        }
+      }
+    }
+  };
+  request(options, function (error: any, response: { body: any; }) {
+    if (error) {
+      defer.reject(error);
+    }
+    else {
+      defer.resolve(response.body);
+    }
+  });
+
+  return defer.promise;
 }
 
 function getHeader(ctx: Command) {

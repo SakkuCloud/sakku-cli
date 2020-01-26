@@ -12,6 +12,7 @@ export declare interface IApp {
   status?: IAppsStatus;
   deployType?: IAppsDeployType;
   ports?: IAppsPort[];
+  colls: object
 }
 
 export declare interface IAppVO {
