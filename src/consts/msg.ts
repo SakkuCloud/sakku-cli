@@ -21,6 +21,9 @@ export const messages = {
   enter_your_git_url_msg: 'Enter your git url',
   enter_your_image_name_msg: 'Enter your image name',
   enter_your_port_msg: 'Enter your port',
+  enter_your_port_ssl_msg: 'Enter ssl (Enter true / false)',
+  enter_only_internal_port_msg: 'Is it only internal port? (Enter true / false)',
+  enter_basic_authentication_port_msg: 'Use basic authentication? (Enter true / false)',
   enter_your_protocol_msg: 'Enter your protocol',
   enter_your_environment_key_msg: 'Enter your env key',
   enter_your_environment_value_msg: 'Enter your env value',
@@ -82,5 +85,6 @@ export const messages = {
   continue: 'Do you want to continue',
   nextPage: 'Do you want to see the next page',
   upload_path: 'Enter the path of the file you want to upload',
-  remote_path: 'Enter the path on the server where you want your file to be uploaded'
+  remote_path: 'Enter the path on the server where you want your file to be uploaded',
+  app_change_ports_success: 'Application ports changed successfully!'
 }

@@ -39,7 +39,8 @@ export const appService = {
   dir,
   getDownloadLink,
   download,
-  upload
+  upload,
+  changeConfig
 };
 let stat = util.promisify(fs.stat);
 
@@ -107,6 +108,14 @@ function getAppFromFile(ctx: Command, id: string) {
 }
 
 function scale(ctx: any, id: any, data: any) {
+  let url = app_url + '/' + id + '/config'
+  return axios.put(url, data, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function changeConfig(ctx: any, id: any, data: any) {
   let url = app_url + '/' + id + '/config'
   return axios.put(url, data, { headers: getHeader(ctx) })
     .catch((error) => {

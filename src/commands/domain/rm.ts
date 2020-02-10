@@ -2,12 +2,13 @@ import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
 
 export default class RM extends Command {
-  static description = 'Remove app*';
+  static description = 'Remove domains of app';
 
   static examples = [
-    `$ sakku app:rm
+    `$ sakku domain:rm
 Enter your app id: APP-ID
-are you really sure to remove? (y/n): y`,
+Enter your app domain: DOMAIN-NAME
+are you really sure to remove this domain? (y/n): y`,
   ];
 
   static flags = {
@@ -18,6 +19,7 @@ are you really sure to remove? (y/n): y`,
   async run() {
     const { flags } = this.parse(RM);
     let appId = await cli.prompt('Enter your app id', { required: true });
+    let domain = await cli.prompt('Enter your app doamin', { required: true });
     if (flags.force) {
       await cli.action.start('please wait...');
       await cli.wait(2000);

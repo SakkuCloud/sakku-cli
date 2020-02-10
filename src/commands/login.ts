@@ -37,11 +37,11 @@ export default class Login extends Command {
     catch (e) {
       cli.url(`${color.green(messages.click_here_to_login_msg)}`, `${auth_url}${code}`);
     }
+
     cli.action.start(messages.tryToLog);
     await cli.wait(waitTime);
     let isLoggedin = false;
     let repeatedCount = 0;
-
     while (!isLoggedin) {
       await cli.wait(waitTime);
       try {
