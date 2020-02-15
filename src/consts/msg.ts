@@ -45,6 +45,7 @@ export const messages = {
   not_logged_in: 'You are not logged in. Please Login with your credentials',
   appIdName: 'Enter app id/name',
   enter_app_id: 'Enter app id',
+  enter_domain: 'Enter domain',
   noInstance: 'There is no instance!',
   connectionSuccess: 'Connection established successfully.',
   connectionFail: 'Can not connect to remote host!',
@@ -86,5 +87,6 @@ export const messages = {
   nextPage: 'Do you want to see the next page',
   upload_path: 'Enter the path of the file you want to upload',
   remote_path: 'Enter the path on the server where you want your file to be uploaded',
-  app_change_ports_success: 'Application ports changed successfully!'
+  app_change_ports_success: 'Application ports changed successfully!',
+  enter_certification_file_id: 'Enter certification file ID',
 }

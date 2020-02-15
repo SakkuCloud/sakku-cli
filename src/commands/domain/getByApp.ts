@@ -4,7 +4,7 @@ import cli from 'cli-ux';
 import * as inquirer from 'inquirer';
 
 // Project Modules
-import { appService } from '../../_service/app.service';
+import { domainService } from '../../_service/domain.service';
 import { common } from '../../utils/common';
 import { messages } from '../../consts/msg';
 
@@ -32,13 +32,20 @@ Enter your app id: APP-ID`,
   async run() {
     const { args, flags } = this.parse(GetByApp);
     let self = this;
-    let appData: any;
+    let domainResult: any;
     let appId: string;
     if (args.hasOwnProperty('app') && args.app) {
       appId = args.app;
     }
     else {
       appId = await cli.prompt(messages.enter_app_id, { required: true });
+    }
+    
+    try {
+      domainResult = await domainService.getByApp(this, appId);
+      this.log(domainResult.data);
+    } catch(e) {
+      console.log(e);
     }
   }
 }
