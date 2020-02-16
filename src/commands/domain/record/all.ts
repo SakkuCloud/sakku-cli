@@ -4,8 +4,7 @@ import cli from 'cli-ux';
 import * as inquirer from 'inquirer';
 
 // Project Modules
-import { appService } from '../../../_service/app.service';
-import { common } from '../../../utils/common';
+import { domainService } from '../../../_service/domain.service';
 import { messages } from '../../../consts/msg';
 
 export default class All extends Command {
@@ -19,25 +18,33 @@ export default class All extends Command {
     help: flags.help({ char: 'h' })
   };
 
-//   static args = [
-//     {
-//       name: 'app',
-//       required: false,
-//       description: 'app id/name',
-//       hidden: false
-//     },
-//   ];
+  static args = [
+    {
+      name: 'domain',
+      required: false,
+      description: 'sakku domain:add [appId] [domain]',
+      hidden: false
+    }
+  ];
 
   async run() {
     const { args, flags } = this.parse(All);
     let self = this;
-    let appData: any;
-    let appId: string;
-    // if (args.hasOwnProperty('app') && args.app) {
-    //   appId = args.app;
-    // }
-    // else {
-    //   appId = await cli.prompt(messages.enter_app_id, { required: true });
-    // }
+    let domain: String;
+    let result: any;
+
+    if (args.hasOwnProperty('domain') && args.domain) {
+      domain = args.domain;
+    }
+    else {
+      domain = await cli.prompt(messages.enter_domain, { required: true });
+    }
+    
+    try{
+      result = await domainService.getAllRecord(self, domain);
+      this.log(result.data);
+    }catch(e) {
+      console.log(e);
+    }
   }
 }

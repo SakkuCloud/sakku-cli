@@ -5,7 +5,6 @@ import * as inquirer from 'inquirer';
 
 // Project Modules
 import { domainService } from '../../_service/domain.service';
-import { common } from '../../utils/common';
 import { messages } from '../../consts/msg';
 
 export default class Add extends Command {
@@ -14,7 +13,8 @@ export default class Add extends Command {
   static examples = [
     `$ sakku domain:add
 Enter your app id: APP-ID
-Enter your app domain`,
+Enter your app domain
+Enter certification file ID`,
   ];
 
   static flags = {
@@ -25,26 +25,31 @@ Enter your app domain`,
     {
       name: 'app',
       required: false,
-      description: 'app id/name',
+      description: 'sakku domain:add [appId]',
       hidden: false
     },
     {
       name: 'domain',
       required: false,
-      description: 'domain name',
+      description: 'sakku domain:add [appId] [domain]',
       hidden: false
     },
-
+    {
+      name: 'certid',
+      required: false,
+      description: 'sakku domain:add [appId] [domain] [certid]',
+      hidden: false
+    },
   ];
 
   async run() {
     const { args, flags } = this.parse(Add);
     let self = this;
     let result: any;
-    let appId: string;
+    let appId: number;
     let domain: string;
-    let certid: string;
-    let sendObj = {};
+    let certid: number;
+    let data = {};
 
     if (args.hasOwnProperty('app') && args.app) {
       appId = args.app;
@@ -52,6 +57,7 @@ Enter your app domain`,
     else {
       appId = await cli.prompt(messages.enter_app_id, { required: true });
     }
+
     if (args.hasOwnProperty('domain') && args.domain) {
       domain = args.domain;
     }
@@ -59,23 +65,22 @@ Enter your app domain`,
       domain = await cli.prompt(messages.enter_domain, { required: true });
     }
 
-    if (args.hasOwnProperty('certId') && args.certid) {
+    if (args.hasOwnProperty('certid') && args.certid) {
       certid = args.certid;
     }
     else {
       certid = await cli.prompt(messages.enter_certification_file_id, { required: false });
     }
-    sendObj = {
-      appId,
+
+    data = {
       domain,
       certid
     }
     try {
-      result = await domainService.add(self, sendObj);
-      this.log(result.data);
+      result = await domainService.add(self, appId, data);
+      this.log(JSON.stringify(result.data ,null, 2));
     } catch(e) {
       console.log(e);
     }
-
   }
 }

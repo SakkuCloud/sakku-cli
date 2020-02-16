@@ -4,8 +4,7 @@ import cli from 'cli-ux';
 import * as inquirer from 'inquirer';
 
 // Project Modules
-import { appService } from '../../../_service/app.service';
-import { common } from '../../../utils/common';
+import { domainService } from '../../../_service/domain.service';
 import { messages } from '../../../consts/msg';
 
 export default class Add extends Command {
@@ -23,9 +22,15 @@ Enter your app domain`,
 
   static args = [
     {
-      name: 'app',
+      name: 'domain',
       required: false,
-      description: 'app id/name',
+      description: 'sakku domain:record:add [domain]',
+      hidden: false
+    },
+    {
+      name: 'record',
+      required: false,
+      description: 'sakku domain:record:add [domain] [record]',
       hidden: false
     },
   ];
@@ -33,13 +38,30 @@ Enter your app domain`,
   async run() {
     const { args, flags } = this.parse(Add);
     let self = this;
-    let appData: any;
-    let appId: string;
-    if (args.hasOwnProperty('app') && args.app) {
-      appId = args.app;
+    let result: any;
+    let domain: string;
+    let record = {};
+    let data = {};
+
+    if (args.hasOwnProperty('record') && args.record) {
+      record = args.record;
     }
     else {
-      appId = await cli.prompt(messages.enter_app_id, { required: true });
+      record = await cli.prompt(messages.enter_app_id, { required: true });
+    }
+
+    if (args.hasOwnProperty('domain') && args.domain) {
+      domain = args.domain;
+    }
+    else {
+      domain = await cli.prompt(messages.enter_domain, { required: true });
+    }
+
+    try {
+      result = await domainService.addRecord(self, domain, record);
+      this.log(JSON.stringify(result.data ,null, 2));
+    } catch(e) {
+      console.log(e);
     }
   }
 }

@@ -5,8 +5,6 @@ import * as inquirer from 'inquirer';
 
 // Project Modules
 import { domainService } from '../../_service/domain.service';
-import { common } from '../../utils/common';
-import { messages } from '../../consts/msg';
 
 export default class getAll extends Command {
   static description = 'Get all domains of user';
@@ -24,7 +22,7 @@ export default class getAll extends Command {
     let self = this;
     let result: any;
     try{
-      result = await domainService.getAll(this);
+      result = await domainService.getAll(self);
       this.log(result.data);
     }catch(e) {
       console.log(e);
