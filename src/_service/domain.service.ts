@@ -65,15 +65,16 @@ function getAllRecord(ctx: Command, domain: string) {
     });
 }
 
-function addRecord(ctx: Command, domain: string, record: {}) {
-  return axios.post(domain_record_url, {record}, { headers: getHeader(ctx) , params: {domain}})
+function addRecord(ctx: Command, domain: string, data: {}) {
+  console.log(data);
+  return axios.post(domain_record_url, data, { headers: getHeader(ctx) , params: {domain}})
     .catch((error) => {
       throw common.handleRequestError(error);
     });
 }
 
-function updateRecord(ctx: Command, appId: number, domain: string, record: {}) {
-  return axios.put(domain_record_url, {record}, { headers: getHeader(ctx) , params: {domain}})
+function updateRecord(ctx: Command, domain: string, name: string, record: {}) {
+  return axios.put(domain_record_url, {record}, { headers: getHeader(ctx) , params: {domain, name}})
     .catch((error) => {
       throw common.handleRequestError(error);
     });
@@ -93,6 +94,3 @@ function getHeader(ctx: Command) {
 function getToken(ctx: Command) {
   return readToken(ctx).split(' ')[1];
 }
-
-
-
