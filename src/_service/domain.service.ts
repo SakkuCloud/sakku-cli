@@ -74,6 +74,8 @@ function addRecord(ctx: Command, domain: string, data: {}) {
 }
 
 function updateRecord(ctx: Command, domain: string, name: string, type: string, data: {}) {
+  console.log({domain, name, type});
+  console.log(data);
   return axios.put(domain_record_url, data, { headers: getHeader(ctx) , params: {domain, name, type}})
     .catch((error) => {
       throw common.handleRequestError(error);

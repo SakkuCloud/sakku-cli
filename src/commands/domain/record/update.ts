@@ -51,7 +51,6 @@ Enter type of record: RECORD-TYPE`,
     let type: string;
     let typeObj: {'type' : string};
     let data : {
-      name: string, 
       ttl: number, 
       comments: {
         'account': string,
@@ -63,7 +62,6 @@ Enter type of record: RECORD-TYPE`,
         'disabled': boolean
       }[]
     } = {
-      name: '', 
       ttl: 0, 
       comments: [], 
       records: []
@@ -102,21 +100,21 @@ Enter type of record: RECORD-TYPE`,
     } while (isNaN(Number(data.ttl)));
 
     do {
-      let recordDomain : {'content': string,'disabled': boolean} = {'content': '','disabled': false};
-      recordDomain.content = await cli.prompt(messages.enter_record_content, { required: true });
-      recordDomain.disabled = await cli.prompt(messages.record_is_disabled, { required: true });
-      data.records.push(recordDomain); 
-    } while (await cli.confirm(messages.add_any_records));
+        let recordDomain : {'content': string,'disabled': boolean} = {'content': '','disabled': false};
+        recordDomain.content = await cli.prompt(messages.enter_record_content, { required: true });
+        recordDomain.disabled = await cli.prompt(messages.record_is_disabled, { required: true });
+        data.records.push(recordDomain); 
+      } while (await cli.confirm(messages.add_any_records));
 
-    while (await cli.confirm(messages.add_any_record_comments)){
-      let comment : {'account':string ,'content': string, 'modified_at': number} = {'account': '', 'content': '','modified_at': 0};
-      comment.account = await cli.prompt(messages.enter_record_comment_account, { required: true });
-      comment.content = await cli.prompt(messages.enter_record_comment_content, { required: true });
-      do {
-        comment.modified_at = parseInt(await cli.prompt(messages.record_comment_modified_at, { required: true }));
-      } while (isNaN(Number(data.ttl)));
-      data.comments.push(comment); 
-    }
+      while (await cli.confirm(messages.add_any_record_comments)){
+        let comment : {'account':string ,'content': string, 'modified_at': number} = {'account': '', 'content': '','modified_at': 0};
+        comment.account = await cli.prompt(messages.enter_record_comment_account, { required: true });
+        comment.content = await cli.prompt(messages.enter_record_comment_content, { required: true });
+        do {
+          comment.modified_at = parseInt(await cli.prompt(messages.record_comment_modified_at, { required: true }));
+        } while (isNaN(Number(data.ttl)));
+        data.comments.push(comment); 
+      }
 
     try {
       result = await domainService.updateRecord(self, domain, name, type, data);
