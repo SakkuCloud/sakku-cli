@@ -34,6 +34,7 @@ Enter your app domain`,
     let self = this;
     let result: any;
     let domain: string;
+    let typeObj: {'type' : string};
 
     if (args.hasOwnProperty('domain') && args.domain) {
       domain = args.domain;
@@ -75,13 +76,14 @@ Enter your app domain`,
         data.ttl = parseInt(await cli.prompt(messages.enter_record_ttl, { required: true }));
       } while (isNaN(Number(data.ttl)));
 
-      data.type = (await inquirer.prompt([question])).type;
-      while (await cli.confirm(messages.add_any_records)){
+      typeObj = await inquirer.prompt([question]);
+      data.type = typeObj.type;
+      do {
         let recordDomain : {'content': string,'disabled': boolean} = {'content': '','disabled': false};
         recordDomain.content = await cli.prompt(messages.enter_record_content, { required: true });
         recordDomain.disabled = await cli.prompt(messages.record_is_disabled, { required: true });
         data.records.push(recordDomain); 
-      }
+      } while (await cli.confirm(messages.add_any_records));
 
       while (await cli.confirm(messages.add_any_record_comments)){
         let comment : {'account':string ,'content': string, 'modified_at': number} = {'account': '', 'content': '','modified_at': 0};
@@ -94,9 +96,8 @@ Enter your app domain`,
       }
 
     try {
-      result = await domainService.addRecord(self, domain, data
-      );
-      this.log(result);
+      result = await domainService.addRecord(self, domain, data);
+      this.log(JSON.stringify(result.data ,null, 2));
     } catch(e) {
       console.log(e);
     }

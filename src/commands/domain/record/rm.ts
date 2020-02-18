@@ -48,16 +48,15 @@ are you really sure to remove this record of domain? (y/n): y`,
     let type: string;
     let domain: string;
     let name: string;
-    let data = {};
+    let typeObj: {'type' : string};
+
     const { args, flags } = this.parse(RM);
 
     let question = {
       name: 'type',
       message: messages.select_record_type,
       type: 'list',
-      choices: ['SOA','A','AAAA','CAA','CNAME','MX','PTR','SPF','SRV','TXT',
-'LOC',
-        'NS']
+      choices: ['SOA','A','AAAA','CAA','CNAME','MX','PTR','SPF','SRV','TXT','LOC','NS']
     };
   
     if (args.hasOwnProperty('domain') && args.domain) {
@@ -78,7 +77,8 @@ are you really sure to remove this record of domain? (y/n): y`,
       type = args.type;
     }
     else {
-      type = await inquirer.prompt([question]);
+      typeObj = await inquirer.prompt([question]);
+      type = typeObj.type;
     }
 
     let sendObj = {

@@ -49,6 +49,7 @@ export const messages = {
   enter_record_name: 'Enter record name',
   enter_record_ttl: 'Enter record ttl',
   select_record_type: 'Select type of record',
+  select_type_of_record_for_update: 'Select type of record you want to update',
   add_any_records: 'Is there any/more records (y or n)',
   add_any_record_comments: 'Is there any/more comments (y or n)',
   enter_record_content: 'Enter record content',

@@ -101,9 +101,10 @@ export default class Col extends Command {
           colData.email = answer;
           return inquirer.prompt([question])
         })
-        .then(function (answer) {
+        .then(function (answer: any) {
           // @ts-ignore
-          colData.accessLevel = answer;
+          console.log(answer);
+          colData.accessLevel = answer.accessLevel;
           return cli.prompt(messages.enter_col_image_reg, { required: false });
         })
         .then(function (answer) {
