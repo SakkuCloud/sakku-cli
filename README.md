@@ -490,15 +490,20 @@ EXAMPLE
 _See code: [src\commands\whoami.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.0.11/src\commands\whoami.ts)_
 <!-- commandsstop -->
 * [`sakku app:add`](#sakku-appadd)
+* [`sakku app:col [APP]`](#sakku-appcol-app)
 * [`sakku app:deploy`](#sakku-appdeploy)
+* [`sakku app:logs [APP]`](#sakku-applogs-app)
 * [`sakku app:ps`](#sakku-appps)
 * [`sakku app:rm`](#sakku-apprm)
-* [`sakku app:scale`](#sakku-appscale)
+* [`sakku app:scale [APP]`](#sakku-appscale-app)
 * [`sakku app:stop`](#sakku-appstop)
+* [`sakku catalog`](#sakku-catalog)
 * [`sakku exec APP [CMD]`](#sakku-exec-app-cmd)
 * [`sakku help [COMMAND]`](#sakku-help-command)
 * [`sakku login`](#sakku-login)
 * [`sakku whoami`](#sakku-whoami)
+* [`sakku app:port`](#sakku-appport)
+
 
 ## `sakku app:add`
 

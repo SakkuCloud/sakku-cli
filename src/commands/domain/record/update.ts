@@ -12,9 +12,9 @@ export default class Update extends Command {
 
   static examples = [
     `$ sakku domain:record:update
-Enter domain: DOMAIN-NAME
+Enter domain: DOMAIN
 Enter name of record: RECORD-NAME
-Enter type of record: RECORD-TYPE`,
+Enter type of record: TYPE`,
   ];
 
   static flags = {
