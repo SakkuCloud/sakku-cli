@@ -110,10 +110,10 @@ Enter your app ports`,
             }
             // login to sakku registry and push image
             token = await appService.getToken(self);
-            console.log("trying to login ... \n");
+            console.log("trying to login to docker ...");
             await dockerLogin();
 
-            console.log("trying to push...");
+            console.log("trying to push image ...");
             await dockerPush(imageName);
             console.log(messages.deploySuccess);
             
