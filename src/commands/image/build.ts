@@ -11,6 +11,7 @@ import { appService } from '../../_service/app.service';
 import { authService } from '../../_service/auth.service';
 import { messages } from '../../consts/msg';
 import { sakkuRegUrl, gitlabRegUrl } from '../../consts/val';
+import { sakkuRegRaw } from '../../consts/val';
 import { common } from '../../utils/common';
 import { triggerAsyncId } from 'async_hooks';
 
@@ -37,94 +38,114 @@ Enter your app ports`,
   async run() {
     let self = this;
     const { args, flags } = this.parse(Build);
-    let dockerFileDir: string;
-    let name: string;
-    let tag: string;
+    let dockerFileDir = ' . ';
+    let imageName: string;
+    let imageTag: string;
     let email: string;
     let token: string;
     let username: string;
     let build_args = '';
     let mode : string;
     let authServiceResult : any;
-   
-    if (flags.hasOwnProperty('file') && flags.file) {
-      dockerFileDir = flags.file;
-    }
-    else {
-      dockerFileDir = await cli.prompt(messages.enter_docker_file_address, { required: false });
-    }
 
-    if (flags.hasOwnProperty('name') && flags.name) {
-      name = flags.name;
-    }
-    else {
-      name = await cli.prompt(messages.enter_image_name, { required: true });
-    }
-
-    if (flags.hasOwnProperty('tag') && flags.tag) {
-      tag = flags.tag;
-    }
-    else {
-      tag = await cli.prompt(messages.enter_local_image_tag, { required: false });
-    }
-
+    // check build mode : remote or local?
     if (flags.hasOwnProperty('mode') && flags.mode) {
       mode = flags.mode;
     }
     else {
       mode = await cli.prompt(messages.enter_build_mode, { required: true });
     }
-
-    if (flags.hasOwnProperty('build_args') && flags.build_args) {
-      build_args = flags.build_args;
-    }
-    else {
-      while (await cli.confirm(messages.more_build_args)) {
-        build_args = build_args + ' ' + await cli.prompt(messages.enter_build_arg, { required: false });
-      }
-    }
     
+    // local mode :
     if (mode == 'local') {
+      // check docker is installed and is run
       try {
         await isDockerInstalled(); 
       }
       catch (error) {
-        common.logError(error);
+        console.log(messages.docker_not_installed);
       }
 
       try {
         await isDockerRun(); 
       }
       catch (error) {
-        common.logError(error);
+        console.log(messages.docker_not_running);
       }
-
+      // image name
+      if (flags.hasOwnProperty('name') && flags.name) {
+        imageName = flags.name;
+      }
+      else {
+        imageName = await cli.prompt(messages.enter_image_name, { required: true });
+      }
+      // image tag
+      if (flags.hasOwnProperty('tag') && flags.tag) {
+        imageTag = flags.tag;
+      }
+      else {
+        imageTag = await cli.prompt(messages.enter_local_image_tag, { required: false });
+      }
+      // build arguments
+      if (flags.hasOwnProperty('build_args') && flags.build_args) {
+        build_args = flags.build_args;
+      }
+      else {
+        while (await cli.confirm(messages.more_build_args)) {
+          build_args = build_args + ' ' + await cli.prompt(messages.enter_build_arg, { required: false });
+        }
+      }
+      // docker file path and name
+      if (flags.hasOwnProperty('file') && flags.file) {
+        dockerFileDir = flags.file;
+      }
+      else {
+        dockerFileDir = await cli.prompt(messages.enter_docker_file_address, { required: false });
+      }
+      // ... 
       try {
         authServiceResult = await authService.overview(self);
-      }
-      catch (error) {
-        common.logError(error);
-      } 
-      let buildCommand = tag ? ('docker build -t ' + name + ':' + tag + ' ' + dockerFileDir ) : ('docker build -t ' + name + ' ' + dockerFileDir);
-      const { stdout, stderr } = await exec(buildCommand);
-      console.log('test' + stdout);
-      if (stderr) {
-        console.error(`error: ${stderr}`);
-      }
-
-      try {
         email = authServiceResult.data.result.user.email; 
         username = authServiceResult.data.result.user.username;
       }
       catch (error) {
         common.logError(error);
       }
-      
+
+      // create build command
+      let buildCommand = imageTag ? ('docker build -t ' + sakkuRegRaw + '/' + username + '/' + imageName + ':' + imageTag) : ('docker build -t ' + sakkuRegRaw + '/' + username + '/' + imageName );
+      buildCommand = build_args ? buildCommand + ' --build-arg ' + build_args : buildCommand;
+      buildCommand = dockerFileDir ? buildCommand + ' -f ' + dockerFileDir : buildCommand;
+      buildCommand = buildCommand + ' .';
+      // execute build command
+      const { stdout, stderr } = await exec(buildCommand);
+      console.log(stdout);
+      if (stderr) {
+        console.error(`error: ${stderr}`);
+      }
+      // login to sakku registry
       try {
-        token = appService.getToken(self);
+        token = await appService.getToken(self);
       }
       catch (error) {
-        common.logError(error);
+        common.logDockerError(error);
+      }
+
+      try {
+        console.log("trying to loging in...")
+        await dockerLogin();
+      }
+      catch (error) {
+        common.logDockerError(error);
+      }
+
+      try {
+        console.log("trying to push...")
+        await dockerPush(imageName);
+        console.log(messages.deploySuccess);
+      }
+      catch (error) {
+        common.logDockerError(error);
       }
       
     } else if (mode == 'remote') {
@@ -179,7 +200,7 @@ Enter your app ports`,
 
     function dockerCreateTag(sakkuImage: string) {
       let defer = q.defer();
-      let command = '"docker" tag ' + (name + ":" + tag) + ' ' + sakkuRegRaw + '/' + username + '/' + sakkuImage;
+      let command = '"docker" tag ' + (imageName + ":" + imageTag) + ' ' + sakkuRegRaw + '/' + username + '/' + sakkuImage;
       exec(command, (err: any, stdout: any, stderr: any) => {
         if (err) {
           defer.reject(err);

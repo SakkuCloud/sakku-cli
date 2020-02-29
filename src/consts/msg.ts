@@ -73,7 +73,7 @@ export const messages = {
   enter_access_token: 'Enter your access token',
   app_add_success: 'Your app is successfully added.',
   enter_image_name: 'Enter your image name',
-  enter_docker_file_address: 'Enter your docker file address (default is /DockerFile)',
+  enter_docker_file_address: 'Enter your docker file address and name (default is /Dockerfile)',
   enter_branch_name: 'Enter your branch name (default is master)',
   more_tag: 'Is there any/more tags (y or n)',
   enter_tag: 'Enter your tag',
