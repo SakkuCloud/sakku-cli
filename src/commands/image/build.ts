@@ -118,29 +118,19 @@ Enter your app ports`,
       buildCommand = dockerFileDir ? buildCommand + ' -f ' + dockerFileDir : buildCommand;
       buildCommand = buildCommand + ' .';
       // execute build command
+      console.log("trying to create image ...");
       const { stdout, stderr } = await exec(buildCommand);
       console.log(stdout);
       if (stderr) {
         console.error(`error: ${stderr}`);
       }
-      // login to sakku registry
+      // login to sakku registry and push image
       try {
         token = await appService.getToken(self);
-      }
-      catch (error) {
-        common.logDockerError(error);
-      }
-
-      try {
-        console.log("trying to loging in...")
+        console.log("trying to login ...");
         await dockerLogin();
-      }
-      catch (error) {
-        common.logDockerError(error);
-      }
 
-      try {
-        console.log("trying to push...")
+        console.log("trying to push...");
         await dockerPush(imageName);
         console.log(messages.deploySuccess);
       }
@@ -164,17 +154,6 @@ Enter your app ports`,
       return defer.promise;
     }
 
-    function isImageExists(image: string) {
-      let defer = q.defer();
-      exec('"docker" image inspect ' + image, (err: any, stdout: any, stderr: any) => {
-        if (err) {
-          defer.reject(err);
-        }
-        defer.resolve();
-      });
-      return defer.promise;
-    }
-
     function isDockerRun() {
       let defer = q.defer();
       exec('"docker" info ', (err: any, stdout: any, stderr: any) => {
@@ -189,18 +168,7 @@ Enter your app ports`,
     function dockerLogin() {
       let defer = q.defer();
       let command = '"docker" login -u=' + email + ' -p=' + token + ' ' + sakkuRegRaw;
-      exec(command, (err: any, stdout: any, stderr: any) => {
-        if (err) {
-          defer.reject(err);
-        }
-        defer.resolve(stdout);
-      });
-      return defer.promise;
-    }
-
-    function dockerCreateTag(sakkuImage: string) {
-      let defer = q.defer();
-      let command = '"docker" tag ' + (imageName + ":" + imageTag) + ' ' + sakkuRegRaw + '/' + username + '/' + sakkuImage;
+      console.log(command);
       exec(command, (err: any, stdout: any, stderr: any) => {
         if (err) {
           defer.reject(err);
