@@ -106,4 +106,5 @@ export const messages = {
   remote_path: 'Enter the path on the server where you want your file to be uploaded',
   app_change_ports_success: 'Application ports changed successfully!',
   enter_certification_file_id: 'Enter certification file ID',
+  zip_file_size_is_big: 'It\'s too big! Zip file size should be less than 150M!'
 }

@@ -3,6 +3,8 @@ import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
 const util = require('util');
 const q = require('q');
+const fs = require('fs');
+const archiver = require('archiver');
 const exec = util.promisify(require('child_process').exec);
 
 
@@ -12,6 +14,7 @@ import { authService } from '../../_service/auth.service';
 import { messages } from '../../consts/msg';
 import { sakkuRegRaw } from '../../consts/val';
 import { common } from '../../utils/common';
+import { dockerRepositoryService } from '../../_service/docker.repository.service';
 
 export default class Build extends Command {
   static description = 'app build';
@@ -27,7 +30,7 @@ Enter your app ports`,
     name: flags.string({ char: 'n', description: 'Image name' }),
     tag: flags.string({ char: 't', description: 'Image tag' }),
     build_args: flags.string({ char: 'b', description: 'Build Arguments' }),
-    mode: flags.enum({ char: 'e', options: ['remote', 'local'], description: 'Build mode : local or remote' }),
+    mode: flags.enum({ char: 'm', options: ['remote', 'local'], description: 'Build mode : local or remote' }),
     file: flags.string({ char: 'f', description: 'Docker file name or path' }),
   };
 
@@ -36,7 +39,7 @@ Enter your app ports`,
   async run() {
     let self = this;
     const { args, flags } = this.parse(Build);
-    let dockerFileDir = ' . ';
+    let dockerFileDir: string;
     let imageName: string;
     let imageTag: string;
     let email: string;
@@ -46,6 +49,36 @@ Enter your app ports`,
     let mode : string;
     let authServiceResult : any;
 
+    // image name
+    if (flags.hasOwnProperty('name') && flags.name) {
+      imageName = flags.name;
+    }
+    else {
+      imageName = await cli.prompt(messages.enter_image_name, { required: true });
+    }
+    // image tag
+    if (flags.hasOwnProperty('tag') && flags.tag) {
+      imageTag = flags.tag;
+    }
+    else {
+      imageTag = await cli.prompt(messages.enter_local_image_tag, { required: false });
+    }
+    // build arguments
+    if (flags.hasOwnProperty('build_args') && flags.build_args) {
+      build_args = flags.build_args;
+    }
+    else {
+      while (await cli.confirm(messages.more_build_args)) {
+        build_args = build_args + ' ' + await cli.prompt(messages.enter_build_arg, { required: false });
+      }
+    }
+    // docker file path and name
+    if (flags.hasOwnProperty('file') && flags.file) {
+      dockerFileDir = flags.file;
+    }
+    else {
+      dockerFileDir = await cli.prompt(messages.enter_docker_file_address, { required: false });
+    }
     // check build mode : remote or local?
     if (flags.hasOwnProperty('mode') && flags.mode) {
       mode = flags.mode;
@@ -61,37 +94,6 @@ Enter your app ports`,
         await isDockerInstalled(); 
         try {
           await isDockerRun();
-          // image name
-          if (flags.hasOwnProperty('name') && flags.name) {
-            imageName = flags.name;
-          }
-          else {
-            imageName = await cli.prompt(messages.enter_image_name, { required: true });
-          }
-          // image tag
-          if (flags.hasOwnProperty('tag') && flags.tag) {
-            imageTag = flags.tag;
-          }
-          else {
-            imageTag = await cli.prompt(messages.enter_local_image_tag, { required: false });
-          }
-          // build arguments
-          if (flags.hasOwnProperty('build_args') && flags.build_args) {
-            build_args = flags.build_args;
-          }
-          else {
-            while (await cli.confirm(messages.more_build_args)) {
-              build_args = build_args + ' ' + await cli.prompt(messages.enter_build_arg, { required: false });
-            }
-          }
-          // docker file path and name
-          if (flags.hasOwnProperty('file') && flags.file) {
-            dockerFileDir = flags.file;
-          }
-          else {
-            dockerFileDir = await cli.prompt(messages.enter_docker_file_address, { required: false });
-          }
-          // ... 
           try {
             authServiceResult = await authService.overview(self);
             email = authServiceResult.data.result.user.email; 
@@ -132,7 +134,42 @@ Enter your app ports`,
       }
       
     } else if (mode == 'remote') {
-
+      let zipFileSize = 0;
+      let settings = {
+        'name': imageName,
+        'tag': imageTag,
+        'dockerFile': dockerFileDir,
+        'buildArgs': build_args,
+      };
+      let archive = archiver('zip', {
+        zlib: { level: 9 } // Sets the compression level.
+      });
+      let stream = await fs.createWriteStream('tmp/buildRemote.zip');
+      // console.log(__dirname + '/../../../tmp/buildRemote.zip');
+      try {
+        await archive.directory('tmp/smart-city', false)
+        .pipe(stream);
+        await stream.on('close', function() {
+          zipFileSize = Math.ceil(archive.pointer() / (1024 * 1024));
+          console.log(zipFileSize + ' megabytes');
+          // if (zipFileSize > 150) {
+          //   console.log(messages.zip_file_size_is_big);
+          // }
+          console.log('archiver has been finalized and the output file descriptor has closed.');
+        });
+        await archive.finalize();
+        if (zipFileSize < 150) {
+        
+          dockerRepositoryService.build(self, 'C:/Users/ASUS/Documents/Elham/Sources/sakku/sakku-cli/tmp/buildRemote.zip', settings);
+        }
+        else{
+          console.log(messages.zip_file_size_is_big);
+        }
+      }
+      catch (error) {
+        console.log(error);
+      }
+      
     }
     
     function isDockerInstalled() {
@@ -182,3 +219,4 @@ Enter your app ports`,
     }
   }
 }
+

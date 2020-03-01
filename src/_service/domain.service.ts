@@ -6,11 +6,6 @@ import * as path from 'path';
 // External Modules
 import { Command } from '@oclif/command';
 import axios from 'axios';
-const request = require('request');
-const mkdirp = require('mkdirp-promise')
-const mime = require('mime');
-const q = require('q');
-const readFile = util.promisify(fs.readFile);
 
 // Project Modules
 import { domain_url, domain_app_url, domain_record_url } from '../consts/urls';
