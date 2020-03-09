@@ -51,6 +51,7 @@ function build(ctx: any, fullPath: string, settings: { name: string, tag: string
   let ext = path.extname(fullPath);
   let fileName = path.basename(fullPath);
   let mimeType = mime.getType(fullPath);
+  let settings_string = JSON.stringify(settings);
   let headers = {
     "Content-Type": "multipart/form-data"
   };
@@ -67,10 +68,10 @@ function build(ctx: any, fullPath: string, settings: { name: string, tag: string
           'contentType': mimeType
         }
       },
-      settings
+      settings_string
     }
   };
-  console.log(JSON.stringify(options, null,2));
+  // console.log(JSON.stringify(options, null,2));
   request(options, function (error: any, response: { body: any; }) {
     if (error) {
       defer.reject(error);

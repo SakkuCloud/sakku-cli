@@ -45,6 +45,7 @@ export const appService = {
 let stat = util.promisify(fs.stat);
 
 function create(ctx: Command, data: {}) {
+  console.log(getHeader(ctx));
   return axios.post(app_url, data, { headers: getHeader(ctx) })
     .catch((error) => {
       throw common.handleRequestError(error);

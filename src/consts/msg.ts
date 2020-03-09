@@ -81,6 +81,8 @@ export const messages = {
   more_build_args: 'Is there any/more build arguments (y or n)',
   enter_build_arg: 'Enter your build document',
   enter_build_mode: 'Enter build mode: {local or remote?}',
+  remote_build_success: 'Remote build has done succesfully!',
+  empty_temp_folder_success: 'temporary folder emptied succesfully!',
   empty_list: 'Empty List',
   enter_col_email: 'Enter your collaborator\'s email',
   enter_col_image_reg: 'Enter your collaborator\'s image registry (Optional)',

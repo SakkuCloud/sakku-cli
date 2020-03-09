@@ -3,7 +3,8 @@ import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
 const util = require('util');
 const q = require('q');
-const fs = require('fs');
+const uniqid = require('uniqid');
+const fse = require('fs-extra');
 const archiver = require('archiver');
 const exec = util.promisify(require('child_process').exec);
 
@@ -138,38 +139,44 @@ Enter your app ports`,
       let settings = {
         'name': imageName,
         'tag': imageTag,
-        'dockerFile': dockerFileDir,
+        'dockerFile': dockerFileDir ? dockerFileDir : "Dockerfile",
         'buildArgs': build_args,
       };
+      let packageName = uniqid.time('buildRemote', '.zip');
+      let tempFileDir = 'tmp/';
+       console.log(packageName);
       let archive = archiver('zip', {
         zlib: { level: 9 } // Sets the compression level.
       });
-      let stream = await fs.createWriteStream('tmp/buildRemote.zip');
+      let stream = await fse.createWriteStream(tempFileDir + packageName);
       // console.log(__dirname + '/../../../tmp/buildRemote.zip');
       try {
-        await archive.directory('tmp/smart-city', false)
+        await archive.directory('tmp/smart-city', false) //TODO::change to current directory
         .pipe(stream);
         await stream.on('close', function() {
           zipFileSize = Math.ceil(archive.pointer() / (1024 * 1024));
           console.log(zipFileSize + ' megabytes');
-          // if (zipFileSize > 150) {
-          //   console.log(messages.zip_file_size_is_big);
-          // }
           console.log('archiver has been finalized and the output file descriptor has closed.');
         });
         await archive.finalize();
         if (zipFileSize < 150) {
-        
-          dockerRepositoryService.build(self, 'C:/Users/ASUS/Documents/Elham/Sources/sakku/sakku-cli/tmp/buildRemote.zip', settings);
+          try {
+            await dockerRepositoryService.build(self, 'C:/Users/ASUS/Documents/Elham/Sources/sakku-cli/tmp/buildRemote.zip', settings);
+            console.log(messages.remote_build_success);
+            await fse.emptyDir(tempFileDir);
+            console.log(messages.empty_temp_folder_success);
+          }
+          catch (error) {
+            console.log(error);
+          }
         }
-        else{
+        else {
           console.log(messages.zip_file_size_is_big);
         }
       }
       catch (error) {
         console.log(error);
       }
-      
     }
     
     function isDockerInstalled() {
