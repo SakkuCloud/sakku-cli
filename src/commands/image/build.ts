@@ -142,6 +142,11 @@ Enter your app ports`,
         'dockerFile': dockerFileDir ? dockerFileDir : "Dockerfile",
         'buildArgs': build_args,
       };
+
+      let archive = archiver('zip', {
+        zlib: { level: 9 } // Sets the compression level.
+      });
+
       let zipPackageName = uniqid.time('buildRemote_', '.zip');
       let tempFileDir = 'tmp/';
       try {
@@ -149,10 +154,7 @@ Enter your app ports`,
       } catch (err) {
         console.error(err)
       }
-      let archive = archiver('zip', {
-        zlib: { level: 9 } // Sets the compression level.
-      });
-
+      
       let stream = await fse.createWriteStream(tempFileDir + zipPackageName);
       try {
         await archive.directory('.', false) 

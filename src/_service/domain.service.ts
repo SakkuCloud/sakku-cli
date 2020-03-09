@@ -53,7 +53,7 @@ function rm(ctx: Command, appId: number, data: {}) {
     });
 }
 
-function getAllRecord(ctx: Command, domain: string) {
+function getAllRecord(ctx: Command, domain: String) {
   return axios.get<IServerResult<IAppVO>>(domain_record_url , { headers: getHeader(ctx) , params: {domain}}).
     catch((error) => {
       throw common.handleRequestError(error);
