@@ -79,7 +79,7 @@ export const messages = {
   more_tag: 'Is there any/more tags (y or n)',
   enter_tag: 'Enter your tag',
   more_build_args: 'Is there any/more build arguments (y or n)',
-  enter_build_arg: 'Enter your build document',
+  enter_build_arg: 'Enter your build argument',
   enter_build_mode: 'Enter build mode: {local or remote?}',
   remote_build_success: 'Remote build has done succesfully!',
   empty_temp_folder_success: 'Temporary folder emptied succesfully!',
