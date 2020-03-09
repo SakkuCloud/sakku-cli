@@ -142,26 +142,30 @@ Enter your app ports`,
         'dockerFile': dockerFileDir ? dockerFileDir : "Dockerfile",
         'buildArgs': build_args,
       };
-      let packageName = uniqid.time('buildRemote', '.zip');
+      let zipPackageName = uniqid.time('buildRemote_', '.zip');
       let tempFileDir = 'tmp/';
-       console.log(packageName);
+      try {
+        await fse.ensureDir(tempFileDir);
+      } catch (err) {
+        console.error(err)
+      }
       let archive = archiver('zip', {
         zlib: { level: 9 } // Sets the compression level.
       });
-      let stream = await fse.createWriteStream(tempFileDir + packageName);
-      // console.log(__dirname + '/../../../tmp/buildRemote.zip');
+
+      let stream = await fse.createWriteStream(tempFileDir + zipPackageName);
       try {
-        await archive.directory('tmp/smart-city', false) //TODO::change to current directory
+        await archive.directory('.', false) 
         .pipe(stream);
         await stream.on('close', function() {
           zipFileSize = Math.ceil(archive.pointer() / (1024 * 1024));
           console.log(zipFileSize + ' megabytes');
-          console.log('archiver has been finalized and the output file descriptor has closed.');
+          console.log(messages.zip_file_create_success);
         });
         await archive.finalize();
         if (zipFileSize < 150) {
           try {
-            await dockerRepositoryService.build(self, 'C:/Users/ASUS/Documents/Elham/Sources/sakku-cli/tmp/buildRemote.zip', settings);
+            await dockerRepositoryService.build(self, tempFileDir + zipPackageName, settings);
             console.log(messages.remote_build_success);
             await fse.emptyDir(tempFileDir);
             console.log(messages.empty_temp_folder_success);
