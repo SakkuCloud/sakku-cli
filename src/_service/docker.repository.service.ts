@@ -7,42 +7,16 @@ import * as path from 'path';
 import { Command } from '@oclif/command';
 import axios from 'axios';
 const request = require('request');
-const mkdirp = require('mkdirp-promise')
 const mime = require('mime');
 const q = require('q');
 
 // Project Modules
-import { app_url, docker_repository_url } from '../consts/urls';
-import { IApp, IAppVO } from '../interfaces/app.interface';
-import IServerResult from '../interfaces/server-result.interface';
-import { readLocalApps } from '../utils/read-from-file';
+import { docker_repository_url } from '../consts/urls';
 import { readToken } from '../utils/read-token';
-import { common } from '../utils/common';
-import { start } from 'repl';
 
 export const dockerRepositoryService = {
   build,
 };
-
-function create(ctx: Command, data: {}) {
-  return axios.post(app_url, data, { headers: getHeader(ctx) })
-    .catch((error) => {
-      throw common.handleRequestError(error);
-    });
-}
-
-
-
-function addCollaborator(ctx: any, id: any, data: any) {
-  let url = app_url + '/' + id + '/collaborators?level=7'
-  return axios.post(url, data, { headers: getHeader(ctx) })
-    .catch((error) => {
-      throw common.handleRequestError(error);
-    });
-}
-
-
-
 
 function build(ctx: any, fullPath: string, settings: { name: string, tag: string, dockerFile: string , buildArgs: string}) {
   console.log(fullPath);
@@ -86,10 +60,6 @@ function build(ctx: any, fullPath: string, settings: { name: string, tag: string
 
 function getHeader(ctx: Command, contentType = 'text/html; charset=UTF-8') {
   return { Authorization: readToken(ctx), 'Content-Type' : contentType};
-}
-
-function getToken(ctx: Command) {
-  return readToken(ctx).split(' ')[1];
 }
 
 

@@ -1,8 +1,3 @@
-// Native Modules
-import * as fs from 'fs';
-import * as util from 'util';
-import * as path from 'path';
-
 // External Modules
 import { Command } from '@oclif/command';
 import axios from 'axios';
@@ -86,8 +81,4 @@ function rmRecord(ctx: Command, data: {}) {
 
 function getHeader(ctx: Command) {
   return { Authorization: readToken(ctx) };
-}
-
-function getToken(ctx: Command) {
-  return readToken(ctx).split(' ')[1];
 }

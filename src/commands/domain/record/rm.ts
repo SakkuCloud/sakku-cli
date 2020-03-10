@@ -92,25 +92,25 @@ are you really sure to remove this record of domain? (y/n): y`,
       try {
         result = await domainService.rmRecord(self, sendObj);
         this.log(JSON.stringify(result.data ,null, 2));
-        cli.action.stop(messages.domain_removed_successfully);
+        cli.action.stop(messages.domain_remove_success);
       } catch(e) {
         cli.action.stop(JSON.stringify(e ,null, 2));
       } 
     } 
     else {
-      let confimation = await cli.confirm(messages.domain_delete_confirmation);
+      let confimation = await cli.confirm(messages.domain_remove_confirm);
       if (confimation) {
         await cli.action.start(messages.w8_msg);
         try {
           result = await domainService.rmRecord(self, sendObj);
           this.log(JSON.stringify(result.data ,null, 2));
-          cli.action.stop(messages.domain_removed_successfully);
+          cli.action.stop(messages.domain_remove_success);
         } catch(e) {
           cli.action.stop(JSON.stringify(e ,null, 2));
         }
       } 
       else {
-        this.log(messages.domain_delete_operation_was_canceled);
+        this.log(messages.domain_remove_cancel);
       }
     }
   }

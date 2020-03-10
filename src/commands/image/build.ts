@@ -162,9 +162,7 @@ Enter your app ports`,
         await stream.on('close', function() {
           zipFileSize = Math.ceil(archive.pointer() / (1024 * 1024));
           console.log(zipFileSize + ' megabytes');
-          console.log(messages.zip_file_create_success);
-        });
-        await archive.finalize();
+          console.log(messages.zip_file_created_success)   await archive.finalize();
         if (zipFileSize < 150) {
           try {
             await dockerRepositoryService.build(self, tempFileDir + zipPackageName, settings);
