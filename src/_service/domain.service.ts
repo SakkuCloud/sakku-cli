@@ -10,7 +10,7 @@ import { readToken } from '../utils/read-token';
 import { common } from '../utils/common';
 
 export const domainService = {
-  getAll,
+  all,
   getByApp,
   add,
   rm,
@@ -27,7 +27,7 @@ function add(ctx: Command, appId: number, data: {}) {
     });
 }
 
-function getAll(ctx: Command) {
+function all(ctx: Command) {
   return axios.get<IServerResult<IAppVO>>(domain_url , { headers: getHeader(ctx) }).
     catch((error) => {
       throw common.handleRequestError(error);

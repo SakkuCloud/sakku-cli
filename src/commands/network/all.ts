@@ -1,11 +1,9 @@
 // External Modules
 import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
-import * as inquirer from 'inquirer';
 
 // Project Modules
 import { networkService } from '../../_service/network.service';
-import { messages } from '../../consts/msg';
 
 export default class All extends Command {
   static description = 'Get all networks';
@@ -22,12 +20,11 @@ export default class All extends Command {
   async run() {
     const { args, flags } = this.parse(All);
     let self = this;
-    let network: String;
     let result: any;
     
     try{
       result = await networkService.all(self);
-      this.log(result.data);
+      this.log(JSON.stringify(result.data ,null, 2));
     }catch(e) {
       console.log(e);
     }

@@ -90,7 +90,7 @@ export const messages = {
   enter_build_mode: 'Enter build mode: {local or remote?}',
   remote_build_success: 'Remote build has done succesfully!',
   empty_temp_folder_success: 'Temporary folder emptied succesfully!',
-  zip_file_created_success: 'Zip file created succesfully!',
+  zip_file_create_success: 'Zip file created succesfully!',
   empty_list: 'Empty List',
   enter_col_email: 'Enter your collaborator\'s email',
   enter_col_image_reg: 'Enter your collaborator\'s image registry (Optional)',
@@ -116,5 +116,15 @@ export const messages = {
   remote_path: 'Enter the path on the server where you want your file to be uploaded',
   app_change_ports_success: 'Application ports changed successfully!',
   enter_certification_file_id: 'Enter certification file ID',
-  zip_file_size_is_big: 'It\'s too big! Zip file size should be less than 150M!'
+  zip_file_size_is_big: 'It\'s too big! Zip file size should be less than 150M!',
+  enter_check_rate_for_helath_check: 'Enter check rate',
+  enter_endpoint_for_helath_check: 'Enter endpoint',
+  enter_intial_delay_for_helath_check: 'Enter intial delay',
+  enter_response_code_for_helath_check: 'Enter response code',
+  enter_response_message_for_helath_check: 'Enter response message',
+  enter_scheme_for_helath_check: 'Enter scheme',
+  enter_health_check_id: 'Enter health check Id',
+  helthCheck_remove_success: 'Health check removed successfully!',
+  helthCheck_remove_confirm: 'Are you sure you want to remove this health check? (y or n)',
+  helthCheck_remove_cancel: 'Removing health check was canceled!'
 }

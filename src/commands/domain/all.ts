@@ -6,11 +6,11 @@ import * as inquirer from 'inquirer';
 // Project Modules
 import { domainService } from '../../_service/domain.service';
 
-export default class getAll extends Command {
+export default class All extends Command {
   static description = 'Get all domains of user';
 
   static examples = [
-    `$ sakku domain:getAll`,
+    `$ sakku domain:all`,
   ];
 
   static flags = {
@@ -18,12 +18,12 @@ export default class getAll extends Command {
   };
 
   async run() {
-    const { args, flags } = this.parse(getAll);
+    const { args, flags } = this.parse(All);
     let self = this;
     let result: any;
     try{
-      result = await domainService.getAll(self);
-      this.log(result.data);
+      result = await domainService.all(self);
+      this.log(JSON.stringify(result.data ,null, 2));
     }catch(e) {
       console.log(e);
     }

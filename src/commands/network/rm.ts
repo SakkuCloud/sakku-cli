@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import * as inquirer from 'inquirer';
 import cli from 'cli-ux';
 
 // Project Modules
@@ -47,8 +46,8 @@ are you really sure to remove this network? (y/n): y`,
       networkName = await cli.prompt(messages.enter_network_name, { required: true });
     }
 
-    force = flags.force;
-
+    force = flags.force ? flags.force : false;
+    console.log('force: ' + force);
     let data = {
       force
     };

@@ -15,20 +15,20 @@ Enter network name: NETWORK-NAME
 Are you sure to delete this network? (y or n): y`,
   ];
 
-  static args = [
-    {
-      name: 'app',
-      required: false,
-      description: 'sakku network:rm [appId]',
-      hidden: false
-    },
-    {
-      name: 'network',
-      required: false,
-      description: 'sakku network:rm [appId] [network]',
-      hidden: false
-    }
-  ];
+  // static args = [
+  //   {
+  //     name: 'app',
+  //     required: false,
+  //     description: 'sakku network:rm [appId]',
+  //     hidden: false
+  //   },
+  //   {
+  //     name: 'name',
+  //     required: false,
+  //     description: 'sakku network:rm [appId] [name]',
+  //     hidden: false
+  //   }
+  // ];
 
   static flags = {
     help: flags.help({ char: 'h' }),
@@ -60,9 +60,8 @@ Are you sure to delete this network? (y or n): y`,
       appId = await cli.prompt(messages.enter_app_id, { required: true });
     }
 
-    force = flags.force;
-
-   data = {
+    force = flags.force ? flags.force : false;
+    data = {
       appId,
       force
     };

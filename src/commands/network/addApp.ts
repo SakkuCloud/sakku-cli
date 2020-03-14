@@ -1,7 +1,6 @@
 // External Modules
 import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
-import * as inquirer from 'inquirer';
 
 // Project Modules
 import { networkService } from '../../_service/network.service';
@@ -12,14 +11,14 @@ export default class AddApp extends Command {
 
   static examples = [
     `$ sakku network:addApp 
-Enter your app id: APP-ID
-Enter network name: Network-Name`,
+Enter network name: Network-Name
+Enter your app id: APP-ID`,
   ];
 
   static flags = {
     help: flags.help({ char: 'h' }),
     name: flags.string({ char: 'n', description: 'Network Name' }),
-    app: flags.integer({ char: 'a', description: 'App Name' }),
+    app: flags.integer({ char: 'a', description: 'App ID' }),
   };
 
   async run() {

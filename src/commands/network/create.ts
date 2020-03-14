@@ -1,7 +1,6 @@
 // External Modules
 import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
-import * as inquirer from 'inquirer';
 
 // Project Modules
 import { networkService } from '../../_service/network.service';
@@ -11,7 +10,7 @@ export default class Create extends Command {
   static description = 'Create network';
 
   static examples = [
-    `$ sakku network:add
+    `$ sakku network:create
 Enter Network Name: NETWORK-NAME`,
   ];
 
@@ -24,7 +23,7 @@ Enter Network Name: NETWORK-NAME`,
     {
       name: 'name',
       required: false,
-      description: 'sakku network:add [name]',
+      description: 'sakku network:create [name]',
       hidden: false
     }
   ];
@@ -33,23 +32,23 @@ Enter Network Name: NETWORK-NAME`,
     const { args, flags } = this.parse(Create);
     let self = this;
     let result: any;
-    let networkName: string;
+    let name: string;
   
     let data = {};
 
     if (args.hasOwnProperty('name') && args.name) {
-      networkName = args.name;
+      name = args.name;
     }
     else if (flags.hasOwnProperty('name') && flags.name) {
-      networkName = flags.name;
+      name = flags.name;
     }
     else {
-      networkName = await cli.prompt(messages.enter_app_id, { required: true });
+      name = await cli.prompt(messages.enter_network_name, { required: true });
     }
 
 
     data = {
-      networkName
+      name
     }
     try {
       result = await networkService.create(self, data);

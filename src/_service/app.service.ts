@@ -40,12 +40,15 @@ export const appService = {
   getDownloadLink,
   download,
   upload,
-  changeConfig
+  changeConfig,
+  allHealthCheck,
+  createHealthCheck,
+  rmHealthCheck,
+  runHealthCheck
 };
 let stat = util.promisify(fs.stat);
 
 function create(ctx: Command, data: {}) {
-  console.log(getHeader(ctx));
   return axios.post(app_url, data, { headers: getHeader(ctx) })
     .catch((error) => {
       throw common.handleRequestError(error);
@@ -245,6 +248,35 @@ function upload(ctx: any, id: any, fullPath: string, data: { containerId: string
 
   return defer.promise;
 }
+
+function allHealthCheck(ctx: Command, appId: string) {
+  return axios.get<IServerResult<IAppVO>>(app_url + '/' +  appId + '/healthCheck', { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function runHealthCheck(ctx: Command, appId: string, hId: string) {
+  return axios.get<IServerResult<IAppVO>>(app_url + '/' +  appId + '/check/' + hId, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function createHealthCheck(ctx: Command, appId:string, data: {}) {
+  return axios.post(app_url + '/' +  appId + '/healthCheck', data, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function rmHealthCheck(ctx: Command, appId: string, hId: string) {
+  return axios.delete(app_url + '/' + appId + '/healthCheck/' + hId, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
 
 function getHeader(ctx: Command) {
   return { Authorization: readToken(ctx) };
