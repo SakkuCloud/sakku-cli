@@ -35,6 +35,7 @@ export const appService = {
   editCollaborator,
   deleteCollaborator,
   logs,
+  exportLogs,
   getToken,
   dir,
   getDownloadLink,
@@ -163,6 +164,14 @@ function deleteCollaborator(ctx: any, id: any, cid: any) {
 function logs(ctx: any, id: any, time: any) {
   let url = app_url + '/' + id + '/logs?time=' + time;
   return axios.get(url, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function exportLogs(ctx: any, id: string, data: any) {
+  let url = app_url + '/' + id + '/logs/export';
+  return axios.get(url, {params: data})
     .catch((error) => {
       throw common.handleRequestError(error);
     });

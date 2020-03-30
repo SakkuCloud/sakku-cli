@@ -126,5 +126,7 @@ export const messages = {
   enter_health_check_id: 'Enter health check Id',
   helthCheck_remove_success: 'Health check removed successfully!',
   helthCheck_remove_confirm: 'Are you sure you want to remove this health check? (y or n)',
-  helthCheck_remove_cancel: 'Removing health check was canceled!'
+  helthCheck_remove_cancel: 'Removing health check was canceled!',
+  enter_from_date: 'Enter from date in yyyy/mm/dd format (Georgian)',
+  enter_to_date: 'Enter to date in yyyy/mm/dd fromat (Georgian)',
 }
