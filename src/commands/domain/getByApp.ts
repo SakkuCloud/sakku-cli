@@ -42,7 +42,7 @@ Enter your app id: APP-ID`,
     }
     
     try {
-      domainResult = await domainService.getByApp(this, appId);
+      domainResult = await domainService.getByApp(self, appId);
       this.log(domainResult.data);
     } catch(e) {
       console.log(e);

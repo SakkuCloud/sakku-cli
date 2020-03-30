@@ -13,7 +13,7 @@ const q = require('q');
 const readFile = util.promisify(fs.readFile);
 
 // Project Modules
-import { app_url } from '../consts/urls';
+import { app_url, metrics_app_url } from '../consts/urls';
 import { file_url } from '../consts/urls';
 import { IApp, IAppVO } from '../interfaces/app.interface';
 import IServerResult from '../interfaces/server-result.interface';
@@ -44,7 +44,8 @@ export const appService = {
   allHealthCheck,
   createHealthCheck,
   rmHealthCheck,
-  runHealthCheck
+  runHealthCheck,
+  metrics
 };
 let stat = util.promisify(fs.stat);
 
@@ -273,6 +274,13 @@ function createHealthCheck(ctx: Command, appId:string, data: {}) {
 function rmHealthCheck(ctx: Command, appId: string, hId: string) {
   return axios.delete(app_url + '/' + appId + '/healthCheck/' + hId, { headers: getHeader(ctx) })
     .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function metrics(ctx: Command, appId: string) {
+  return axios.get<IServerResult<IAppVO>>(metrics_app_url  + appId, { headers: getHeader(ctx) }).
+    catch((error) => {
       throw common.handleRequestError(error);
     });
 }

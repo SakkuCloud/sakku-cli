@@ -53,7 +53,6 @@ export default class Exec extends Command {
     else
       appId = await cli.prompt(messages.appIdName);
 
-
     try {
       // @ts-ignore
       if (!isNaN(appId)) {

@@ -74,6 +74,5 @@ export default class Login extends Command {
     else {
       cli.action.stop(messages.abort_msg);
     }
-
   }
 }
