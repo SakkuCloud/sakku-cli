@@ -58,7 +58,7 @@ Enter your app id: APP-ID`,
               stomp.send("/app/metrics", {}, appId);
               stomp.subscribe(
                 "/user/queue/metrics",
-                (message) => {
+                (message: any) => {
                   try {
                     console.log(JSON.parse(message.body));
                     console.log('\n');
