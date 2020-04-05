@@ -58,7 +58,7 @@ _See code: [src\commands\app\add.ts](https://github.com/makbn/sakku_cli_ts/blob/
 ## `sakku app:col [APP]`
 
 
-Add new collaborators, as well ad showing the list of collaborators
+Add new collaborators, as well as showing the list of collaborators
 
 
 ```

@@ -127,6 +127,8 @@ export const messages = {
   helthCheck_remove_success: 'Health check removed successfully!',
   helthCheck_remove_confirm: 'Are you sure you want to remove this health check? (y or n)',
   helthCheck_remove_cancel: 'Removing health check was canceled!',
-  enter_from_date: 'Enter from date in yyyy/mm/dd format (Georgian)',
-  enter_to_date: 'Enter to date in yyyy/mm/dd fromat (Georgian)',
+  enter_from_date: 'Enter from date in yyyy/mm/dd | yyyy/mm/dd H:i:s format (Georgian)',
+  enter_to_date: 'Enter to date in yyyy/mm/dd | yyyy/mm/dd H:i:s fromat (Georgian)',
+  log_file_create_success: 'Log file created successfully! in ',
+  enter_file_dir: 'Enter log file directory',
 }

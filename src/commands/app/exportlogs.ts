@@ -2,6 +2,9 @@
 import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
 import color from '@oclif/color';
+const fs = require("fs");
+const uniqid = require('uniqid');
+const util = require("util");
 
 // Project Modules
 import { appService } from '../../_service/app.service';
@@ -21,6 +24,7 @@ export default class ExportLogs extends Command {
     app: flags.string({ char: 'a', description: 'sakku app:logsexport -a/-app [APP-ID]' }),
     from: flags.string({ char: 'f', description: 'sakku app:logsexport -f/-from  [FROM-DATE]' }),
     to: flags.string({ char: 't', description: 'sakku app:logsexport -t/-to [TO-DATE]' }),
+    file: flags.string({ char: 'f', description: 'sakku app:logsexport -f/-file [FILE-ADDRESS]' }),
   };
 
   static args = [
@@ -42,6 +46,12 @@ export default class ExportLogs extends Command {
         description: 'app:logsexport [APP-ID] [FROM-DATE] [TO-DATE]',
         hidden: false
     },
+    {
+      name: 'file',
+      required: false,
+      description: 'app:logsexport [APP-ID] [FROM-DATE] [TO-DATE] [FILE-ADRRESS]',
+      hidden: false
+    },
   ];
 
   async run() {
@@ -49,9 +59,11 @@ export default class ExportLogs extends Command {
     let self = this;
     let appId: string;
     let from: string;
+    let fileDir: string;
     let to: string;
     let data : any = {};
     let result : any;
+    let dateReg = /^\d{4}([./-])\d{2}\1\d{2}$/;
 
     data.token = readToken(self);
     if (args.hasOwnProperty('app') && args.app) {
@@ -84,19 +96,42 @@ export default class ExportLogs extends Command {
         to = await cli.prompt(messages.enter_to_date, { required: false });
     }
 
+    if (args.hasOwnProperty('file') && args.file) {
+        fileDir = args.file;
+    }
+    else if (flags.hasOwnProperty('file') && flags.file) {
+        fileDir = flags.file;
+    }
+    else {
+        fileDir = await cli.prompt(messages.enter_file_dir, { required: true });
+    }
+
     if (typeof from !== 'undefined') {
-        let dt_from = new Date(from + ' 00:00:00');
+        let matches = from.match(dateReg);
+        let dt_from = matches ? new Date(from + ' 00:00:00') : new Date(from);
         data.fromDate = dt_from.getTime();
     }
 
     if (typeof to !== 'undefined') {
-        let dt_to = new Date(to + ' 23:59:59');
+        let matches = from.match(dateReg);
+        let dt_to = matches ? new Date(to + ' 23:59:59'): new Date(from);
         data.toDate = dt_to.getTime();
     }
     
     try {
         result = await appService.exportLogs(self, appId, data);
-        this.log(JSON.stringify(result.data ,null, 2));
+        let fileName = uniqid(appId + '_app_logs_', '.txt');
+        let file_full_path = fileDir + '/' + fileName;
+        fs.writeFile(file_full_path, result.data, (error: any) => {
+          if(error){
+              return console.log('fileError:' + error);
+          }
+          else
+          {
+            this.log(messages.log_file_create_success + file_full_path);
+          }
+      });
+        
       } catch(e) {
         common.logError(e);
     }
