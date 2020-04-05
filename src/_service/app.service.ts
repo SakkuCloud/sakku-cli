@@ -13,7 +13,7 @@ const q = require('q');
 const readFile = util.promisify(fs.readFile);
 
 // Project Modules
-import { app_url } from '../consts/urls';
+import { app_url, metrics_app_url } from '../consts/urls';
 import { file_url } from '../consts/urls';
 import { IApp, IAppVO } from '../interfaces/app.interface';
 import IServerResult from '../interfaces/server-result.interface';
@@ -35,11 +35,18 @@ export const appService = {
   editCollaborator,
   deleteCollaborator,
   logs,
+  exportLogs,
   getToken,
   dir,
   getDownloadLink,
   download,
-  upload
+  upload,
+  changeConfig,
+  allHealthCheck,
+  createHealthCheck,
+  rmHealthCheck,
+  runHealthCheck,
+  metrics
 };
 let stat = util.promisify(fs.stat);
 
@@ -114,6 +121,14 @@ function scale(ctx: any, id: any, data: any) {
     });
 }
 
+function changeConfig(ctx: any, id: any, data: any) {
+  let url = app_url + '/' + id + '/config'
+  return axios.put(url, data, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
 function getCollaborators(ctx: any, id: any) {
   let url = app_url + '/' + id + '/collaborators'
   return axios.get(url, { headers: getHeader(ctx) })
@@ -149,6 +164,14 @@ function deleteCollaborator(ctx: any, id: any, cid: any) {
 function logs(ctx: any, id: any, time: any) {
   let url = app_url + '/' + id + '/logs?time=' + time;
   return axios.get(url, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function exportLogs(ctx: any, id: string, data: any) {
+  let url = app_url + '/' + id + '/logs/export';
+  return axios.get(url, {params: data})
     .catch((error) => {
       throw common.handleRequestError(error);
     });
@@ -235,6 +258,42 @@ function upload(ctx: any, id: any, fullPath: string, data: { containerId: string
 
   return defer.promise;
 }
+
+function allHealthCheck(ctx: Command, appId: string) {
+  return axios.get<IServerResult<IAppVO>>(app_url + '/' +  appId + '/healthCheck', { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function runHealthCheck(ctx: Command, appId: string, hId: string) {
+  return axios.get<IServerResult<IAppVO>>(app_url + '/' +  appId + '/check/' + hId, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function createHealthCheck(ctx: Command, appId:string, data: {}) {
+  return axios.post(app_url + '/' +  appId + '/healthCheck', data, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function rmHealthCheck(ctx: Command, appId: string, hId: string) {
+  return axios.delete(app_url + '/' + appId + '/healthCheck/' + hId, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function metrics(ctx: Command, appId: string) {
+  return axios.get<IServerResult<IAppVO>>(metrics_app_url  + appId, { headers: getHeader(ctx) }).
+    catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
 
 function getHeader(ctx: Command) {
   return { Authorization: readToken(ctx) };
