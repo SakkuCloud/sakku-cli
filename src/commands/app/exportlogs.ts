@@ -13,7 +13,7 @@ import { readToken } from '../../utils/read-token';
 import { emptyDir } from 'fs-extra';
 
 export default class ExportLogs extends Command {
-  static description = 'Shows logs of an app';
+  static description = 'show / (export to a text file) logs history of an app';
 
   static examples = [
     `$ sakku app:logs`,
@@ -24,7 +24,7 @@ export default class ExportLogs extends Command {
     app: flags.string({ char: 'a', description: 'sakku app:logsexport -a/-app [APP-ID]' }),
     from: flags.string({ char: 'f', description: 'sakku app:logsexport -f/-from  [FROM-DATE]' }),
     to: flags.string({ char: 't', description: 'sakku app:logsexport -t/-to [TO-DATE]' }),
-    file: flags.string({ char: 'f', description: 'sakku app:logsexport -f/-file [FILE-ADDRESS]' }),
+    dir: flags.string({ char: 'd', description: 'sakku app:logsexport -d/-dir [FILE-DIR]' }),
   };
 
   static args = [
@@ -47,9 +47,9 @@ export default class ExportLogs extends Command {
         hidden: false
     },
     {
-      name: 'file',
+      name: 'dir',
       required: false,
-      description: 'app:logsexport [APP-ID] [FROM-DATE] [TO-DATE] [FILE-ADRRESS]',
+      description: 'app:logsexport [APP-ID] [FROM-DATE] [TO-DATE] [FILE-DIR]',
       hidden: false
     },
   ];
@@ -96,11 +96,11 @@ export default class ExportLogs extends Command {
         to = await cli.prompt(messages.enter_to_date, { required: false });
     }
 
-    if (args.hasOwnProperty('file') && args.file) {
-        fileDir = args.file;
+    if (args.hasOwnProperty('dir') && args.dir) {
+        fileDir = args.dir;
     }
-    else if (flags.hasOwnProperty('file') && flags.file) {
-        fileDir = flags.file;
+    else if (flags.hasOwnProperty('dir') && flags.dir) {
+        fileDir = flags.dir;
     }
     else {
         fileDir = await cli.prompt(messages.enter_file_dir, { required: false });

@@ -7,10 +7,10 @@ import { networkService } from '../../_service/network.service';
 import { messages } from '../../consts/msg';
 
 export default class AddApp extends Command {
-  static description = 'network:addApp';
+  static description = 'network:addapp';
 
   static examples = [
-    `$ sakku network:addApp 
+    `$ sakku network:addapp
 Enter network name: Network-Name
 Enter your app id: APP-ID`,
   ];

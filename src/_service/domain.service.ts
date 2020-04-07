@@ -11,7 +11,7 @@ import { common } from '../utils/common';
 
 export const domainService = {
   all,
-  getByApp,
+  app,
   add,
   rm,
   getAllRecord,
@@ -34,7 +34,7 @@ function all(ctx: Command) {
     });
 }
 
-function getByApp(ctx: Command, appId: string) {
+function app(ctx: Command, appId: string) {
   return axios.get<IServerResult<IAppVO>>(domain_app_url + appId, { headers: getHeader(ctx) })
     .catch((error) => {
       throw common.handleRequestError(error);

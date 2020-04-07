@@ -131,5 +131,5 @@ export const messages = {
   enter_from_date: 'Enter from date in yyyy/mm/dd | yyyy/mm/dd H:i:s format (Georgian)',
   enter_to_date: 'Enter to date in yyyy/mm/dd | yyyy/mm/dd H:i:s fromat (Georgian)',
   log_file_create_success: 'Log file created successfully! in ',
-  enter_file_dir: 'Enter log file directory',
+  enter_file_dir: 'Enter log file directory without file name: (**hint: If you want to save logs in a file, fill this field else skip it!)',
 }
