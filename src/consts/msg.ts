@@ -92,6 +92,7 @@ export const messages = {
   empty_temp_folder_success: 'Temporary folder emptied succesfully!',
   zip_file_create_success: 'Zip file created succesfully!',
   empty_list: 'Empty List',
+  empty_log: 'There is no log!',
   enter_col_email: 'Enter your collaborator\'s email',
   enter_col_image_reg: 'Enter your collaborator\'s image registry (Optional)',
   col_add_success: 'Collaborator added successfully.',
