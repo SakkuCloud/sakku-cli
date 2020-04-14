@@ -1,7 +1,5 @@
 // External Modules
 import { Command, flags } from '@oclif/command';
-import cli from 'cli-ux';
-import * as inquirer from 'inquirer';
 
 // Project Modules
 import { domainService } from '../../_service/domain.service';
@@ -18,7 +16,6 @@ export default class All extends Command {
   };
 
   async run() {
-    const { args, flags } = this.parse(All);
     let self = this;
     let result: any;
     try{

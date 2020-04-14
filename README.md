@@ -57,6 +57,8 @@ USAGE
 * [`sakku network:rm`](#sakku-network-rm)
 * [`sakku network:rmapp`](#sakku-network-rmapp)
 * [`sakku image:build`](#sakku-image-build)
+* [`sakku image:ps`](#sakku-image-ps)
+* [`sakku image:share`](#sakku-image-share)
 
 # `sakku app`
 manage all apps
