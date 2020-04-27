@@ -71,8 +71,8 @@ function getByName(ctx: Command, name: string) {
     });
 }
 
-function stop(ctx: Command, id: string) {
-  return axios.get(`${app_url}/${id}/stop`, { headers: getHeader(ctx) })
+function stop(ctx: Command, id: string, data: any) {
+  return axios.get(`${app_url}/${id}/stop`, { headers: getHeader(ctx), params:data })
     .catch((error) => {
       throw common.handleRequestError(error);
     });;
@@ -137,17 +137,17 @@ function getCollaborators(ctx: any, id: any) {
     });
 }
 
-function addCollaborator(ctx: any, id: any, data: any) {
-  let url = app_url + '/' + id + '/collaborators?level=7'
-  return axios.post(url, data, { headers: getHeader(ctx) })
+function addCollaborator(ctx: any, id: any, queryParam:any, data: any) {
+  let url = app_url + '/' + id + '/collaborators';
+  return axios.post(url, data, { headers: getHeader(ctx), params:queryParam })
     .catch((error) => {
       throw common.handleRequestError(error);
     });
 }
 
-function editCollaborator(ctx: any, id: any, cid: any, data: any) {
-  let url = app_url + '/' + id + '/collaborators/' + cid + '?level=7'
-  return axios.post(url, data, { headers: getHeader(ctx) })
+function editCollaborator(ctx: any, id: any, cid: any, queryParam:any, data: any) {
+  let url = app_url + '/' + id + '/collaborators/' + cid;
+  return axios.post(url, data, { headers: getHeader(ctx), params:queryParam })
     .catch((error) => {
       throw common.handleRequestError(error);
     });

@@ -8,14 +8,14 @@ import { appService } from '../../_service/app.service';
 import { common } from '../../utils/common';
 import { messages } from '../../consts/msg';
 
-export default class Col extends Command {
+export default class Collab extends Command {
   static description = 'Adds new collaborators, as well ad showing the list of collaborators';
 
   static examples = [
-    `$ sakku app:col`,
-    `$ sakku app:col -a`,
-    `$ sakku app:col -e`,
-    `$ sakku app:col -d`
+    `$ sakku app:Collab`,
+    `$ sakku app:Collab -a`,
+    `$ sakku app:Collab -e`,
+    `$ sakku app:Collab -d`
   ];
 
   static flags = {
@@ -35,16 +35,32 @@ export default class Col extends Command {
   ];
 
   async run() {
-    const { args, flags } = this.parse(Col);
+    const { args, flags } = this.parse(Collab);
     let self = this;
     let collaborators;
     let appId: string;
 
-    let question = {
+    let accessLevelQuestion = {
       name: 'accessLevel',
-      message: 'Choose your Access Level: ',
+      message: messages.choose_collab_access_level,
       type: 'list',
       choices: ['VIEW', 'MODERATE', 'MODIFY']
+    };
+
+    let notifSensLevelQuestion = {
+      name: 'level',
+      message: messages.choose_notif_sens_level,
+      type: 'list',
+      choices: [
+        {name:'0: no email for apps!', value:0 },
+        {name:'1: delete, transfer, create', value: 1 },
+        {name:'2: stop, run', value:2 }, 
+        {name:'3: git, docker (pull and push)', value:3 },
+        {name:'4: cert, domain, cmd, issue', value:4 },
+        {name:'5: collaborator', value:5 },
+        {name:'6: docker failed, health check', value:6 },
+        {name:'7: status changed', value:7 }
+      ]
     };
 
     if (args.hasOwnProperty('app') && args.app) {
@@ -91,28 +107,35 @@ export default class Col extends Command {
     }
 
     function addCol() {
-      let colData: { accessLevel: string, email: string, imageRegistry: string } = {
+      let collabData: { accessLevel: string, email: string, imageRegistry: string } = {
         accessLevel: 'VIEW',
         email: '',
         imageRegistry: ''
-      }
-      return cli.prompt(messages.enter_col_email, { required: true })
+      };
+      let queryParam = {
+        level: '7'
+      };
+      return cli.prompt(messages.enter_collab_email, { required: true })
         .then(answer => {
-          colData.email = answer;
-          return inquirer.prompt([question])
+          collabData.email = answer;
+          return inquirer.prompt([accessLevelQuestion])
         })
         .then(function (answer: any) {
           // @ts-ignore
-          console.log(answer);
-          colData.accessLevel = answer.accessLevel;
-          return cli.prompt(messages.enter_col_image_reg, { required: false });
+          collabData.accessLevel = answer.accessLevel;
+          return inquirer.prompt([notifSensLevelQuestion])
+        }).
+        then((answer: any) => {
+          queryParam.level = answer.level;
+          return cli.prompt(messages.enter_collab_image_reg, { required: false });
         })
-        .then(function (answer) {
-          colData.imageRegistry = answer;
-          return appService.addCollaborator(self, appId, colData)
+        .then(function (answer:any) {
+          collabData.imageRegistry = answer;
+          return appService.addCollaborator(self, appId, queryParam ,collabData)
         })
         .then(result => {
           console.log(messages.col_add_success);
+          console.log(JSON.stringify(result.data ,null, 2));
         })
         .catch(function (err) {
           common.logError(err);
@@ -121,31 +144,40 @@ export default class Col extends Command {
 
     function editCol() {
       let cid: string;
-      let colData = {
+      let collabData = {
         accessLevel: 'VIEW',
         email: '',
         imageRegistry: ''
-      }
-      cli.prompt(messages.enter_col_id, { required: true })
+      };
+      let queryParam = {
+        level: '7'
+      };
+      
+      cli.prompt(messages.enter_collab_id, { required: true })
         .then(function (answer) {
           cid = answer;
-          return cli.prompt(messages.enter_col_email, { required: true })
+          return cli.prompt(messages.enter_collab_email, { required: true })
         })
         .then(answer => {
-          colData.email = answer;
-          return inquirer.prompt([question])
+          collabData.email = answer;
+          return inquirer.prompt([accessLevelQuestion])
         })
-        .then(function (answer) {
+        .then(function (answer: any) {
           // @ts-ignore
-          colData.accessLevel = answer;
-          return cli.prompt(messages.enter_col_image_reg, { required: false });
+          collabData.accessLevel = answer.accessLevel;
+          return inquirer.prompt([notifSensLevelQuestion])
+        }).
+        then((answer: any) => {
+          queryParam.level = answer.level;
+          return cli.prompt(messages.enter_collab_image_reg, { required: false });
         })
         .then(function (answer) {
-          colData.imageRegistry = answer;
-          return appService.editCollaborator(self, appId, cid, colData)
+          collabData.imageRegistry = answer;
+          return appService.editCollaborator(self, appId, cid, queryParam, collabData)
         })
         .then(result => {
           console.log(messages.col_edit_success);
+          console.log(JSON.stringify(result.data ,null, 2));
         })
         .catch(function (err) {
           common.logError(err);
@@ -154,13 +186,13 @@ export default class Col extends Command {
 
     function deleteCol() {
       let cid: string;
-      cli.prompt(messages.enter_col_id, { required: true })
+      cli.prompt(messages.enter_collab_id, { required: true })
         .then(function (answer) {
           cid = answer;
           return appService.deleteCollaborator(self, appId, cid)
         })
         .then(result => {
-          console.log(messages.col_del_success);
+          console.log(messages.collab_del_success);
         })
         .catch(function (err) {
           common.logError(err);
