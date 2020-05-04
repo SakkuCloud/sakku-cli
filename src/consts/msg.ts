@@ -82,6 +82,7 @@ export const messages = {
   app_add_success: 'Your app is successfully added.',
   enter_image_name: 'Enter your image name',
   enter_docker_file_address: 'Enter your docker file address and name (default is /Dockerfile)',
+  enter_docker_compose_file: 'Enter your docker compose file path with this name: docker-compose.yml',
   enter_branch_name: 'Enter your branch name (default is master)',
   more_tag: 'Is there any/more tags (y or n)',
   enter_tag: 'Enter your tag',
@@ -138,4 +139,8 @@ export const messages = {
   commit_app: 'Do you want to commit application before stop it? (y or n)',
   force_stop_app: 'Do you want to force stop application? (y or n)',
   enter_tag_for_commit: 'Enter application\'s tag that you want to commit: (empty = now in format:yyyy-MM-dd-HH-mm-ss)',
+  create_pipeline_permission: 'Do you want to continue pipeline creation of these applications? (y or n)',
+  operation_cancel: 'Operation is canceled!',
+  app_config_review: 'Applications configiguration review ...\n',
+  pipeline_app_under_construction: 'Pipeline applications are being created!',
 }

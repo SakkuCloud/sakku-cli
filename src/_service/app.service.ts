@@ -9,6 +9,7 @@ import axios from 'axios';
 const request = require('request');
 const mkdirp = require('mkdirp-promise')
 const mime = require('mime');
+const FormData = require('form-data');
 const q = require('q');
 const readFile = util.promisify(fs.readFile);
 
@@ -24,6 +25,8 @@ import { start } from 'repl';
 
 export const appService = {
   create,
+  getAppGroupConfig,
+  createPipeline,
   stop,
   get,
   getByName,
@@ -56,6 +59,79 @@ function create(ctx: Command, data: {}) {
       throw common.handleRequestError(error);
     });
 }
+
+function getAppGroupConfig(ctx: Command, fullPath: string) {
+  let defer = q.defer();
+  let fileName = path.basename(fullPath);
+  let mimeType = mime.getType(fullPath);
+  let headers = {
+    "Content-Type": "multipart/form-data"
+  };
+  var options = {
+    'method': 'POST',
+    'url': app_url + '/group/config',
+    'headers': Object.assign(getHeader(ctx), { 'Content-Type': 'multipart/form-data' }),
+    formData: {
+      'composeFile': {
+        'value': fs.createReadStream(fullPath),
+        'options': {
+          'filename': fileName,
+          'contentType': mimeType
+        }
+      }
+    }
+  };
+  request(options, function (error: any, response: { body: any; }) {
+    if (error) {
+      defer.reject(error);
+    }
+    else {
+      defer.resolve(response.body);
+    }
+  });
+
+  return defer.promise;
+}
+
+function createPipeline(ctx: Command, data: {}) {
+  return axios.post(app_url + '/pipeline', data, { headers: getHeader(ctx) })
+    .catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+// function createWithDockerCompose1(ctx: Command, fullPath: string) {
+//   let defer = q.defer();
+//   let fileName = path.basename(fullPath);
+//   let mimeType = mime.getType(fullPath);
+//   let headers = {
+//     "Content-Type": "multipart/form-data"
+//   };
+//   let formData = new FormData();
+//   formData.append('composeFile', fs.createReadStream(fullPath));
+//   console.log(formData);
+//   var options = {
+//     'method': 'POST',
+//     'url': app_url + '/group',
+//     'headers': Object.assign(getHeader(ctx), formData.getHeaders()),
+//     formData
+//   };
+
+//   return axios(options).
+//   catch((error) => {
+//     console.log(error);
+//     throw common.handleRequestError(error);
+//   });
+//   // request(options, function (error: any, response: { body: any; }) {
+//   //   if (error) {
+//   //     defer.reject(error);
+//   //   }
+//   //   else {
+//   //     console.log(response.body);
+//   //     defer.resolve(response.body);
+//   //   }
+//   // });
+// }
 
 function get(ctx: Command, id: string) {
   return axios.get<IServerResult<IAppVO>>(app_url + '/' + id, { headers: getHeader(ctx) }).

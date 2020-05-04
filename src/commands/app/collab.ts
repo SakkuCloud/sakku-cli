@@ -9,20 +9,20 @@ import { common } from '../../utils/common';
 import { messages } from '../../consts/msg';
 
 export default class Collab extends Command {
-  static description = 'Adds new collaborators, as well ad showing the list of collaborators';
+  static description = 'Adds new collaborators, as well as showing the list of collaborators';
 
   static examples = [
     `$ sakku app:Collab`,
     `$ sakku app:Collab -a`,
     `$ sakku app:Collab -e`,
-    `$ sakku app:Collab -d`
+    `$ sakku app:Collab -r`
   ];
 
   static flags = {
     help: flags.help({ char: 'h' }),
     add: flags.boolean({ char: 'a', description: 'Add collaborators', exclusive: ['edit', 'delete'] }),
     edit: flags.boolean({ char: 'e', description: 'Edit collaborators', exclusive: ['add', 'delete'] }),
-    delete: flags.boolean({ char: 'e', description: 'Delete collaborators', exclusive: ['add', 'edit'] }),
+    delete: flags.boolean({ char: 'r', description: 'Remove collaborators', exclusive: ['add', 'edit'] }),
   };
 
   static args = [
@@ -71,13 +71,13 @@ export default class Collab extends Command {
     }
 
     if (flags.add) {
-      addCol();
+      addCollaborator();
     }
     else if (flags.edit) {
-      editCol();
+      editCollaborator();
     }
     else if (flags.delete) {
-      deleteCol();
+      deleteCollaborator();
     }
     else {
       getAllCollaborators();
@@ -106,7 +106,7 @@ export default class Collab extends Command {
         });
     }
 
-    function addCol() {
+    function addCollaborator() {
       let collabData: { accessLevel: string, email: string, imageRegistry: string } = {
         accessLevel: 'VIEW',
         email: '',
@@ -142,7 +142,7 @@ export default class Collab extends Command {
         })
     }
 
-    function editCol() {
+    function editCollaborator() {
       let cid: string;
       let collabData = {
         accessLevel: 'VIEW',
@@ -184,7 +184,7 @@ export default class Collab extends Command {
         })
     }
 
-    function deleteCol() {
+    function deleteCollaborator() {
       let cid: string;
       cli.prompt(messages.enter_collab_id, { required: true })
         .then(function (answer) {

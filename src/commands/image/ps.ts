@@ -5,7 +5,6 @@ import { Command, flags } from '@oclif/command';
 import { dockerRepositoryService } from '../../_service/docker.repository.service';
 import cli from 'cli-ux';
 import { messages } from '../../consts/msg';
-import { resolve } from 'dns';
 
 export default class Ps extends Command {
   static description = 'Get all user repositories hosted by Sakku registry';
@@ -28,32 +27,7 @@ export default class Ps extends Command {
       "size": number,
       "createDate": string
     }[] = [];
-    let repoTemp: {
-      "name": string,
-      "tag": string,
-      "size": number,
-      "createDate": string
-    } = {
-      "name": '',
-      "tag": '',
-      "size": 0,
-      "createDate": ''
-    };
-    let columns = {
-      name: {
-        minWidth: 7,
-      },
-      tag: {
-        minWidth: 10,
-      },
-      size: {
-        minWidth: 10,
-      },
-      createDate: {
-        header: 'create date',
-        minWidth: 20,
-      }
-    };
+    
     try{
       await cli.action.start(messages.w8_msg);
       repoList = await dockerRepositoryService.ps(self);
