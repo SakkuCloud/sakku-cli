@@ -105,24 +105,24 @@ Add new collaborators, as well as showing the list of collaborators
 
 ```
 USAGE
-  $ sakku app:col [APP]
+  $ sakku app:collab [APP]
 
 ARGUMENTS
   APP  app id/name
 
 OPTIONS
   -a, --add
-  -e, --delete
+  -d, --delete
   -e, --edit
   -h, --help    show CLI help
 
 EXAMPLES
-  $ sakku app:col
-  $ sakku app:col -a
+  $ sakku app:collab
+  $ sakku app:collab -a
 ```
 
 
-_See code: [src\commands\app\col.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.1.0/src\commands\app\col.ts)_
+_See code: [src\commands\app\collab.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.1.0/src\commands\app\collab.ts)_
 
 ## `sakku app:deploy`
 
