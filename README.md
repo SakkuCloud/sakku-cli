@@ -30,7 +30,7 @@ USAGE
 * [`sakku whoami`](#sakku-whoami)
 * [`sakku catalog`](#sakku-catalog)
 * [`sakku app:add`](#sakku-appadd)
-* [`sakku app:col [APP]`](#sakku-appcol-app)
+* [`sakku app:collab [APP]`](#sakku-appcollab-app)
 * [`sakku app:deploy`](#sakku-appdeploy)
 * [`sakku app:logs`](#sakku-applogs-app)
 * [`sakku app:exportlogs`](#sakku-appexportlogs-app)
@@ -97,7 +97,7 @@ OPTIONS
 _See code: [src\commands\app\add.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.1.0/src\commands\app\add.ts)_
 
 
-## `sakku app:col [APP]`
+## `sakku app:collab [APP]`
 
 
 Add new collaborators, as well as showing the list of collaborators
@@ -112,7 +112,7 @@ ARGUMENTS
 
 OPTIONS
   -a, --add
-  -d, --delete
+  -r, --delete
   -e, --edit
   -h, --help    show CLI help
 
