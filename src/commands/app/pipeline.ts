@@ -9,8 +9,8 @@ import { common } from '../../utils/common';
 import { messages } from '../../consts/msg';
 import { IAppsPort } from '../../interfaces/app.interface';
 
-export default class File extends Command {
-    static description = 'Shows files & folders of an app';
+export default class Pipeline extends Command {
+    static description = 'Create pipeline from docker-compose';
 
     static examples = [
         `$ sakku app:pipeline`
@@ -22,7 +22,7 @@ export default class File extends Command {
     };
 
     async run() {
-        const { args, flags } = this.parse(File);
+        const { args, flags } = this.parse(Pipeline);
         let self = this;
         // let self = this;
         let composeFile: string = '/';

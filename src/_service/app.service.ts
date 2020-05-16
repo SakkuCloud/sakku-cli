@@ -49,7 +49,10 @@ export const appService = {
   createHealthCheck,
   rmHealthCheck,
   runHealthCheck,
-  metrics
+  metrics,
+  commit,
+  restart,
+  rebuild
 };
 let stat = util.promisify(fs.stat);
 
@@ -148,7 +151,7 @@ function getByName(ctx: Command, name: string) {
 }
 
 function stop(ctx: Command, id: string, data: any) {
-  return axios.get(`${app_url}/${id}/stop`, { headers: getHeader(ctx), params:data })
+  return axios.get(app_url + '/' + id + '/stop', { headers: getHeader(ctx), params:data })
     .catch((error) => {
       throw common.handleRequestError(error);
     });;
@@ -370,6 +373,26 @@ function metrics(ctx: Command, appId: string) {
     });
 }
 
+function commit(ctx: Command, id: number, data: any) {
+  return axios.get<IServerResult<IAppVO>>(app_url + '/' + id + '/commit', { headers: getHeader(ctx), params: data }).
+    catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function restart(ctx: Command, id: number, data: any) {
+  return axios.get<IServerResult<IAppVO>>(app_url + '/' + id + '/restart', { headers: getHeader(ctx), params: data }).
+    catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function rebuild(ctx: Command, id: number, data: any) {
+  return axios.get<IServerResult<IAppVO>>(app_url + '/' + id + '/rebuild', { headers: getHeader(ctx), params: data }).
+    catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
 
 function getHeader(ctx: Command) {
   return { Authorization: readToken(ctx) };

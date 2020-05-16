@@ -40,6 +40,10 @@ USAGE
 * [`sakku app:stop`](#sakku-appstop)
 * [`sakku app:port`](#sakku-appport)
 * [`sakku app:stats`](#sakku-appstats)
+* [`sakku app:commit`](#sakku-appcommit)
+* [`sakku app:restart`](#sakku-apprestart)
+* [`sakku app:rebuild`](#sakku-apprebuild)
+* [`sakku app:pipeline`](#sakku-apppipeline)
 * [`sakku app:healthcheck:all`](#sakku-app-healthcheck-all)
 * [`sakku app:healthcheck:create`](#sakku-app-healthcheck-create)
 * [`sakku app:healthcheck:rm`](#sakku-app-healthcheck-rm)
@@ -68,16 +72,20 @@ USAGE
   $ sakku app:COMMAND
 
 COMMANDS
-  app:add     add new app
-  app:deploy  deploy app
-  app:ps      showing all [running/stoped] app
-  app:rm      Remove app*
-  app:scale   scale app
-  app:stop    stop app
-  app:port    change app port
-  app:stats   app realtime monitroing
-  app:logs    app realtime logs
+  app:add       add new app
+  app:deploy    deploy app
+  app:ps        showing all [running/stoped] app
+  app:rm        Remove app*
+  app:scale     scale app
+  app:stop      stop app
+  app:port      change app port
+  app:stats     app realtime monitroing
+  app:pipeline  create pipeline from docker-compose
+  app:logs      app realtime logs
   app:exportlogs    app logs history
+  app:commit    commit application container
+  app:restart   restart application
+  app:rebuild   rebuild application source
 
 ```
 
@@ -259,6 +267,29 @@ EXAMPLE
 
 _See code: [src\commands\app\stats.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.2.1/src\commands\app\stats.ts)_
 
+## `sakku app:pipeline [APP]`
+
+create pipeline from docker-compose
+
+```
+USAGE
+  $ sakku app:pipeline
+
+OPTIONS
+  -h, --help  show CLI help
+  -f, --file  docker-compose file path
+
+EXAMPLE
+  $ sakku app:pipeline
+     Enter your docker compose file: FILE-PATH
+     Applications configiguration review ...
+     
+     Do you want to continue pipeline creation of these applications? (y or n):
+     Pipeline applications are being created!
+```
+
+_See code: [src\commands\app\pipeline.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.3.0/src\commands\app\pipeline.ts)_
+
 ## `sakku app:exportlogs  [APP] [FROM] [TO] [FILE-DIR]`
 
 show / (export to a text file) logs history of an app
@@ -283,6 +314,79 @@ EXAMPLE
 ```
 
 _See code: [src\commands\app\exportlogs.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.2.1/src\commands\app\exportlogs.ts)_
+
+## `sakku app:commit [AppID]`
+
+Commit application container
+
+```
+USAGE
+  $ sakku app:commit 
+
+OPTIONS
+  -h, --help  show CLI help
+  -a, --app     app ID
+  -c, --cid     Container ID
+  -t, --tag     TAG
+  -r, --isRestart
+
+EXAMPLE
+  $ sakku image:commit
+        Enter your app id : APP-ID
+        Enter container id : CONTAINER-ID
+        Change restart image to this image? : (y/n)
+        Enter version of application : TAG
+```
+
+_See code: [src\commands\app\commit.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.3.0/src\commands\app\commit.ts)_
+
+## `sakku app:restart [AppId]`
+
+Restart application by id
+
+```
+USAGE
+  $ sakku app:restart 
+
+OPTIONS
+  -h, --help  show CLI help
+  -a, --app     app ID
+  -c, --cstop   {Commit app before stopping}
+  -t, --tstop   TAG-STOP {Tag for commited app}
+  -s, --cstart  {Start app from specific version}
+  -v, --tstart  TAG-START
+
+EXAMPLE
+  $ sakku image:restart
+      Enter your app id : APP-ID
+      Do you want to commit this application before stopping it? : (y/n)
+      Enter tag for stopped application : TAG-STOP
+      Do you want to start this application from specific version? : (y/n)
+      Enter version of application you want to start from : TAG-START
+```
+
+_See code: [src\commands\app\restart.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.3.0/src\commands\app\restart.ts)_
+
+## `sakku app:rebuild -a [AppId] -b [buildArgs]`
+
+rebuild application source
+
+```
+USAGE
+  $ sakku app:rebuild 
+
+OPTIONS
+  -h, --help  show CLI help
+  -a, --app     app ID
+  -b, --build-args   
+
+EXAMPLE
+      $ sakku app:rebuild
+      Enter your app id : APP-ID
+      Enter build Arguments : BUILD-ARGS
+```
+
+_See code: [src\commands\app\rebuild.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.3.0/src\commands\app\rebuild.ts)_
 
 ## `sakku catalog`
 
