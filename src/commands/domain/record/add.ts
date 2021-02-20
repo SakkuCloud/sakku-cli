@@ -95,6 +95,11 @@ Enter your app domain`,
         data.comments.push(comment); 
       }
 
-    
+      try {
+        result = await domainService.addRecord(self, domain, data);
+        this.log(JSON.stringify(result.data ,null, 2));
+      } catch(e) {
+        console.log(e);
+      }
   }
 }

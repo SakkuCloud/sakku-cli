@@ -149,4 +149,5 @@ export const messages = {
   change_restart_image_to_this_image: 'Change restart image to this image? (y/n)',
   commit_before_stop_app: 'Do you want to commit this application before stopping it? : (y/n)',
   start_app_from_specific_version: 'Do you want to start this application from specific version? : (y/n)',
+  enter_db_id: 'Enter databse id',
 }

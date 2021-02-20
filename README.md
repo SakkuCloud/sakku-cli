@@ -74,7 +74,7 @@ USAGE
 COMMANDS
   app:add       add new app
   app:deploy    deploy app
-  app:ps        showing all [running/stoped] app
+  app:ps        showing all [running/stopped] app
   app:rm        Remove app*
   app:scale     scale app
   app:stop      stop app
