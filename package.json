@@ -1,7 +1,7 @@
 {
   "name": "sakku",
   "description": "This is a sakku cli that makes world even better!",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": "Fanap Node.js Team",
   "bin": {
     "sakku": "./bin/run"
