@@ -15,13 +15,13 @@ export default class Set extends Command {
     Choose datacenter zone : (Use arrow keys)
     > serverius : Serverius Datacenter in holland
       khatam : Khatam University Datacenter in Tehran
-    $ sakku zone:set --zone khatam 
+    $ sakku zone:set --zone khatam | serverius
       `,
   ];
 
   static flags = {
     help: flags.help({ char: 'h' }),
-    zone: flags.string({options: ['serverius', 'khatam']})
+    zone: flags.string({char: 'z', options: ['serverius', 'khatam']})
   };
 
   async run() {

@@ -25,6 +25,8 @@ USAGE
 
 # Commands
 * [`sakku help [COMMAND]`](#sakku-help-command)
+* [`sakku zone:get`](#sakku-zoneget)
+* [`sakku zone:set`](#sakku-zoneset)
 * [`sakku login`](#sakku-login)
 * [`sakku exec APP [CMD]`](#sakku-exec-app-cmd)
 * [`sakku whoami`](#sakku-whoami)
@@ -446,6 +448,44 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src\commands\help.ts)_
+
+## `sakku zone:get`
+
+get datacenter zone
+
+```
+USAGE
+  $ sakku zone:get
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ sakku zone:get
+  - Khatam University Datacenter in Tehran
+```
+
+_See code: [src\commands\zone\get.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.4.0/src\commands\zone\get.ts)_
+
+## `sakku zone:set`
+
+set datacenter zone to  Khatam University Datacenter in Tehran or  Serverius Datacenter in holland
+
+```
+USAGE
+  $ sakku zone:set
+
+OPTIONS
+  -h, --help  show CLI help
+  -z, --zone khatam | serverius  set zone to khatam or serverius
+EXAMPLE
+  $ sakku zone:set
+  ? Choose datacenter zone : (Use arrow keys)
+> serverius : Serverius Datacenter in holland
+  khatam : Khatam University Datacenter in Tehran
+```
+
+_See code: [src\commands\zone\set.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.4.0/src\commands\zone\set.ts)_
 
 ## `sakku login`
 

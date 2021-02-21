@@ -7,7 +7,7 @@ import { Command } from '@oclif/command';
 
 // Project Modules
 import { messages } from '../consts/msg';
-import { api_sakku_base_url_khatam, api_sakku_base_url_serverious, sakku_panel_auth_url_khatam, sakku_panel_auth_url_serverious, webSocket_url_khatam, webSocket_url_serverious } from '../consts/urls';
+import { api_sakku_base_url_khatam, api_sakku_base_url_serverius, sakku_panel_auth_url_khatam, sakku_panel_auth_url_serverius, webSocket_url_khatam, webSocket_url_serverius } from '../consts/urls';
 
 export function getBaseUrl(ctx: Command) {
   let zone: string;
@@ -22,7 +22,7 @@ export function getBaseUrl(ctx: Command) {
       throw e;
     }
   }
-  return (zone == 'khatam') ? api_sakku_base_url_khatam : api_sakku_base_url_serverious;
+  return (zone == 'khatam') ? api_sakku_base_url_khatam : api_sakku_base_url_serverius;
 }
 
 export function getWebSocketUrl(ctx: Command) {
@@ -38,7 +38,7 @@ export function getWebSocketUrl(ctx: Command) {
       throw e;
     }
   }
-  return (zone == 'khatam') ? webSocket_url_khatam : webSocket_url_serverious;
+  return (zone == 'khatam') ? webSocket_url_khatam : webSocket_url_serverius;
 }
 
 export function getPanelAuthUrl(ctx: Command) {
@@ -54,5 +54,5 @@ export function getPanelAuthUrl(ctx: Command) {
       throw e;
     }
   }
-  return (zone == 'khatam') ? sakku_panel_auth_url_khatam : sakku_panel_auth_url_serverious;
+  return (zone == 'khatam') ? sakku_panel_auth_url_khatam : sakku_panel_auth_url_serverius;
 }
