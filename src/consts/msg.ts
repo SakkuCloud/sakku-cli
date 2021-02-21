@@ -151,4 +151,6 @@ export const messages = {
   start_app_from_specific_version: 'Do you want to start this application from specific version? : (y/n)',
   enter_db_id: 'Enter databse id',
   choose_datacenter_zone: 'Choose datacenter zone :',
+  zone_is_set_to_khatam: 'Server is set to Khatam University Datacenter in Tehran',
+  zone_is_set_to_serverius: 'Server is set to Serverius Datacenter in holland',
 }

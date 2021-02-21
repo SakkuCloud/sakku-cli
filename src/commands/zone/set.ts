@@ -43,7 +43,13 @@ export default class Set extends Command {
         default : 'serverius'
       }]);
       zone = response.zone;
-      writeZone(self, zone);
+    }
+    try {
+    writeZone(self, zone);
+    this.log(zone == 'khatam' ? messages.zone_is_set_to_khatam : messages.zone_is_set_to_serverius);
+    }
+    catch (e) {
+      this.log(e);
     }
   }
 }
