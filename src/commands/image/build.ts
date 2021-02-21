@@ -13,9 +13,9 @@ const exec = util.promisify(require('child_process').exec);
 import { appService } from '../../_service/app.service';
 import { authService } from '../../_service/auth.service';
 import { messages } from '../../consts/msg';
-import { sakkuRegRaw } from '../../consts/val';
 import { common } from '../../utils/common';
 import { dockerRepositoryService } from '../../_service/docker.repository.service';
+import { getSakkuRegRaw } from '../../utils/get-urls-based-zone';
 
 export default class Build extends Command {
   static description = 'app build';
@@ -49,7 +49,8 @@ Enter your app ports`,
     let build_args = '';
     let mode : string;
     let authServiceResult : any;
-
+    let sakkuRegRaw = getSakkuRegRaw(self);
+    
     // image name
     if (flags.hasOwnProperty('name') && flags.name) {
       imageName = flags.name;

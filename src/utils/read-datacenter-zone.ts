@@ -9,8 +9,11 @@ import { Command } from '@oclif/command';
 import { messages } from '../consts/msg';
 
 export function readDatacenterZone(ctx: Command) {
-  try {
-    return fs.readFileSync(path.join(ctx.config.configDir, 'zone'), 'utf-8');
+  let zone: string = 'serverius';
+  try { 
+    fs.ensureFile(path.join(ctx.config.configDir, 'zone')).then(() => {
+      zone = fs.readFileSync(path.join(ctx.config.configDir, 'zone'), 'utf-8');
+    }); 
   }
   catch (e) {
     if (e.hasOwnProperty('code') && e.code === 'ENOENT') {
@@ -20,8 +23,5 @@ export function readDatacenterZone(ctx: Command) {
       throw e;
     }
   }
-}
-
-export function readConfig(ctx: Command) {
-  return fs.readFileSync(path.join(ctx.config.configDir, 'config'), 'utf-8');
+  return zone;
 }

@@ -6,8 +6,9 @@ import * as inquirer from 'inquirer';
 // Project Modules
 import { appService } from '../../_service/app.service';
 import { messages } from '../../consts/msg';
-import { sakkuRegUrl, gitlabRegUrl } from '../../consts/val';
+import { gitlabRegUrl } from '../../consts/val';
 import { common } from '../../utils/common';
+import { getSakkuRegUrl } from '../../utils/get-urls-based-zone';
 
 export default class Add extends Command {
   static description = 'add new app';
@@ -191,6 +192,7 @@ export default class Add extends Command {
         })
         .then(value => {
           if (image.registry === 'sakkureg') {
+            let sakkuRegUrl = getSakkuRegUrl(self);
             image.name = sakkuRegUrl + value;
           }
           else if (image.registry === 'gitlab') {
