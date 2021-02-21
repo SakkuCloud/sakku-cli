@@ -2,16 +2,15 @@
 import color from '@oclif/color';
 import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
-import * as inquirer from 'inquirer';
 const opn = require('open');
 
 // Project Modules
 import { authService } from '../_service/auth.service';
 import { messages } from '../consts/msg';
-import { auth_url } from '../consts/urls';
 import makeId from '../utils/make-id';
 import { writeOverview, writeToken } from '../utils/writer';
 import { common } from '../utils/common';
+import { getPanelAuthUrl } from '../utils/get-urls-based-zone';
 
 export default class Login extends Command {
   static description = 'Login to Sakku cli interface.';
@@ -24,6 +23,7 @@ export default class Login extends Command {
 
   async run() {
     let user: { username: string, password: string } = { username: '', password: '' };
+    let auth_url = getPanelAuthUrl(this); 
     const maxRepeat: number = 30;    // for login with browser
     const waitTime: number = 5000;   // for login with browser
     const code = makeId();           // for login with browser
@@ -45,7 +45,7 @@ export default class Login extends Command {
     while (!isLoggedin) {
       await cli.wait(waitTime);
       try {
-        let resp = await authService.authenticate(code);
+        let resp = await authService.authenticate(this, code);
         await writeToken(this, { token: resp.data.result });
         isLoggedin = true;
       }

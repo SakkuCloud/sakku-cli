@@ -150,4 +150,5 @@ export const messages = {
   commit_before_stop_app: 'Do you want to commit this application before stopping it? : (y/n)',
   start_app_from_specific_version: 'Do you want to start this application from specific version? : (y/n)',
   enter_db_id: 'Enter databse id',
+  choose_datacenter_zone: 'Choose datacenter zone :',
 }

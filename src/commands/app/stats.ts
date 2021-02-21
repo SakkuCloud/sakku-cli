@@ -7,8 +7,8 @@ const Stomp = require('stompjs');
 // Project Modules
 import { messages } from '../../consts/msg';
 import { common } from '../../utils/common';
-import { webSocket_url } from '../../consts/urls';
 import { readToken } from '../../utils/read-token';
+import { getWebSocketUrl } from '../../utils/get-urls-based-zone';
 
 export default class Stats extends Command {
   static description = 'Realtime app monitoring';
@@ -35,6 +35,7 @@ Enter your app id: APP-ID`,
   async run() {
     const { args, flags } = this.parse(Stats);
     let appId: string;
+    let webSocket_url = getWebSocketUrl(this);
     if (args.hasOwnProperty('app') && args.app) {
         appId = args.app;
     }

@@ -1,5 +1,6 @@
 // External Modules
 import axios from 'axios';
+import Command from '@oclif/command';
 
 // Project Modules
 import { login_url, overview_url, user_pass_login_url } from '../consts/urls';
@@ -7,6 +8,7 @@ import IServerResult from '../interfaces/server-result.interface';
 import { IOverview } from '../interfaces/user.interface';
 import { readToken } from '../utils/read-token';
 import { common } from '../utils/common';
+import { getBaseUrl } from '../utils/get-urls-based-zone';
 
 export const authService = {
   authenticate,
@@ -14,24 +16,27 @@ export const authService = {
   login
 };
 
-function login(auth: { username: string, password: string }) {
+function login(ctx: Command, auth: { username: string, password: string }) {
+  let url = getBaseUrl(ctx) + user_pass_login_url ;
   const crypto = require('crypto');
   auth.password = crypto.createHash('md5').update(auth.password).digest('hex');
-  return axios.post<IServerResult<string>>(user_pass_login_url, { email: auth.username, password: auth.password })
+  return axios.post<IServerResult<string>>(url, { email: auth.username, password: auth.password })
     .catch((error) => {
       throw common.handleRequestError(error, true);
     });
 }
 
-function authenticate(code: string) {
-  return axios.post(login_url, { code })
+function authenticate(ctx:Command, code: string) { 
+  let url = getBaseUrl(ctx) + login_url;
+  return axios.post(url, { code })
     .catch((error) => {
       throw common.handleRequestError(error);
     });
 }
-
+  
 function overview(ctx: any) {
-  return axios.get<IServerResult<IOverview>>(overview_url, { headers: getHeader(ctx) })
+  let url = getBaseUrl(ctx) + overview_url;
+  return axios.get<IServerResult<IOverview>>(url, { headers: getHeader(ctx) })
     .catch((error) => {
       throw common.handleRequestError(error);
     });

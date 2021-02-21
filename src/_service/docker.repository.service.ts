@@ -16,6 +16,7 @@ import { readToken } from '../utils/read-token';
 import IServerResult from '../interfaces/server-result.interface';
 import { IAppVO } from '../interfaces/app.interface';
 import { common } from '../utils/common';
+import { getBaseUrl } from '../utils/get-urls-based-zone';
 
 export const dockerRepositoryService = {
   build,
@@ -27,7 +28,7 @@ export const dockerRepositoryService = {
 function build(ctx: any, fullPath: string, settings: { name: string, tag: string, dockerFile: string , buildArgs: string}) {
   console.log(fullPath);
   let defer = q.defer();
-  let url = docker_repository_url + 'build';
+  let url = getBaseUrl(ctx) + docker_repository_url + 'build';
   let ext = path.extname(fullPath);
   let fileName = path.basename(fullPath);
   let mimeType = mime.getType(fullPath);
@@ -65,14 +66,15 @@ function build(ctx: any, fullPath: string, settings: { name: string, tag: string
 }
 
 function ps(ctx: Command) {
-  return axios.get<IServerResult<IAppVO>>(docker_repository_url , { headers: getHeader(ctx) }).
+  let url = getBaseUrl(ctx) + docker_repository_url;
+  return axios.get<IServerResult<IAppVO>>(url , { headers: getHeader(ctx) }).
     catch((error) => {
       throw common.handleRequestError(error);
     });
 }
 
 function getRepoInfo(ctx: Command, repoName: string, data:{"includeCreated": boolean, "includeSize": boolean}) {
-  let url = docker_repository_url + repoName;
+  let url = getBaseUrl(ctx) + docker_repository_url + repoName;
   return axios.get<IServerResult<IAppVO>>(url , { headers: getHeader(ctx), params: data }).
     catch((error) => {
       throw common.handleRequestError(error);
@@ -80,7 +82,7 @@ function getRepoInfo(ctx: Command, repoName: string, data:{"includeCreated": boo
 }
 
 function share(ctx: any, repoName: string, repoTag: string, data: any) {
-  let url = docker_repository_url + repoName + '/tag/' + repoTag + '/share';
+  let url = getBaseUrl(ctx) + docker_repository_url + repoName + '/tag/' + repoTag + '/share';
   return axios.post(url, {}, { headers: getHeader(ctx), params: data })
     .catch((error) => {
       console.log('error');

@@ -10,6 +10,13 @@ export async function writeToken(ctx: Command, data: {token?: string}) {
     fs.writeFileSync(configUri, data.token, {encoding: 'utf-8'});
   }
 }
+export async function writeZone(ctx: Command, zone: string) {
+  if (zone) {
+    let configUri = path.join(ctx.config.configDir, 'zone');
+    if (!fs.pathExistsSync(ctx.config.configDir)) fs.mkdirSync(ctx.config.configDir);
+    fs.writeFileSync(configUri, zone, {encoding: 'utf-8'});
+  }
+}
 
 export async function writeOverview(ctx: Command, data: string) {
   let configUri = path.join(ctx.config.configDir, 'overview');
