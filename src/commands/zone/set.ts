@@ -6,6 +6,7 @@ import * as inquirer from 'inquirer';
 // Project Modules
 import { writeZone } from  '../../utils/writer';
 import { messages } from '../../consts/msg';
+import color from '@oclif/color';
 
 export default class Set extends Command {
   static description = 'zone:set';
@@ -46,7 +47,7 @@ export default class Set extends Command {
     }
     try {
     writeZone(self, zone);
-    this.log(zone == 'khatam' ? messages.zone_is_set_to_khatam : messages.zone_is_set_to_serverius);
+    this.log(color.green(zone == 'khatam' ? messages.zone_is_set_to_khatam : messages.zone_is_set_to_serverius));
     }
     catch (e) {
       this.log(e);
