@@ -21,7 +21,8 @@ export default class Get extends Command {
     let zone: string;
     try {
       zone = readDatacenterZone(this);
-      console.log(zone);
+      let zoneMessage = zone == 'khatam' ? '- Khatam University Datacenter in Tehran' : '- Serverius Datacenter in holland';
+      console.log(zoneMessage);
     } catch(e) {
       console.log(e);
     }
