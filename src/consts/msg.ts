@@ -153,4 +153,5 @@ export const messages = {
   choose_datacenter_zone: 'Choose datacenter zone :',
   zone_is_set_to_khatam: 'Server is set to Khatam University Datacenter in Tehran',
   zone_is_set_to_serverius: 'Server is set to Serverius Datacenter in holland',
+  zone_is_not_set: 'Zone is not set yet! You should set zone by zone:set command at first',
 }
