@@ -5,9 +5,15 @@ import * as path from 'path';
 export async function writeToken(ctx: Command, data: {token?: string}) {
   if (data.token) {
     let configUri = path.join(ctx.config.configDir, 'token');
-    console.log(ctx.config.configDir);
     if (!fs.pathExistsSync(ctx.config.configDir)) fs.mkdirSync(ctx.config.configDir);
     fs.writeFileSync(configUri, data.token, {encoding: 'utf-8'});
+  }
+}
+export async function writeZone(ctx: Command, zone: string) {
+  if (zone) {
+    let configUri = path.join(ctx.config.configDir, 'zone');
+    if (!fs.pathExistsSync(ctx.config.configDir)) fs.mkdirSync(ctx.config.configDir);
+    fs.writeFileSync(configUri, zone, {encoding: 'utf-8'});
   }
 }
 

@@ -7,12 +7,7 @@ const exec = util.promisify(require('child_process').exec);
 
 
 // Project Modules
-import { appService } from '../../_service/app.service';
 import { messages } from '../../consts/msg';
-import { sakkuRegUrl, gitlabRegUrl } from '../../consts/val';
-import { common } from '../../utils/common';
-import { triggerAsyncId } from 'async_hooks';
-
 export default class Build extends Command {
   static description = 'app build';
 

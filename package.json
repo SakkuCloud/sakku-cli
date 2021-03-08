@@ -1,7 +1,7 @@
 {
   "name": "sakku",
   "description": "This is a sakku cli that makes world even better!",
-  "version": "0.2.0",
+  "version": "0.4.1",
   "author": "Fanap Node.js Team",
   "bin": {
     "sakku": "./bin/run"
@@ -14,7 +14,7 @@
     "@oclif/plugin-help": "^2.0.0",
     "@types/supports-color": "^5.3.0",
     "archiver": "^3.1.1",
-    "axios": "^0.18.0",
+    "axios": ">=0.21.1",
     "btoa": "^1.2.1",
     "cli-ux": "^4.9.3",
     "form-data": "^3.0.0",
@@ -92,8 +92,5 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
-  "types": "lib/index.d.ts",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  }
+  "types": "lib/index.d.ts"
 }

@@ -10,7 +10,7 @@ import { authService } from '../../_service/auth.service';
 import { appService } from '../../_service/app.service';
 import { common } from '../../utils/common';
 import { messages } from '../../consts/msg';
-import { sakkuRegRaw } from '../../consts/val';
+import { getSakkuRegRaw } from '../../utils/get-urls-based-zone';
 
 export default class Deploy extends Command {
   static description = 'Deploy an application';
@@ -29,6 +29,7 @@ export default class Deploy extends Command {
     let sakkuImage = '';
     const { flags } = this.parse(Deploy);
     let imageName = await (flags.app ? await flags.app : await cli.prompt(messages.enter_local_image, { required: true }));
+    let sakkuRegRaw = getSakkuRegRaw(self);
 
     isDockerInstalled()
       .then(function () {

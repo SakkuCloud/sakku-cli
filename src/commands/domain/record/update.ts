@@ -112,7 +112,7 @@ Enter type of record: TYPE`,
         comment.content = await cli.prompt(messages.enter_record_comment_content, { required: true });
         do {
           comment.modified_at = parseInt(await cli.prompt(messages.record_comment_modified_at, { required: true }));
-        } while (isNaN(Number(data.ttl)));
+        } while (isNaN(Number(comment.modified_at)));
         data.comments.push(comment); 
       }
 

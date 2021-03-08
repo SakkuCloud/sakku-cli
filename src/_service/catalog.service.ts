@@ -6,6 +6,7 @@ import axios from 'axios';
 import { readToken } from '../utils/read-token';
 import { catalog_url, catalog_deploy, catalog_apps } from '../consts/urls';
 import { common } from '../utils/common';
+import { getBaseUrl } from '../utils/get-urls-based-zone';
 
 export const catalogService = {
   getAllCatalogs,
@@ -13,15 +14,16 @@ export const catalogService = {
   catalogDeploy
 };
 
-function getAllCatalogs(ctx: any) {
-  return axios.get(catalog_url, { headers: getHeader(ctx) })
+function getAllCatalogs(ctx: Command) {
+  let url = getBaseUrl(ctx) + catalog_url;
+  return axios.get(url, { headers: getHeader(ctx) })
     .catch((error) => {
       throw common.handleRequestError(error);
     });;
 }
 
-function getAllCatalogApps(ctx: any, id: any) {
-  let url = catalog_apps + id;
+function getAllCatalogApps(ctx: Command, id: any) {
+  let url = getBaseUrl(ctx) + catalog_apps + id;
   return axios.get(url, { headers: getHeader(ctx) })
     .catch((error) => {
       throw common.handleRequestError(error);
@@ -29,14 +31,14 @@ function getAllCatalogApps(ctx: any, id: any) {
 }
 
 
-function catalogDeploy(ctx: any, id: any, data: any) {
-  let url = catalog_deploy + id;
+function catalogDeploy(ctx: Command, id: any, data: any) {
+  let url = getBaseUrl(ctx) + catalog_deploy + id;
   return axios.post(url, data, { headers: getHeader(ctx) })
     .catch((error) => {
       throw common.handleRequestError(error);
     });;
 }
 
-function getHeader(ctx: any) {
+function getHeader(ctx: Command) {
   return { Authorization: readToken(ctx) };
 }

@@ -3,17 +3,17 @@ import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
 import color from '@oclif/color';
 const fs = require("fs");
-const uniqid = require('uniqid');
-const util = require("util");
+// const moment = require('moment')
 
 // Project Modules
 import { appService } from '../../_service/app.service';
 import { common } from '../../utils/common';
 import { messages } from '../../consts/msg';
 import { readToken } from '../../utils/read-token';
+import { emptyDir } from 'fs-extra';
 
 export default class ExportLogs extends Command {
-  static description = 'Shows logs of an app';
+  static description = 'show / (export to a text file) logs history of an app';
 
   static examples = [
     `$ sakku app:logs`,
@@ -24,7 +24,7 @@ export default class ExportLogs extends Command {
     app: flags.string({ char: 'a', description: 'sakku app:logsexport -a/-app [APP-ID]' }),
     from: flags.string({ char: 'f', description: 'sakku app:logsexport -f/-from  [FROM-DATE]' }),
     to: flags.string({ char: 't', description: 'sakku app:logsexport -t/-to [TO-DATE]' }),
-    file: flags.string({ char: 'f', description: 'sakku app:logsexport -f/-file [FILE-ADDRESS]' }),
+    dir: flags.string({ char: 'd', description: 'sakku app:logsexport -d/-dir [FILE-DIR]' }),
   };
 
   static args = [
@@ -47,9 +47,9 @@ export default class ExportLogs extends Command {
         hidden: false
     },
     {
-      name: 'file',
+      name: 'dir',
       required: false,
-      description: 'app:logsexport [APP-ID] [FROM-DATE] [TO-DATE] [FILE-ADRRESS]',
+      description: 'app:logsexport [APP-ID] [FROM-DATE] [TO-DATE] [FILE-DIR]',
       hidden: false
     },
   ];
@@ -96,14 +96,14 @@ export default class ExportLogs extends Command {
         to = await cli.prompt(messages.enter_to_date, { required: false });
     }
 
-    if (args.hasOwnProperty('file') && args.file) {
-        fileDir = args.file;
+    if (args.hasOwnProperty('dir') && args.dir) {
+        fileDir = args.dir;
     }
-    else if (flags.hasOwnProperty('file') && flags.file) {
-        fileDir = flags.file;
+    else if (flags.hasOwnProperty('dir') && flags.dir) {
+        fileDir = flags.dir;
     }
     else {
-        fileDir = await cli.prompt(messages.enter_file_dir, { required: true });
+        fileDir = await cli.prompt(messages.enter_file_dir, { required: false });
     }
 
     if (typeof from !== 'undefined') {
@@ -120,18 +120,29 @@ export default class ExportLogs extends Command {
     
     try {
         result = await appService.exportLogs(self, appId, data);
-        let fileName = uniqid(appId + '_app_logs_', '.txt');
-        let file_full_path = fileDir + '/' + fileName;
-        fs.writeFile(file_full_path, result.data, (error: any) => {
-          if(error){
-              return console.log('fileError:' + error);
-          }
-          else
-          {
-            this.log(messages.log_file_create_success + file_full_path);
-          }
-      });
-        
+        if (typeof fileDir !== 'undefined'){
+            console.log(fileDir);
+            let today = new Date();
+            let date = today.getFullYear() +'-' + (today.getMonth() + 1) + '-' + today.getDate();
+            let time = today.getHours() + "-" + today.getMinutes() + "-" + today.getSeconds();
+            let nowDateTime = date + '_' + time;
+            let fileName = 'log_' + appId + '_' + nowDateTime + '.txt';
+            let file_full_path = fileDir + '/' + fileName;
+            fs.writeFile(file_full_path, result.data, (error: any) => {
+              if(error){
+                  return console.log('fileError:' + error);
+              }
+              else
+              {
+                this.log(messages.log_file_create_success + file_full_path);
+              }
+            });   
+        }else if (result.data === ''){  
+            console.log(messages.empty_log);
+        }
+        else {
+            console.log(JSON.stringify(result.data, null , 2));
+        }
       } catch(e) {
         common.logError(e);
     }

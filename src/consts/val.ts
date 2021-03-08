@@ -1,5 +1,7 @@
 export const DetachKey = '\x04';
 export const socketPort = 7221;
-export const sakkuRegUrl = 'https://registry.sakku.com/';
+export const sakkuRegUrlKhatam = 'https://registry.sakku-khatam.ir/';
+export const sakkuRegUrlServerius = 'https://registry.sakku.cloud/';
 export const gitlabRegUrl = 'https://registry.gitlab.com/';
-export const sakkuRegRaw = 'registry.sakku.cloud'
+export const sakkuRegRawKhatam = 'registry.sakku-khatam.ir';
+export const sakkuRegRawServerius = 'registry.sakku.cloud';

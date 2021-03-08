@@ -13,15 +13,22 @@ const q = require('q');
 // Project Modules
 import { docker_repository_url } from '../consts/urls';
 import { readToken } from '../utils/read-token';
+import IServerResult from '../interfaces/server-result.interface';
+import { IAppVO } from '../interfaces/app.interface';
+import { common } from '../utils/common';
+import { getBaseUrl } from '../utils/get-urls-based-zone';
 
 export const dockerRepositoryService = {
   build,
+  ps,
+  share,
+  getRepoInfo
 };
 
 function build(ctx: any, fullPath: string, settings: { name: string, tag: string, dockerFile: string , buildArgs: string}) {
   console.log(fullPath);
   let defer = q.defer();
-  let url = docker_repository_url + 'build';
+  let url = getBaseUrl(ctx) + docker_repository_url + 'build';
   let ext = path.extname(fullPath);
   let fileName = path.basename(fullPath);
   let mimeType = mime.getType(fullPath);
@@ -45,7 +52,7 @@ function build(ctx: any, fullPath: string, settings: { name: string, tag: string
       settings_string
     }
   };
-  // console.log(JSON.stringify(options, null,2));
+
   request(options, function (error: any, response: { body: any; }) {
     if (error) {
       defer.reject(error);
@@ -56,6 +63,31 @@ function build(ctx: any, fullPath: string, settings: { name: string, tag: string
   });
 
   return defer.promise;
+}
+
+function ps(ctx: Command) {
+  let url = getBaseUrl(ctx) + docker_repository_url;
+  return axios.get<IServerResult<IAppVO>>(url , { headers: getHeader(ctx) }).
+    catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function getRepoInfo(ctx: Command, repoName: string, data:{"includeCreated": boolean, "includeSize": boolean}) {
+  let url = getBaseUrl(ctx) + docker_repository_url + repoName;
+  return axios.get<IServerResult<IAppVO>>(url , { headers: getHeader(ctx), params: data }).
+    catch((error) => {
+      throw common.handleRequestError(error);
+    });
+}
+
+function share(ctx: any, repoName: string, repoTag: string, data: any) {
+  let url = getBaseUrl(ctx) + docker_repository_url + repoTag + '/share?repository=' + repoName;
+  return axios.post(url, {}, { headers: getHeader(ctx), params: data })
+    .catch((error) => {
+      console.log('error');
+      throw common.handleRequestError(error);
+    });
 }
 
 function getHeader(ctx: Command, contentType = 'text/html; charset=UTF-8') {

@@ -4,10 +4,11 @@ import axios from 'axios';
 
 // Project Modules
 import { app_network_url } from '../consts/urls';
-import { IApp, IAppVO } from '../interfaces/app.interface';
+import { IAppVO } from '../interfaces/app.interface';
 import IServerResult from '../interfaces/server-result.interface';
 import { readToken } from '../utils/read-token';
 import { common } from '../utils/common';
+import { getBaseUrl } from '../utils/get-urls-based-zone';
 
 export const networkService = {
   all,
@@ -19,35 +20,40 @@ export const networkService = {
 
 
 function all(ctx: Command) {
-  return axios.get<IServerResult<IAppVO>>(app_network_url , { headers: getHeader(ctx) }).
+  let url = getBaseUrl(ctx) + app_network_url;
+  return axios.get<IServerResult<IAppVO>>(url, { headers: getHeader(ctx) }).
     catch((error) => {
       throw common.handleRequestError(error);
     });
 }
 
 function create(ctx: Command, data: {}) {
-  return axios.post(app_network_url +'create', {}, { headers: getHeader(ctx) , params: data})
+  let url = getBaseUrl(ctx) + app_network_url + 'create';
+  return axios.post(url, {}, { headers: getHeader(ctx) , params: data})
     .catch((error) => {
       throw common.handleRequestError(error);
     });
 }
 
 function addApp(ctx: Command, networkName: string, data: {}) {
-  return axios.post(app_network_url + networkName + '/addApp', {}, { headers: getHeader(ctx) , params: data})
+  let url = getBaseUrl(ctx) + app_network_url + networkName + '/addApp';
+  return axios.post(url, {}, { headers: getHeader(ctx) , params: data})
     .catch((error) => {
       throw common.handleRequestError(error);
     });
 }
 
 function rm(ctx: Command, networkName: string, data: {}) {
-  return axios.delete(app_network_url + networkName, { headers: getHeader(ctx) , params: data})
+  let url = getBaseUrl(ctx) + app_network_url + networkName;
+  return axios.delete(url, { headers: getHeader(ctx) , params: data})
     .catch((error) => {
       throw common.handleRequestError(error);
     });
 }
 
 function rmApp(ctx: Command, networkName: string, data: {}) {
-  return axios.post(app_network_url + networkName + '/removeApp', {}, { headers: getHeader(ctx) , params: data})
+  let url = getBaseUrl(ctx) + app_network_url + networkName + '/removeApp';
+  return axios.post(url, {}, { headers: getHeader(ctx) , params: data})
     .catch((error) => {
       throw common.handleRequestError(error);
     });
@@ -55,8 +61,4 @@ function rmApp(ctx: Command, networkName: string, data: {}) {
 
 function getHeader(ctx: Command) {
   return { Authorization: readToken(ctx) };
-}
-
-function getToken(ctx: Command) {
-  return readToken(ctx).split(' ')[1];
 }

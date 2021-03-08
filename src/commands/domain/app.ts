@@ -8,11 +8,11 @@ import { domainService } from '../../_service/domain.service';
 import { common } from '../../utils/common';
 import { messages } from '../../consts/msg';
 
-export default class GetByApp extends Command {
+export default class App extends Command {
   static description = 'Get domains of app';
 
   static examples = [
-    `$ sakku domain:getByApp
+    `$ sakku domain:app
 Enter your app id: APP-ID`,
   ];
 
@@ -30,7 +30,7 @@ Enter your app id: APP-ID`,
   ];
 
   async run() {
-    const { args, flags } = this.parse(GetByApp);
+    const { args, flags } = this.parse(App);
     let self = this;
     let domainResult: any;
     let appId: string;
@@ -42,7 +42,7 @@ Enter your app id: APP-ID`,
     }
     
     try {
-      domainResult = await domainService.getByApp(self, appId);
+      domainResult = await domainService.app(self, appId);
       this.log(domainResult.data);
     } catch(e) {
       console.log(e);

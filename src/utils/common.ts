@@ -4,7 +4,7 @@ import Login from '../commands/login';
 
 const handleRequestError = (err: any, isLogin: boolean = false) => {
   if (checkStandardError(err)) {
-    if (err.code == '403'){
+    if (err.code == '401'){
       Login.run();
     }
     return err;
@@ -12,7 +12,7 @@ const handleRequestError = (err: any, isLogin: boolean = false) => {
   else {
     const standardError: { code: number | null | string, message: string } = { code: null, message: '' };
     standardError.code = err.code || (err.response && err.response.status.toString());
-    if (standardError.code == '403'){
+    if (standardError.code == '401'){
       Login.run();
     }
     if (isLogin && standardError.code && (standardError.code == '403' || standardError.code == '400')) {
