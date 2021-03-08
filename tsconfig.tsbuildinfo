@@ -426,8 +426,8 @@
         "signature": "ad0212076e6a2f2f0d64983d70561345282caf118d95f5cfa47f817fe32d3741"
       },
       "./src/consts/msg.ts": {
-        "version": "f0f19786dd0bb4e3fda52c0782a36c8d6a8788f208d2b91cd627d1f926e2b8fc",
-        "signature": "fc2d573e0fb7af869e8a79349332303c9a016a6b0d176d1030b98b19e526d89b"
+        "version": "b19c66d580dc4ce38de3bfc6f4ffb679a5244995a1afd06f8980618786672623",
+        "signature": "7a48b61088a2312bb6e44ccee39d0c22e2679334740edcc62cd48161dffdc11a"
       },
       "./src/utils/read-token.ts": {
         "version": "db6f8a00231cf24e9ce2793c9f2437f47d36e8b80c2e113cb48f0e6f129e8655",
@@ -509,9 +509,17 @@
         "version": "7f3b2d15c0b80c9c822086f5f8daaeed0c5de8c17632cf089860f8d6fb19567b",
         "signature": "7f3b2d15c0b80c9c822086f5f8daaeed0c5de8c17632cf089860f8d6fb19567b"
       },
+      "./src/consts/val.ts": {
+        "version": "ac08d3bb1e2464ce833c59c161a29fb14936faf84a9a2e2c1bddccaf6b68cbfb",
+        "signature": "6f3fb82d064f4c96e25adb6b8d3ea0c9f303ec1112ec927837120bd166094fd1"
+      },
+      "./src/utils/read-datacenter-zone.ts": {
+        "version": "e818e23ddb231a57222545daf3afcdacd240222a14eb56c3182c97f33680adc5",
+        "signature": "ad79f1587a0c3ba35e9832a0a01eba644323a6a165036ac1aa14f8fabdd90593"
+      },
       "./src/utils/get-urls-based-zone.ts": {
-        "version": "9f833c3de19f1079615966a4153f233f8206c426738129572a4a258a482c0d86",
-        "signature": "dcfe3cd70999e2a5e141d1b176f1075963ea9a03c56952a09630325a9a41a017"
+        "version": "1f301ab9e079a7ead3d0580697d090098ae3549a9b1905e7528ca05b3cdd6143",
+        "signature": "2e944d1304f316c75d57acb3960f51dd602a21866196c8ed59a4983ccf8dfdee"
       },
       "./src/_service/auth.service.ts": {
         "version": "f12c086deae4d20f68cc61f52f5c27824f6c0742936f54512fa6843006bf0869",
@@ -522,7 +530,7 @@
         "signature": "d332a23c5f7a997406e1f1f4b4bf665890c1404f68a0bdabfc47bef6b981b244"
       },
       "./src/utils/writer.ts": {
-        "version": "2c816bb815a040579f90df47e2f941f7d10247ff50aeceedf0f91b527bb9d27d",
+        "version": "7a2f11932d0d907d7b7475a46bb5efc4e18cc7c288e599dae5a26653c14469d6",
         "signature": "494a32b9f9bd7281491f5512ff95be7057851d38d9f86b1c8c694fcf3ddbfbad"
       },
       "./src/commands/login.ts": {
@@ -625,10 +633,6 @@
         "version": "37064c09c64c662d7570e187623fc5231c470ad7b8bed45cb0cd2313b81eaaea",
         "signature": "fd6e984750b964a0daee1936da752673c7745d65837c079eab9d0fccf710534e"
       },
-      "./src/consts/val.ts": {
-        "version": "98483063fe189d2fe8447dbba869f5c09f1b81df6d01aadfb22c98e4aab8f800",
-        "signature": "9672f1a04ee3af8b5528eb463d4a03007211b986d2768b1fec1a3c63dbbb4d6f"
-      },
       "./src/commands/exec.ts": {
         "version": "d98e47fec1a5210df6a3d7dd2c19eaa19e9bc39357b12dcab14bf1f9dbee3362",
         "signature": "254b72762d85ca56c62b6ca6f6b566d3a1fd3901ff28eca03a5e005d32939235"
@@ -638,11 +642,11 @@
         "signature": "f79415b68bd174f18eb6b618f78598731efaf8f26792bbcc869af74084f54d34"
       },
       "./src/commands/app/add.ts": {
-        "version": "88db2808afa95d8408d2aab8d4d8251e411acdb0b5db4169b794bd343e1b9a31",
+        "version": "4124a11c16c548269b8b556a6cc0244a47cc4703b804a52c173249c433124ec5",
         "signature": "70da764fb2fcf5d25bda53973100c3ff87ab683042d732d6a581c2620a816086"
       },
       "./src/commands/app/build.ts": {
-        "version": "b57b4d02eb9ebe90dbc21d4b8bf25e16e64a1d2d373e6c4d64b5ae8008d718c9",
+        "version": "599a53a922f0a5f5f5c8997add002321a687355645bf872c63a72fc8feb68f16",
         "signature": "ecf8601340f5bf48283b5dba6330d383bd9997673bd1a845f7722b0c1cf0c8cf"
       },
       "./src/commands/app/collab.ts": {
@@ -654,7 +658,7 @@
         "signature": "bd860dd647ed4bcdae061b7cb5541693ca616c70ad2b48069af82c13446498bc"
       },
       "./src/commands/app/deploy.ts": {
-        "version": "52c0952b20d5703ce0e7511270142ed40f87cfbc72e13f0900f0b2b96ae352ca",
+        "version": "a297bccb93242af32d6a482accab65d1516394c790eedc86ede8c539133db76e",
         "signature": "5751fbc891d24a1a727ec11e52c3bafc9697691782a7a884d3ae09f1119864ad"
       },
       "./src/commands/app/dir.ts": {
@@ -690,7 +694,7 @@
         "signature": "e0d5b2d249d1dd3224ea08cf1ed897ca5769f3126250dd0e9f9d1f2bcbc49919"
       },
       "./src/commands/app/rebuild.ts": {
-        "version": "577401685a34cb43f98f990e278fb9157d137ae7be31784c040d9e313258d307",
+        "version": "50bda2e8b7dffff9d92f26800472bad923795d8003458eea12a0b4d0bd144a96",
         "signature": "e1e7cbab0315ee270041b54c73329870e11771164ccebca1ddc6726ae0d2b3b2"
       },
       "./src/commands/app/restart.ts": {
@@ -762,7 +766,7 @@
         "signature": "d16874e04ba5215ca2df10be563dddae958d13a49fdc54086b80027ea5479e98"
       },
       "./src/commands/image/build.ts": {
-        "version": "9dbc570c69d85ef093a9701f722a884fd5111c7d3cc5a2c7ec5ee68d2f257f78",
+        "version": "97c8b934efe7e9cfeca1eba8bc038bc9ef61562a92bff1d660a0d4b9b95d7450",
         "signature": "3f94f7447e38dac4b5b99d0ed4417953c0e9edaff6e9f05de0ef81939eeb7f08"
       },
       "./src/commands/image/ps.ts": {
@@ -797,16 +801,12 @@
         "version": "00af38ad8b378a9ec27acc596870e4f7d196a9ba52da45a55d95a240d3c6f6d5",
         "signature": "51d3d151c6031dd3670139f42dc8af60ce1c11d0b1bd00020a8816c6830cdeae"
       },
-      "./src/utils/read-datacenter-zone.ts": {
-        "version": "08dfb830f7f02086e7255794860edc3ea447164c72c506b9a54923048e3f6e72",
-        "signature": "cab7a44e69603f0e87ff02ea4766d16614887017855c22ec8f983c62cf9ad648"
-      },
       "./src/commands/zone/get.ts": {
-        "version": "cecd5afdadfebb0937faf79e9123941e0ca80fc7042ce474a9913da717753feb",
-        "signature": "12b12ab7c271494596772fea037bb39872e481b111309077464c9d9dc227b86e"
+        "version": "a6e04857812879719b2e1a9d93498527ef228bb5d62fa2a23c0296ce11c2748d",
+        "signature": "0348413e8e578b87ecbfb4307cb0f7e54de8b9e95a87f8bf9bcf57301043a75b"
       },
       "./src/commands/zone/set.ts": {
-        "version": "60922757a210ac750c84f48aa45ea38018602ee7a88fbbb326c2f391b3203f1f",
+        "version": "7e17ce62535690d559d12282e50a94117cc8331216118ffed6127a08eb8b5217",
         "signature": "6f528e6997b632ff22b66fb52bc59829606e5a25cab3017bf46fd4a35f47f3d1"
       },
       "./node_modules/@types/ftp/index.d.ts": {
@@ -1550,12 +1550,23 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "./src/utils/get-urls-based-zone.ts": [
+      "./src/consts/val.ts": [
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/utils/read-datacenter-zone.ts": [
         "./node_modules/@types/fs-extra/index.d.ts",
         "./node_modules/@types/node/path.d.ts",
         "./node_modules/@oclif/command/lib/index.d.ts",
         "./src/consts/msg.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/utils/get-urls-based-zone.ts": [
+        "./node_modules/@oclif/command/lib/index.d.ts",
         "./src/consts/urls.ts",
+        "./src/consts/val.ts",
+        "./src/utils/read-datacenter-zone.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1782,10 +1793,6 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "./src/consts/val.ts": [
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/node/ts3.2/util.d.ts"
-      ],
       "./src/commands/exec.ts": [
         "./node_modules/@types/node/readline.d.ts",
         "./node_modules/@oclif/command/lib/index.d.ts",
@@ -1816,6 +1823,7 @@
         "./src/consts/msg.ts",
         "./src/consts/val.ts",
         "./src/utils/common.ts",
+        "./src/utils/get-urls-based-zone.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1823,11 +1831,7 @@
         "./node_modules/@oclif/command/lib/index.d.ts",
         "./node_modules/cli-ux/lib/index.d.ts",
         "./node_modules/@types/inquirer/index.d.ts",
-        "./src/_service/app.service.ts",
         "./src/consts/msg.ts",
-        "./src/consts/val.ts",
-        "./src/utils/common.ts",
-        "./node_modules/@types/node/async_hooks.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1858,7 +1862,7 @@
         "./src/_service/app.service.ts",
         "./src/utils/common.ts",
         "./src/consts/msg.ts",
-        "./src/consts/val.ts",
+        "./src/utils/get-urls-based-zone.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1950,9 +1954,6 @@
         "./node_modules/@types/inquirer/index.d.ts",
         "./src/_service/app.service.ts",
         "./src/consts/msg.ts",
-        "./src/consts/val.ts",
-        "./src/utils/common.ts",
-        "./node_modules/@types/node/async_hooks.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -2106,9 +2107,9 @@
         "./src/_service/app.service.ts",
         "./src/_service/auth.service.ts",
         "./src/consts/msg.ts",
-        "./src/consts/val.ts",
         "./src/utils/common.ts",
         "./src/_service/docker.repository.service.ts",
+        "./src/utils/get-urls-based-zone.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -2176,19 +2177,11 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "./src/utils/read-datacenter-zone.ts": [
-        "./node_modules/@types/fs-extra/index.d.ts",
-        "./node_modules/@types/node/path.d.ts",
-        "./node_modules/@oclif/command/lib/index.d.ts",
-        "./src/consts/msg.ts",
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/node/ts3.2/util.d.ts"
-      ],
       "./src/commands/zone/get.ts": [
         "./node_modules/@oclif/command/lib/index.d.ts",
         "./node_modules/cli-ux/lib/index.d.ts",
         "./src/utils/read-datacenter-zone.ts",
-        "./src/consts/msg.ts",
+        "./node_modules/@oclif/color/lib/index.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -2198,6 +2191,7 @@
         "./node_modules/@types/inquirer/index.d.ts",
         "./src/utils/writer.ts",
         "./src/consts/msg.ts",
+        "./node_modules/@oclif/color/lib/index.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -2932,6 +2926,12 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "./src/utils/read-datacenter-zone.ts": [
+        "./node_modules/@oclif/command/lib/index.d.ts"
+      ],
+      "./src/utils/get-urls-based-zone.ts": [
+        "./node_modules/@oclif/command/lib/index.d.ts"
+      ],
       "./src/_service/auth.service.ts": [
         "./node_modules/axios/index.d.ts",
         "./node_modules/@oclif/command/lib/index.d.ts",
@@ -2970,6 +2970,12 @@
       "./src/_service/exec.service.ts": [
         "./node_modules/axios/index.d.ts",
         "./node_modules/@oclif/command/lib/index.d.ts"
+      ],
+      "./src/_service/module.service.ts": [
+        "./node_modules/axios/index.d.ts",
+        "./node_modules/@oclif/command/lib/index.d.ts",
+        "./src/interfaces/app.interface.ts",
+        "./src/interfaces/server-result.interface.ts"
       ],
       "./src/_service/network.service.ts": [
         "./node_modules/axios/index.d.ts",
@@ -3213,6 +3219,10 @@
         "./node_modules/@oclif/parser/lib/flags.d.ts",
         "./node_modules/@oclif/command/lib/index.d.ts"
       ],
+      "./src/commands/module/db/export.ts": [
+        "./node_modules/@oclif/parser/lib/flags.d.ts",
+        "./node_modules/@oclif/command/lib/index.d.ts"
+      ],
       "./src/commands/network/addapp.ts": [
         "./node_modules/@oclif/parser/lib/flags.d.ts",
         "./node_modules/@oclif/command/lib/index.d.ts"
@@ -3230,6 +3240,14 @@
         "./node_modules/@oclif/command/lib/index.d.ts"
       ],
       "./src/commands/network/rmapp.ts": [
+        "./node_modules/@oclif/parser/lib/flags.d.ts",
+        "./node_modules/@oclif/command/lib/index.d.ts"
+      ],
+      "./src/commands/zone/get.ts": [
+        "./node_modules/@oclif/parser/lib/flags.d.ts",
+        "./node_modules/@oclif/command/lib/index.d.ts"
+      ],
+      "./src/commands/zone/set.ts": [
         "./node_modules/@oclif/parser/lib/flags.d.ts",
         "./node_modules/@oclif/command/lib/index.d.ts"
       ],
@@ -3302,30 +3320,6 @@
       "./node_modules/@types/mocha/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "./src/_service/module.service.ts": [
-        "./node_modules/axios/index.d.ts",
-        "./node_modules/@oclif/command/lib/index.d.ts",
-        "./src/interfaces/app.interface.ts",
-        "./src/interfaces/server-result.interface.ts"
-      ],
-      "./src/commands/module/db/export.ts": [
-        "./node_modules/@oclif/parser/lib/flags.d.ts",
-        "./node_modules/@oclif/command/lib/index.d.ts"
-      ],
-      "./src/utils/get-urls-based-zone.ts": [
-        "./node_modules/@oclif/command/lib/index.d.ts"
-      ],
-      "./src/commands/zone/set.ts": [
-        "./node_modules/@oclif/parser/lib/flags.d.ts",
-        "./node_modules/@oclif/command/lib/index.d.ts"
-      ],
-      "./src/commands/zone/get.ts": [
-        "./node_modules/@oclif/parser/lib/flags.d.ts",
-        "./node_modules/@oclif/command/lib/index.d.ts"
-      ],
-      "./src/utils/read-datacenter-zone.ts": [
-        "./node_modules/@oclif/command/lib/index.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -3382,6 +3376,8 @@
       "./node_modules/@oclif/command/lib/main.d.ts",
       "./node_modules/@oclif/command/lib/index.d.ts",
       "./src/index.ts",
+      "./node_modules/axios/index.d.ts",
+      "./src/consts/urls.ts",
       "./src/enums/apps.enum.ts",
       "./src/interfaces/user.interface.ts",
       "./src/interfaces/app.interface.ts",
@@ -3453,6 +3449,7 @@
       "./node_modules/cli-ux/lib/open.d.ts",
       "./node_modules/cli-ux/lib/index.d.ts",
       "./src/utils/make-id.ts",
+      "./src/_service/exec.service.ts",
       "./node_modules/@types/rx-core/index.d.ts",
       "./node_modules/@types/rx-core-binding/index.d.ts",
       "./node_modules/@types/rx-lite/index.d.ts",
@@ -3468,7 +3465,10 @@
       "./node_modules/@types/rx/index.d.ts",
       "./node_modules/@types/through/index.d.ts",
       "./node_modules/@types/inquirer/index.d.ts",
+      "./src/commands/app/ps.ts",
       "./src/commands/app/rm.ts",
+      "./src/commands/domain/all.ts",
+      "./src/commands/network/all.ts",
       "./node_modules/@types/ftp/index.d.ts",
       "./node_modules/@types/promise-ftp-common/index.d.ts",
       "./node_modules/@types/bluebird/index.d.ts",
@@ -3478,39 +3478,22 @@
       "./node_modules/@types/minipass/index.d.ts",
       "./node_modules/@types/tar/index.d.ts",
       "./src/deployment/deploy-source.ts",
+      "./src/utils/update-apps.ts",
       "./node_modules/@types/axon/index.d.ts",
       "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
       "./node_modules/@types/mocha/index.d.ts",
-      "./node_modules/axios/index.d.ts",
-      "./src/_service/network.service.ts",
-      "./src/_service/module.service.ts",
-      "./src/commands/module/db/export.ts",
-      "./src/_service/exec.service.ts",
-      "./src/_service/domain.service.ts",
-      "./src/_service/docker.repository.service.ts",
-      "./src/_service/catalog.service.ts",
-      "./src/commands/catalog.ts",
-      "./src/_service/app.service.ts",
-      "./src/_service/auth.service.ts",
-      "./src/commands/image/build.ts",
-      "./src/commands/app/deploy.ts",
-      "./src/commands/whoami.ts",
-      "./src/commands/login.ts",
-      "./src/consts/urls.ts",
-      "./src/utils/get-urls-based-zone.ts",
-      "./src/commands/app/stats.ts",
       "./src/consts/msg.ts",
       "./src/commands/zone/set.ts",
-      "./src/commands/zone/get.ts",
-      "./src/utils/read-datacenter-zone.ts",
       "./src/commands/network/rmapp.ts",
       "./src/commands/network/rm.ts",
       "./src/commands/network/create.ts",
       "./src/commands/network/addapp.ts",
+      "./src/commands/module/db/export.ts",
       "./src/commands/image/share.ts",
       "./src/commands/image/ps.ts",
+      "./src/commands/image/build.ts",
       "./src/commands/domain/record/update.ts",
       "./src/commands/domain/record/rm.ts",
       "./src/commands/domain/record/all.ts",
@@ -3523,6 +3506,7 @@
       "./src/commands/app/healthcheck/create.ts",
       "./src/commands/app/healthcheck/all.ts",
       "./src/commands/app/stop.ts",
+      "./src/commands/app/stats.ts",
       "./src/commands/app/scale.ts",
       "./src/commands/app/restart.ts",
       "./src/commands/app/rebuild.ts",
@@ -3533,19 +3517,29 @@
       "./src/commands/app/file.ts",
       "./src/commands/app/exportlogs.ts",
       "./src/commands/app/dir.ts",
+      "./src/commands/app/deploy.ts",
       "./src/commands/app/commit.ts",
       "./src/commands/app/collab.ts",
       "./src/commands/app/build.ts",
       "./src/commands/app/add.ts",
+      "./src/commands/whoami.ts",
       "./src/commands/exec.ts",
+      "./src/commands/catalog.ts",
       "./src/utils/common.ts",
+      "./src/commands/login.ts",
+      "./src/utils/read-datacenter-zone.ts",
+      "./src/commands/zone/get.ts",
+      "./src/utils/get-urls-based-zone.ts",
+      "./src/_service/network.service.ts",
+      "./src/_service/module.service.ts",
+      "./src/_service/domain.service.ts",
+      "./src/_service/docker.repository.service.ts",
+      "./src/_service/catalog.service.ts",
+      "./src/_service/app.service.ts",
+      "./src/_service/auth.service.ts",
       "./src/utils/read-token.ts",
-      "./src/utils/writer.ts",
-      "./src/utils/update-apps.ts",
-      "./src/commands/app/ps.ts",
       "./src/consts/val.ts",
-      "./src/commands/domain/all.ts",
-      "./src/commands/network/all.ts"
+      "./src/utils/writer.ts"
     ]
   },
   "version": "3.8.3"

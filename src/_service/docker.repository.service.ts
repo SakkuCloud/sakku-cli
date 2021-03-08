@@ -82,7 +82,7 @@ function getRepoInfo(ctx: Command, repoName: string, data:{"includeCreated": boo
 }
 
 function share(ctx: any, repoName: string, repoTag: string, data: any) {
-  let url = getBaseUrl(ctx) + docker_repository_url + repoName + '/tag/' + repoTag + '/share';
+  let url = getBaseUrl(ctx) + docker_repository_url + repoTag + '/share?repository=' + repoName;
   return axios.post(url, {}, { headers: getHeader(ctx), params: data })
     .catch((error) => {
       console.log('error');
