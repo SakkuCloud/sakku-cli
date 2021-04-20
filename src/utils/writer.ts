@@ -1,6 +1,7 @@
 import {Command} from '@oclif/command';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { IZoneInfo } from '../interfaces/auth.interface';
 
 export async function writeToken(ctx: Command, data: {token?: string}) {
   if (data.token) {
@@ -9,11 +10,12 @@ export async function writeToken(ctx: Command, data: {token?: string}) {
     fs.writeFileSync(configUri, data.token, {encoding: 'utf-8'});
   }
 }
-export async function writeZone(ctx: Command, zone: string) {
-  if (zone) {
-    let configUri = path.join(ctx.config.configDir, 'zone');
+
+export async function writeUrlInfo(ctx: Command, urlInfo: IZoneInfo) {
+  if (urlInfo) {
+    let configUri = path.join(ctx.config.configDir, 'urlInfo');
     if (!fs.pathExistsSync(ctx.config.configDir)) fs.mkdirSync(ctx.config.configDir);
-    fs.writeFileSync(configUri, zone, {encoding: 'utf-8'});
+    fs.writeFileSync(configUri, JSON.stringify(urlInfo), {encoding: 'utf-8'});
   }
 }
 

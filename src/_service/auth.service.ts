@@ -3,18 +3,29 @@ import axios from 'axios';
 import Command from '@oclif/command';
 
 // Project Modules
-import { login_url, overview_url, user_pass_login_url } from '../consts/urls';
+import { sakku_zone_url, login_url, overview_url, user_pass_login_url } from '../consts/urls';
 import IServerResult from '../interfaces/server-result.interface';
 import { IOverview } from '../interfaces/user.interface';
 import { readToken } from '../utils/read-token';
 import { common } from '../utils/common';
 import { getBaseUrl } from '../utils/get-urls-based-zone';
+import { IZoneInfo } from '../interfaces/auth.interface';
 
 export const authService = {
   authenticate,
   overview,
-  login
+  login,
+  getZoneInfo,
 };
+
+function getZoneInfo() {
+  let url = sakku_zone_url;
+
+  return axios.get<IServerResult<IZoneInfo[]>>(url, { headers: {'Accept-Language':'en'} })
+    .catch((error) => {
+      throw common.handleRequestError(error, true);
+    });
+}
 
 function login(ctx: Command, auth: { username: string, password: string }) {
   let url = getBaseUrl(ctx) + user_pass_login_url ;

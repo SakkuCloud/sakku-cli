@@ -7,11 +7,12 @@ import { Command } from '@oclif/command';
 
 // Project Modules
 import { messages } from '../consts/msg';
+import { IZoneInfo } from '../interfaces/auth.interface';
+let datacenterInfo: IZoneInfo;
 
-export function readDatacenterZone(ctx: Command) {
-  let zone: string = 'serverius';
+export function readDatacenterInfo(ctx: Command) {
   try { 
-    zone = fs.readFileSync(path.join(ctx.config.configDir, 'zone'), 'utf-8');
+    datacenterInfo = JSON.parse(fs.readFileSync(path.join(ctx.config.configDir, 'urlInfo'), 'utf-8'));
   }
   catch (e) {
     if (e.hasOwnProperty('code') && e.code === 'ENOENT') {
@@ -21,5 +22,5 @@ export function readDatacenterZone(ctx: Command) {
       throw e;
     }
   }
-  return zone;
+  return datacenterInfo;
 }

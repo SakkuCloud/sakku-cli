@@ -3,7 +3,7 @@ import { Command, flags } from "@oclif/command";
 import cli from "cli-ux";
 
 // Project Modules
-import { readDatacenterZone } from "../../utils/read-datacenter-zone";
+import { readDatacenterInfo } from "../../utils/read-datacenter-info";
 import color from "@oclif/color";
 
 export default class Get extends Command {
@@ -16,13 +16,8 @@ export default class Get extends Command {
   };
 
   async run() {
-    let zone: string;
     try {
-      zone = readDatacenterZone(this);
-      let zoneMessage =
-        zone == "khatam"
-          ? "- Khatam University Datacenter in Tehran"
-          : "- Serverius Datacenter in holland";
+      let zoneMessage = readDatacenterInfo(this).description;
       console.log(color.green(zoneMessage));
     } catch (e) {
       console.log(e);

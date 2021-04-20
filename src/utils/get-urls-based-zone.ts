@@ -2,47 +2,24 @@
 import { Command } from "@oclif/command";
 
 // Project Modules
-import {
-  api_sakku_base_url_khatam,
-  api_sakku_base_url_serverius,
-  sakku_panel_auth_url_khatam,
-  sakku_panel_auth_url_serverius,
-  webSocket_url_khatam,
-  webSocket_url_serverius,
-} from "../consts/urls";
-import {
-  sakkuRegRawKhatam,
-  sakkuRegRawServerius,
-  sakkuRegUrlKhatam,
-  sakkuRegUrlServerius,
-} from "../consts/val";
-import { readDatacenterZone } from "./read-datacenter-zone";
+import { readDatacenterInfo } from "./read-datacenter-info";
 
 export function getBaseUrl(ctx: Command) {
-  let zone = readDatacenterZone(ctx);
-  return zone == "khatam"
-    ? api_sakku_base_url_khatam
-    : api_sakku_base_url_serverius;
+  let zoneInfo = readDatacenterInfo(ctx);
+  return zoneInfo.protocol.toLocaleLowerCase() + '://' + zoneInfo.baseApiAddress;
 }
 
 export function getWebSocketUrl(ctx: Command) {
-  let zone = readDatacenterZone(ctx);
-  return zone == "khatam" ? webSocket_url_khatam : webSocket_url_serverius;
-}
-
-export function getPanelAuthUrl(ctx: Command) {
-  let zone = readDatacenterZone(ctx);
-  return zone == "khatam"
-    ? sakku_panel_auth_url_khatam
-    : sakku_panel_auth_url_serverius;
+  let zoneInfo = readDatacenterInfo(ctx);
+  return 'wss://' + zoneInfo.registryAddress + '/ws';
 }
 
 export function getSakkuRegUrl(ctx: Command) {
-  let zone = readDatacenterZone(ctx);
-  return zone == "khatam" ? sakkuRegUrlKhatam : sakkuRegUrlServerius;
+  let zoneInfo = readDatacenterInfo(ctx);
+  return zoneInfo.protocol.toLocaleLowerCase() + '://' + zoneInfo.registryAddress;
 }
 
 export function getSakkuRegRaw(ctx: Command) {
-  let zone = readDatacenterZone(ctx);
-  return zone == "khatam" ? sakkuRegRawKhatam : sakkuRegRawServerius;
+  let zoneInfo = readDatacenterInfo(ctx);
+  return zoneInfo.registryAddress;
 }
