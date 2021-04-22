@@ -1,6 +1,7 @@
 export const messages = {
   username_req: 'Please type your Username (Hint: sometimes username is equal to email)',
   password_req: 'Please type your Password',
+  api_token_req: 'Please enter api token of your business account',
   problem_in_login_msg: 'Oops!\nthere is a problem with login!',
   login_success: 'User logged in successfully!',
   enter_your_app_name_msg: 'Enter your app name',
