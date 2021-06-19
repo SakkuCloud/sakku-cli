@@ -26,7 +26,6 @@ export const dockerRepositoryService = {
 };
 
 function build(ctx: any, fullPath: string, settings: { name: string, tag: string, dockerFile: string , buildArgs: string}) {
-  console.log(fullPath);
   let defer = q.defer();
   let url = getBaseUrl(ctx) + docker_repository_url + 'build';
   let ext = path.extname(fullPath);
@@ -34,19 +33,19 @@ function build(ctx: any, fullPath: string, settings: { name: string, tag: string
   let mimeType = mime.getType(fullPath);
   let settings_string = JSON.stringify(settings);
   let headers = {
-    "Content-Type": "multipart/form-data"
+    'Content-Type': 'multipart/form-data'
   };
 
   var options = {
-    'method': 'POST',
-    'url': url,
-    'headers': Object.assign(getHeader(ctx), headers),
+    method: 'POST',
+    url,
+    headers: Object.assign(getHeader(ctx), headers),
     formData: {
-      'file': {
-        'value': fs.createReadStream(fullPath),
-        'options': {
-          'filename': fileName,
-          'contentType': mimeType
+      file: {
+        value: fs.createReadStream(fullPath),
+        options: {
+          filename: fileName,
+          contentType: mimeType
         }
       },
       settings_string
@@ -56,8 +55,7 @@ function build(ctx: any, fullPath: string, settings: { name: string, tag: string
   request(options, function (error: any, response: { body: any; }) {
     if (error) {
       defer.reject(error);
-    }
-    else {
+    } else {
       defer.resolve(response.body);
     }
   });
@@ -73,8 +71,8 @@ function ps(ctx: Command) {
     });
 }
 
-function getRepoInfo(ctx: Command, repoName: string, data:{"includeCreated": boolean, "includeSize": boolean}) {
-  let url = getBaseUrl(ctx) + docker_repository_url + repoName;
+function getRepoInfo(ctx: Command, repoName: string, data: {'includeCreated': boolean, 'includeSize': boolean}) {
+  let url = getBaseUrl(ctx) + docker_repository_url + '?repository=' + repoName;
   return axios.get<IServerResult<IAppVO>>(url , { headers: getHeader(ctx), params: data }).
     catch((error) => {
       throw common.handleRequestError(error);
@@ -93,6 +91,3 @@ function share(ctx: any, repoName: string, repoTag: string, data: any) {
 function getHeader(ctx: Command, contentType = 'text/html; charset=UTF-8') {
   return { Authorization: readToken(ctx), 'Content-Type' : contentType};
 }
-
-
-
