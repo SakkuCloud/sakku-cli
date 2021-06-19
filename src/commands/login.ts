@@ -11,7 +11,7 @@ import { messages } from '../consts/msg';
 import makeId from '../utils/make-id';
 import { writeOverview, writeToken } from '../utils/writer';
 import { common } from '../utils/common';
-import { getBaseUrl } from '../utils/get-urls-based-zone';
+import { getPanelUrl } from '../utils/get-urls-based-zone';
 import { auth_url } from '../consts/urls';
 
 export default class Login extends Command {
@@ -30,7 +30,7 @@ ${color.cyan('❯ Login by Api Token')}
 
   async run() {
     let apiToken: string = '';
-    let authUrl = getBaseUrl(this) + auth_url; 
+    let panelAuthUrl = getPanelUrl(this) + '/' + auth_url;
     const question = {
       name: 'way',
       message: 'There are two ways you can login:',
@@ -50,7 +50,7 @@ ${color.cyan('❯ Login by Api Token')}
         await writeToken(this, { token: apiToken });    // write the access token in the file
         let value = await authService.overview(this);      // sends request the get the user's config
         let overview = JSON.stringify(value.data.result);
-        await writeOverview(this, overview)                // write the user's config to the file
+        await writeOverview(this, overview);                // write the user's config to the file
         console.log(color.green(messages.loggedin));
       }
       catch (e) {
@@ -59,10 +59,10 @@ ${color.cyan('❯ Login by Api Token')}
     }
     else { // login with browser
       try {
-        await opn(`${authUrl}${code}`, { wait: false });
+        await opn(`${panelAuthUrl}${code}`, { wait: false });
       }
       catch (e) {
-        cli.url(`${color.green(messages.click_here_to_login_msg)}`, `${authUrl}${code}`);
+        cli.url(`${color.green(messages.click_here_to_login_msg)}`, `${panelAuthUrl}${code}`);
       }
       cli.action.start(messages.tryToLog);
       await cli.wait(waitTime);

@@ -24,3 +24,8 @@ export function getSakkuRegRaw(ctx: Command) {
   let zoneInfo = readDatacenterInfo(ctx);
   return zoneInfo.registryAddress;
 }
+
+export function getPanelUrl(ctx: Command) {
+  let zoneInfo = readDatacenterInfo(ctx);
+  return zoneInfo.protocol.toLocaleLowerCase() + '://' + zoneInfo.panelAddress;
+}

@@ -7,4 +7,5 @@ export declare interface IZoneInfo {
   registryAddress: string;
   protocol: string;
   description: string;
+  panelAddress: string;
 }

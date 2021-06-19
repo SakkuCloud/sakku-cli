@@ -11,7 +11,7 @@ import { IZoneInfo } from '../interfaces/auth.interface';
 let datacenterInfo: IZoneInfo;
 
 export function readDatacenterInfo(ctx: Command) {
-  try { 
+  try {
     datacenterInfo = JSON.parse(fs.readFileSync(path.join(ctx.config.configDir, 'urlInfo'), 'utf-8'));
   }
   catch (e) {

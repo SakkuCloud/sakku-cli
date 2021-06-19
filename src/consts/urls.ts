@@ -1,4 +1,4 @@
-export const sakku_zone_url = 'https://api.sakku.cloud/zone/sakku/';
+export const sakku_zone_url = 'https://api.sakku-khatam.ir/zone/sakku/';
 export const auth_url = 'auth/cli/';
 export const login_url = 'users/cli';
 export const overview_url = 'panel/overview';
