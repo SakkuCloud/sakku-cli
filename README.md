@@ -469,7 +469,7 @@ _See code: [src\commands\zone\get.ts](https://github.com/makbn/sakku_cli_ts/blob
 
 ## `sakku zone:set`
 
-set datacenter zone to  Khatam University Datacenter in Tehran or  Serverius Datacenter in holland
+set datacenter zone
 
 ```
 USAGE
@@ -477,12 +477,13 @@ USAGE
 
 OPTIONS
   -h, --help  show CLI help
-  -z, --zone khatam | serverius  set zone to khatam or serverius
+  -z, --zone khatam | serverius | pardis  set zone to khatam, serverius or pardis datacenter
 EXAMPLE
   $ sakku zone:set
   ? Choose datacenter zone : (Use arrow keys)
 > serverius : Serverius Datacenter in holland
   khatam : Khatam University Datacenter in Tehran
+  pardis : Pardis Datacenter in Tehran
 ```
 
 _See code: [src\commands\zone\set.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.4.0/src\commands\zone\set.ts)_

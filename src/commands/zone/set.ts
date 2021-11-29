@@ -9,6 +9,7 @@ import { messages } from '../../consts/msg';
 import color from '@oclif/color';
 import { authService } from '../../_service/auth.service';
 import { IZoneInfo } from '../../interfaces/auth.interface';
+import { common } from '../../utils/common';
 
 export default class Set extends Command {
   static description = 'zone:set';
@@ -18,13 +19,14 @@ export default class Set extends Command {
     Choose datacenter zone : (Use arrow keys)
     > serverius : Serverius Datacenter in holland
       khatam : Khatam University Datacenter in Tehran
-    $ sakku zone:set --zone khatam | serverius
+      pardis : Pardis Datacenter in Tehran
+    $ sakku zone:set --zone khatam | serverius | pardis
       `,
   ];
 
   static flags = {
     help: flags.help({ char: 'h' }),
-    zone: flags.string({char: 'z', options: ['serverius', 'khatam']})
+    zone: flags.string({char: 'z', options: ['serverius', 'khatam', 'pardis']})
   };
 
   async run() {
@@ -74,14 +76,14 @@ export default class Set extends Command {
       zone = response.zone;
     }
     try {
-    let selectedDatacenterInfo = datacenterInfoList?.find((datacenterInfo) => datacenterInfo.name === zone);
+    let selectedDatacenterInfo = datacenterInfoList?.find((datacenterInfo) => datacenterInfo.name.toLowerCase() === zone.toLowerCase());
     if (selectedDatacenterInfo) {
       writeUrlInfo(self, selectedDatacenterInfo);
     }
     this.log(color.green(messages.zone_is_set_to_datacenter + selectedDatacenterInfo?.description));
     }
     catch (e) {
-      this.log(e);
+      common.logError(e);
     }
   }
 }
