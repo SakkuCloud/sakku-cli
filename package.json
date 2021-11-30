@@ -1,14 +1,14 @@
 {
   "name": "sakku",
   "description": "This is a sakku cli that makes world even better!",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "author": "Fanap Node.js Team",
   "bin": {
     "sakku": "./bin/run"
   },
   "bugs": "https://github.com/SakkuCloud/sakku-cli/issues",
   "dependencies": {
-    "@oclif/color": "^0.0.0",
+    "@oclif/color": "^0.1.0",
     "@oclif/command": "^1.0.0",
     "@oclif/config": "^1.0.0",
     "@oclif/plugin-help": "^2.0.0",
