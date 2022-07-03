@@ -1,9 +1,12 @@
 export const webSocket_url_serverius = 'wss://api.sakku.cloud/ws';
 export const webSocket_url_khatam = 'wss://api.sakku-khatam.ir/ws';
+export const webSocket_url_sandbox = 'wss://api.sakkusb.ir/ws';
 export const sakku_panel_auth_url_serverius = 'https://panel.sakku.cloud/auth/cli/';
+export const sakku_panel_auth_url_sandbox = 'https://panel.sakkusb.ir/auth/cli/';
 export const sakku_panel_auth_url_khatam = 'https://panel.sakku-khatam.ir/auth/cli/';
 export const api_sakku_base_url_serverius = 'https://api.sakku.cloud/';
 export const api_sakku_base_url_khatam = 'https://api.sakku-khatam.ir/';
+export const api_sakku_base_url_sandbox = 'https://api.sakkusb.ir/';
 export const login_url = 'users/cli';
 export const overview_url = 'panel/overview';
 export const app_url = 'app';
