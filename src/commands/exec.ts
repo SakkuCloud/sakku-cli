@@ -85,8 +85,8 @@ export default class Exec extends Command {
         });
 
         let url = await instances.find(value => value.containerId.toString() === answer.instance!)!.workerHost as string;
-        let originUrl = 'https://' + url + ':' + socketPort;
-        let appUrl = 'wss://' + url + ':' + socketPort + '/exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
+        let originUrl = 'https://' + url;
+        let appUrl = 'wss://' + url + '/exec/' + answer.instance + ',' + btoa(args.cmd) + '?app-id=' + appId;
 
         if (args.cmd.toLowerCase() === 'seyed') {
           this.log('Salam Seyed! 1398/05/06');

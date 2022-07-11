@@ -1,96 +1,96 @@
 {
-  "name": "sakku",
-  "description": "This is a sakku cli that makes world even better!",
-  "version": "0.6.3",
-  "author": "Fanap Node.js Team",
-  "bin": {
-    "sakku": "./bin/run"
-  },
-  "bugs": "https://github.com/SakkuCloud/sakku-cli/issues",
-  "dependencies": {
-    "@oclif/color": "^0.1.0",
-    "@oclif/command": "^1.0.0",
-    "@oclif/config": "^1.0.0",
-    "@oclif/plugin-help": "^2.0.0",
-    "@types/supports-color": "^5.3.0",
-    "archiver": "^3.1.1",
-    "axios": ">=0.21.1",
-    "btoa": "^1.2.1",
-    "cli-ux": "^4.9.3",
-    "form-data": "^3.0.0",
-    "fs-extra": "^7.0.1",
-    "inquirer": "^6.2.1",
-    "lang-detector": "^1.0.6",
-    "mime": "^2.4.4",
-    "mkdirp": "^0.5.1",
-    "mkdirp-promise": "^5.0.1",
-    "open": "^7.0.0",
-    "path": "^0.12.7",
-    "promise-duplex": "^3.0.3",
-    "promise-ftp": "^1.3.5",
-    "promise-ftp-common": "^1.1.5",
-    "q": "^1.5.1",
-    "readline": "^1.3.0",
-    "request": "^2.88.0",
-    "stompjs": "^2.3.3",
-    "tar": "^4.4.8",
-    "tslib": "^1",
-    "uniqid": "^5.2.0",
-    "ws": "^7.1.1"
-  },
-  "devDependencies": {
-    "@oclif/dev-cli": "^1.0.0",
-    "@oclif/tslint": "^3.0.0",
-    "@types/axon": "^2.0.0",
-    "@types/chai": "^4.0.0",
-    "@types/fs-extra": "^5.0.4",
-    "@types/inquirer": "^0.0.43",
-    "@types/mocha": "^5.0.0",
-    "@types/node": "^10.0.0",
-    "@types/opn": "^5.1.0",
-    "@types/promise-ftp": "^1.3.1",
-    "@types/tar": "^4.0.0",
-    "globby": "^8.0.0",
-    "lang-detector": "^1.0.6",
-    "rimraf": "^2.7.1",
-    "ts-node": "^7.0.0",
-    "tslint": "^5.0.0",
-    "typescript": "^3.0.0"
-  },
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "files": [
-    "/bin",
-    "/lib",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
-  ],
-  "homepage": "https://cli.sakku.page",
-  "keywords": [
-    "sakku"
-  ],
-  "license": "MIT",
-  "main": "lib/index.js",
-  "oclif": {
-    "commands": "./lib/commands",
-    "bin": "sakku",
-    "plugins": [
-      "@oclif/plugin-help"
+    "name": "sakku",
+    "description": "This is a sakku cli that makes world even better!",
+    "version": "0.6.4",
+    "author": "Fanap Node.js Team",
+    "bin": {
+        "sakku": "./bin/run"
+    },
+    "bugs": "https://github.com/SakkuCloud/sakku-cli/issues",
+    "dependencies": {
+        "@oclif/color": "^0.1.0",
+        "@oclif/command": "^1.0.0",
+        "@oclif/config": "^1.0.0",
+        "@oclif/plugin-help": "^2.0.0",
+        "@types/supports-color": "^5.3.0",
+        "archiver": "^3.1.1",
+        "axios": ">=0.21.1",
+        "btoa": "^1.2.1",
+        "cli-ux": "^4.9.3",
+        "form-data": "^3.0.0",
+        "fs-extra": "^7.0.1",
+        "inquirer": "^6.2.1",
+        "lang-detector": "^1.0.6",
+        "mime": "^2.4.4",
+        "mkdirp": "^0.5.1",
+        "mkdirp-promise": "^5.0.1",
+        "open": "^7.0.0",
+        "path": "^0.12.7",
+        "promise-duplex": "^3.0.3",
+        "promise-ftp": "^1.3.5",
+        "promise-ftp-common": "^1.1.5",
+        "q": "^1.5.1",
+        "readline": "^1.3.0",
+        "request": "^2.88.0",
+        "stompjs": "^2.3.3",
+        "tar": "^4.4.8",
+        "tslib": "^1",
+        "uniqid": "^5.2.0",
+        "ws": "^7.1.1"
+    },
+    "devDependencies": {
+        "@oclif/dev-cli": "^1.0.0",
+        "@oclif/tslint": "^3.0.0",
+        "@types/axon": "^2.0.0",
+        "@types/chai": "^4.0.0",
+        "@types/fs-extra": "^5.0.4",
+        "@types/inquirer": "^0.0.43",
+        "@types/mocha": "^5.0.0",
+        "@types/node": "^10.0.0",
+        "@types/opn": "^5.1.0",
+        "@types/promise-ftp": "^1.3.1",
+        "@types/tar": "^4.0.0",
+        "globby": "^8.0.0",
+        "lang-detector": "^1.0.6",
+        "rimraf": "^2.7.1",
+        "ts-node": "^7.0.0",
+        "tslint": "^5.0.0",
+        "typescript": "^3.0.0"
+    },
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "files": [
+        "/bin",
+        "/lib",
+        "/npm-shrinkwrap.json",
+        "/oclif.manifest.json"
     ],
-    "topics": {
-      "app": {
-        "description": "manage all apps"
-      }
-    }
-  },
-  "repository": "makbn/sakku_cli_ts",
-  "scripts": {
-    "postpack": "rimraf oclif.manifest.json",
-    "posttest": "tslint -p test -t stylish",
-    "prepack": "tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
-  },
-  "types": "lib/index.d.ts"
+    "homepage": "https://cli.sakku.page",
+    "keywords": [
+        "sakku"
+    ],
+    "license": "MIT",
+    "main": "lib/index.js",
+    "oclif": {
+        "commands": "./lib/commands",
+        "bin": "sakku",
+        "plugins": [
+            "@oclif/plugin-help"
+        ],
+        "topics": {
+            "app": {
+                "description": "manage all apps"
+            }
+        }
+    },
+    "repository": "makbn/sakku_cli_ts",
+    "scripts": {
+        "postpack": "rimraf oclif.manifest.json",
+        "posttest": "tslint -p test -t stylish",
+        "prepack": "tsc -b && oclif-dev manifest && oclif-dev readme",
+        "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+        "version": "oclif-dev readme && git add README.md"
+    },
+    "types": "lib/index.d.ts"
 }

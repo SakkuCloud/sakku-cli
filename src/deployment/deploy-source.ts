@@ -18,9 +18,9 @@ export default async function deploySrc(ctx: Command, appName: string) {
     [fs.realpathSync('./')]
   ).then(_ => {
     ftp.connect({host: config.ftp.host, user: config.user.email, password: token, port: config.ftp.port})
-      .then(_ => {
+      .then((_: any) => {
         return ftp.put(filename, `/${filename}`);
-      }).then(_ => {
+      }).then((_: any) => {
         fs.unlink(filename, _ => {
           return ftp.end();
         });

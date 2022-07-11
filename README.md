@@ -477,13 +477,14 @@ USAGE
 
 OPTIONS
   -h, --help  show CLI help
-  -z, --zone khatam | serverius | pardis  set zone to khatam, serverius or pardis datacenter
+  -z, --zone khatam | serverius | pardis | sandbox  set zone to khatam, serverius, pardis or sandbox datacenter
 EXAMPLE
   $ sakku zone:set
   ? Choose datacenter zone : (Use arrow keys)
 > serverius : Serverius Datacenter in holland
   khatam : Khatam University Datacenter in Tehran
   pardis : Pardis Datacenter in Tehran
+  sandbox : Sandbox Datacenter in Tehran
 ```
 
 _See code: [src\commands\zone\set.ts](https://github.com/makbn/sakku_cli_ts/blob/v0.4.0/src\commands\zone\set.ts)_
